@@ -1,5 +1,5 @@
 -- 从CSV文件导入行业类型数据到industry_types表
-LOAD DATA INFILE 'industry_codes/cross_types.csv'
+LOAD DATA INFILE 'industry_codes/multiclass.csv'
 INTO TABLE cross_types
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
