@@ -8,63 +8,76 @@
 
 ```
 cultural_companies/
-├── analysis_queries/          # 业务分析查询（Step1→Step2→Step3流程）
-│   ├── step1_get_enterprises_directly.sql
-│   ├── step1_get_enterprises_from_csv.sql
-│   ├── step2_add_enterprise_dimensions.sql
-│   ├── step3_statistical_analysis.sql
-│   └── step3_queries_separated.sql
-├── test_database/             # 测试数据库（建表、假数据、测试查询）
+├── queries_cloud/                 # 云服务器环境SQL（堡垒机环境，行业代码硬编码）
+│   ├── step1_get_enterprises_directly.sql      # Step1: 直接查询文旅企业
+│   ├── step2_add_enterprise_dimensions.sql     # Step2: 增加企业信息维度
+│   ├── step3_filter_by_types.sql               # Step3: 交叉对照筛选具体行业门类
+│   └── step4_statistical_analysis.sql          # Step4: 统计分析
+├── local_validation_queries/       # 本地验证环境SQL（支持CSV，便于调试）
+│   ├── step1_get_enterprises_from_csv.sql      # Step1: 从CSV读取文旅企业
+│   ├── step2_add_enterprise_dimensions.sql     # Step2: 增加企业信息维度
+│   ├── step3_filter_by_types.sql               # Step3: 交叉对照筛选具体行业门类
+│   └── step4_statistical_analysis.sql          # Step4: 统计分析
+├── test_database/                  # 测试数据库（建表、假数据、测试查询）
 │   ├── 01_create_database.sql
 │   ├── 02_insert_sample_data.sql
 │   └── 03_test_queries.sql
-├── scripts/                   # Python工具脚本
-│   ├── generate_fake_data.py  # 生成假数据
-│   ├── data_preparing.py      # 数据准备
+├── scripts/                        # Python工具脚本
+│   ├── generate_fake_data.py       # 生成假数据
+│   ├── data_preparing.py           # 数据准备
 │   ├── extract_field_mapping.py
 │   ├── find_dw_zj_scjdgl_scztxx.py
 │   ├── generate_table_fields_md.py
 │   └── read_excel_fields.py
-├── codes/                     # 行业代码文件
+├── codes/                          # 行业代码及白名单文件
 │   ├── cultural_industry_codes.csv
 │   ├── tourism_industry_codes.csv
 │   └── social_credit_codes.csv
-├── data/                      # 数据文件
-├── resources/                 # 资源文件
-├── table_fields.md           # 表字段文档
-└── README.md                 # 项目说明
+├── data/                           # 数据文件
+├── resources/                      # 资源文件
+├── table_fields.md                 # 表字段文档
+└── README.md                       # 项目说明
 ```
 
-## 快速开始
+## 数据表说明
 
-### 1. 创建测试数据库
+### 主要数据表：dw_zj_scjdgl_scztxx
+
+**表名含义**：浙江省市场监督管理局市场主体信息数据仓库表
+**中文名称**：市场主体信息（含个体)
+**主键**：PRIPID,ENTNAME,CREDIT_CODE
+
+### 字段映射说明
+
+本文档中所有字段名都已在各步骤中标注了对应的标准化字段名。主要字段包括：
+
+- **基础信息**：统一社会信用代码 (`UNI_SOCIAL_CRD_CD`)、企业名称 (`COMP_NM`)、登记机关 (`REG_ORG`) 等
+- **经营信息**：经营范围 (`OPT_SCOP`)、行业代码 (`INDV_CODE`)、成立日期 (`EST_DT`) 等
+- **扩展维度**：法定代表人信息、经营异常信息、年报资产信息、社保信息等
+
+### SQL查询示例
+
 ```sql
--- 执行建表脚本
-mysql -u username -p < test_database/01_create_database.sql
-
--- 插入测试数据
-mysql -u username -p < test_database/02_insert_sample_data.sql
-
--- 运行测试查询
-mysql -u username -p < test_database/03_test_queries.sql
-```
-
-### 2. 生成更多测试数据
-```bash
-cd scripts
-python generate_fake_data.py
-```
-
-### 3. 执行业务分析
-```sql
--- 执行Step1：获取文旅企业
-mysql -u username -p < analysis_queries/step1_get_enterprises_directly.sql
-
--- 执行Step2：关联维度信息
-mysql -u username -p < analysis_queries/step2_add_enterprise_dimensions.sql
-
--- 执行Step3：统计分析
-mysql -u username -p < analysis_queries/step3_statistical_analysis.sql
+-- 基础企业信息查询
+SELECT
+    UNI_SOCIAL_CRD_CD AS social_credit_code,
+    COMP_NM AS company_name,
+    REG_ORG AS reg_authority,
+    COMP_TYPE AS company_type,
+    ADDR AS reg_address,
+    LEGAL_REPRE AS legal_repre,
+    INDV_ID AS industry_name,
+    INDV_CODE AS industry_code,
+    INDV_NM AS industry_name_full,
+    OPT_SCOP AS business_scope,
+    APPR_DT AS approval_date,
+    EST_DT AS establishment_date,
+    DOMDI_STRICT AS domicile_district_code,
+    PRO_LOC AS production_address,
+    OPT_STRICT AS business_district_code,
+    OPT_LOC AS business_premises
+FROM dw_zj_scjdgl_scztxx
+WHERE UNI_SOCIAL_CRD_CD IS NOT NULL;
 ```
 
 ## 字段映射说明
@@ -213,45 +226,126 @@ mysql -u username -p < analysis_queries/step3_statistical_analysis.sql
    - 缴纳社保企业数量（未缴纳数量）
    - 各社保缴纳人数
 
-## 数据表说明
+## 云服务器环境下的操作
 
-### 主要数据表：dw_zj_scjdgl_scztxx
+### 场景
+- 通过堡垒机连接云服务器上的MySQL数据库
+- 无法上传 Excel、CSV 等文档
+- 所有行业代码和数据列表必须硬编码在SQL中
 
-**表名含义**：浙江省市场监督管理局市场主体信息数据仓库表
-**中文名称**：市场主体信息（含个体)
-**主键**：PRIPID,ENTNAME,CREDIT_CODE
+### 特点
+- 行业代码列表硬编码在SQL中
+- 经营范围关键词硬编码在SQL中
+- 无需外部文件依赖
+- 可直接在堡垒机环境中执行
+- 适用于生产环境
 
-### 字段映射说明
+### 使用方法
+1. 将SQL文件复制到云服务器
+2. 直接在MySQL客户端中执行
+3. 按顺序执行：step1 → step2 → step3
 
-本文档中所有字段名都已在各步骤中标注了对应的标准化字段名。主要字段包括：
+## 本地验证环境
 
-- **基础信息**：统一社会信用代码 (`UNI_SOCIAL_CRD_CD`)、企业名称 (`COMP_NM`)、登记机关 (`REG_ORG`) 等
-- **经营信息**：经营范围 (`OPT_SCOP`)、行业代码 (`INDV_CODE`)、成立日期 (`EST_DT`) 等
-- **扩展维度**：法定代表人信息、经营异常信息、年报资产信息、社保信息等
+### 适用场景
+- 本地开发环境
+- 可以读取CSV文件
+- 用于验证操作思路和过程
+- 便于调试和测试
 
-### SQL查询示例
+### 特点
+- 从CSV文件读取行业代码列表
+- 支持动态更新行业代码
+- 便于本地验证和调试
+- 支持白名单企业管理
+- 适用于开发测试环境
 
+### 依赖文件
+需要以下CSV文件存在于 `industry_codes` 目录：
+- `indv_nm.csv` - 文化产业行业代码
+- `social_credit_codes.csv` - 企业社会信用代码
+- `cross_type.csv` - 交叉分类
+
+### 使用方法
+1. 确保CSV文件存在于正确位置
+2. 在本地MySQL环境中执行
+3. 按顺序执行：step1 → step2 → step3
+
+## 分析步骤说明
+
+### Step1：获取文旅市场主体数据
+- 从基础企业表中筛选文旅相关企业
+- 根据行业代码和经营范围进行筛选
+- 输出基础企业信息
+
+### Step2：增加企业信息维度
+- 关联法定代表人信息
+- 关联经营异常、违法失信信息
+- 关联财务、社保、纳税等信息
+- 输出完整的企业画像数据
+
+### Step3：统计分析
+- 企业数量统计
+- 经营状况分析
+- 风险企业分析
+- 社保参与度分析
+- 行业分布统计
+
+---
+
+## ⚠️ 注意事项
+
+1. **环境适配**：确保在正确的环境中使用对应的查询文件
+2. **数据安全**：云服务器环境中注意数据安全，避免敏感信息泄露
+3. **文件路径**：本地环境中确保CSV文件路径正确
+4. **权限设置**：确保数据库用户有足够的查询权限
+5. **性能优化**：大数据量时注意查询性能，可能需要分批处理
+
+## 维护说明
+
+### 更新行业代码
+- **云服务器环境**：直接修改SQL文件中的硬编码列表
+- **本地环境**：更新对应的CSV文件
+
+### 添加新的分析维度
+- 在两个环境中同步更新Step2文件
+- 确保字段映射一致
+
+### 优化查询性能
+- 根据实际数据量调整查询策略
+- 考虑添加适当的索引
+- 必要时进行查询优化
+
+## 测试数据
+
+### 1. 创建测试数据库
 ```sql
--- 基础企业信息查询
-SELECT
-    UNI_SOCIAL_CRD_CD AS social_credit_code,
-    COMP_NM AS company_name,
-    REG_ORG AS reg_authority,
-    COMP_TYPE AS company_type,
-    ADDR AS reg_address,
-    LEGAL_REPRE AS legal_repre,
-    INDV_ID AS industry_name,
-    INDV_CODE AS industry_code,
-    INDV_NM AS industry_name_full,
-    OPT_SCOP AS business_scope,
-    APPR_DT AS approval_date,
-    EST_DT AS establishment_date,
-    DOMDI_STRICT AS domicile_district_code,
-    PRO_LOC AS production_address,
-    OPT_STRICT AS business_district_code,
-    OPT_LOC AS business_premises
-FROM dw_zj_scjdgl_scztxx
-WHERE UNI_SOCIAL_CRD_CD IS NOT NULL;
+-- 执行建表脚本
+mysql -u username -p < test_database/01_create_database.sql
+
+-- 插入测试数据
+mysql -u username -p < test_database/02_insert_sample_data.sql
+
+-- 运行测试查询
+mysql -u username -p < test_database/03_test_queries.sql
+```
+
+### 2. 生成更多测试数据
+```bash
+cd scripts
+python generate_fake_data.py
+```
+
+### 3. 执行业务分析
+```sql
+-- 执行Step1：获取文旅企业
+mysql -u username -p < analysis_queries/step1_get_enterprises_directly.sql
+
+-- 执行Step2：关联维度信息
+mysql -u username -p < analysis_queries/step2_add_enterprise_dimensions.sql
+
+-- 执行Step3：统计分析
+mysql -u username -p < analysis_queries/step3_statistical_analysis.sql
 ```
 
 ## 注意事项
