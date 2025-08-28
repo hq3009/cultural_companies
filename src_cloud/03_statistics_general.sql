@@ -1,136 +1,135 @@
 -- Step3：统计分析（云服务器版本）
--- 基于Step2的完整数据进行分析
--- 基于Step2的enriched_cultural_tourism结果进行统计分析
+-- 基于Step2的extended_enterprises表进行统计分析
 -- 每个查询都可以单独执行，方便拍照记录结果
 
 WITH base_data AS (
-    -- 从Step2的结果开始（这里需要替换为实际的Step2结果表名）
-    SELECT * FROM enriched_cultural_tourism
+    -- 从Step2的结果开始（使用extended_enterprises表）
+    SELECT * FROM extended_enterprises
 ),
 
 -- 1. 企业家数统计
 enterprise_count_stats AS (
     SELECT
         -- 各文旅小类的企业数量
-        industry_code,
-        company_type,
-        domicile_district_code,
-        business_district_code,
+        INDV_NM AS industry_code,
+        COMP_TYPE AS company_type,
+        DOMDI_STRICT AS domicile_district_code,
+        OPT_STRICT AS business_district_code,
         COUNT(*) AS enterprise_count,
         -- 新业态数量（2020年后成立的企业）
-        SUM(CASE WHEN establishment_date >= '2020-01-01' THEN 1 ELSE 0 END) AS new_format_count,
+        SUM(CASE WHEN EST_DT >= '2020-01-01' THEN 1 ELSE 0 END) AS new_format_count,
         -- 报告期内的变更企业数（2023年后变更）
-        SUM(CASE WHEN change_date IS NOT NULL AND change_date >= '2023-01-01' THEN 1 ELSE 0 END) AS changed_count,
+        SUM(CASE WHEN ci.CHAN_DT IS NOT NULL AND ci.CHAN_DT >= '2023-01-01' THEN 1 ELSE 0 END) AS changed_count,
         -- 经营异常企业数
-        SUM(CASE WHEN has_business_abnormal = 1 THEN 1 ELSE 0 END) AS abnormal_count,
+        SUM(CASE WHEN ba.INCLU_REASON IS NOT NULL THEN 1 ELSE 0 END) AS abnormal_count,
         -- 严重违法失信企业数
-        SUM(CASE WHEN has_serious_violation = 1 THEN 1 ELSE 0 END) AS serious_violation_count,
+        SUM(CASE WHEN sv.SERILL_REA IS NOT NULL THEN 1 ELSE 0 END) AS serious_violation_count,
         -- 失信被执行人企业数
-        SUM(CASE WHEN is_dishonest_person = 1 THEN 1 ELSE 0 END) AS dishonest_person_count,
+        SUM(CASE WHEN dp.EXECUTE_COURT IS NOT NULL THEN 1 ELSE 0 END) AS dishonest_person_count,
         -- 科技型小微企业数
-        SUM(CASE WHEN is_tech_small_enterprise = 1 THEN 1 ELSE 0 END) AS tech_small_enterprise_count,
+        SUM(CASE WHEN tse.CONGNIZ_ORG IS NOT NULL THEN 1 ELSE 0 END) AS tech_small_enterprise_count,
         -- A级纳税人企业数
-        SUM(CASE WHEN is_grade_a_taxpayer = 1 THEN 1 ELSE 0 END) AS grade_a_taxpayer_count,
+        SUM(CASE WHEN gat.TAX_CREDI_LEVEL = 'A' THEN 1 ELSE 0 END) AS grade_a_taxpayer_count,
         -- 有网站或网店的企业数
-        SUM(CASE WHEN has_website_shop = 1 THEN 1 ELSE 0 END) AS website_shop_count,
+        SUM(CASE WHEN ws.WEB_STORE_NM IS NOT NULL THEN 1 ELSE 0 END) AS website_shop_count,
         -- 有行政处罚的企业数
-        SUM(CASE WHEN has_penalty = 1 THEN 1 ELSE 0 END) AS penalty_count,
+        SUM(CASE WHEN ap.ADMIN_PUNISH_DOC IS NOT NULL THEN 1 ELSE 0 END) AS penalty_count,
         -- 有行政许可的企业数
-        SUM(CASE WHEN has_license = 1 THEN 1 ELSE 0 END) AS license_count,
+        SUM(CASE WHEN al.LIC_NO IS NOT NULL THEN 1 ELSE 0 END) AS license_count,
         -- 有股权变更的企业数
-        SUM(CASE WHEN has_equity_change = 1 THEN 1 ELSE 0 END) AS equity_change_count,
+        SUM(CASE WHEN ec.ALT_DT IS NOT NULL THEN 1 ELSE 0 END) AS equity_change_count,
         -- 有对外担保的企业数
-        SUM(CASE WHEN has_external_guarantee = 1 THEN 1 ELSE 0 END) AS external_guarantee_count
+        SUM(CASE WHEN gi.EXTERNAL_GUA IS NOT NULL THEN 1 ELSE 0 END) AS external_guarantee_count
     FROM base_data
-    GROUP BY industry_code, company_type, domicile_district_code, business_district_code
+    GROUP BY INDV_NM, COMP_TYPE, DOMDI_STRICT, OPT_STRICT
 ),
 
 -- 2. 经营状况统计
 business_condition_stats AS (
     SELECT
-        industry_code,
-        company_type,
-        domicile_district_code,
-        business_district_code,
+        INDV_NM AS industry_code,
+        COMP_TYPE AS company_type,
+        DOMDI_STRICT AS domicile_district_code,
+        OPT_STRICT AS business_district_code,
         -- 资产总额统计
-        AVG(total_assets) AS avg_total_assets,
-        SUM(total_assets) AS sum_total_assets,
-        MAX(total_assets) AS max_total_assets,
-        MIN(total_assets) AS min_total_assets,
+        AVG(ara.ASSET_ZMT) AS avg_total_assets,
+        SUM(ara.ASSET_ZMT) AS sum_total_assets,
+        MAX(ara.ASSET_ZMT) AS max_total_assets,
+        MIN(ara.ASSET_ZMT) AS min_total_assets,
         -- 负债总额统计
-        AVG(total_liabilities) AS avg_total_liabilities,
-        SUM(total_liabilities) AS sum_total_liabilities,
-        MAX(total_liabilities) AS max_total_liabilities,
-        MIN(total_liabilities) AS min_total_liabilities,
+        AVG(ara.DEBT_AMT) AS avg_total_liabilities,
+        SUM(ara.DEBT_AMT) AS sum_total_liabilities,
+        MAX(ara.DEBT_AMT) AS max_total_liabilities,
+        MIN(ara.DEBT_AMT) AS min_total_liabilities,
         -- 所有者权益统计
-        AVG(owner_equity) AS avg_owner_equity,
-        SUM(owner_equity) AS sum_owner_equity,
-        MAX(owner_equity) AS max_owner_equity,
-        MIN(owner_equity) AS min_owner_equity,
+        AVG(ara.OWNER_EQUITY_TOATAL) AS avg_owner_equity,
+        SUM(ara.OWNER_EQUITY_TOATAL) AS sum_owner_equity,
+        MAX(ara.OWNER_EQUITY_TOATAL) AS max_owner_equity,
+        MIN(ara.OWNER_EQUITY_TOATAL) AS min_owner_equity,
         -- 营业总收入统计
-        AVG(total_revenue) AS avg_total_revenue,
-        SUM(total_revenue) AS sum_total_revenue,
-        MAX(total_revenue) AS max_total_revenue,
-        MIN(total_revenue) AS min_total_revenue,
+        AVG(ara.OPT_INCOME_TOTAL) AS avg_total_revenue,
+        SUM(ara.OPT_INCOME_TOTAL) AS sum_total_revenue,
+        MAX(ara.OPT_INCOME_TOTAL) AS max_total_revenue,
+        MIN(ara.OPT_INCOME_TOTAL) AS min_total_revenue,
         -- 利润总额统计
-        AVG(total_profit) AS avg_total_profit,
-        SUM(total_profit) AS sum_total_profit,
-        MAX(total_profit) AS max_total_profit,
-        MIN(total_profit) AS min_total_profit,
+        AVG(ara.PROFIT_TOTAL) AS avg_total_profit,
+        SUM(ara.PROFIT_TOTAL) AS sum_total_profit,
+        MAX(ara.PROFIT_TOTAL) AS max_total_profit,
+        MIN(ara.PROFIT_TOTAL) AS min_total_profit,
         -- 净利润统计
-        AVG(net_profit) AS avg_net_profit,
-        SUM(net_profit) AS sum_net_profit,
-        MAX(net_profit) AS max_net_profit,
-        MIN(net_profit) AS min_net_profit,
+        AVG(ara.NET_PROFIT) AS avg_net_profit,
+        SUM(ara.NET_PROFIT) AS sum_net_profit,
+        MAX(ara.NET_PROFIT) AS max_net_profit,
+        MIN(ara.NET_PROFIT) AS min_net_profit,
         -- 纳税总额统计
-        AVG(total_tax) AS avg_total_tax,
-        SUM(total_tax) AS sum_total_tax,
-        MAX(total_tax) AS max_total_tax,
-        MIN(total_tax) AS min_total_tax,
+        AVG(ara.TAX_TOTAL) AS avg_total_tax,
+        SUM(ara.TAX_TOTAL) AS sum_total_tax,
+        MAX(ara.TAX_TOTAL) AS max_total_tax,
+        MIN(ara.TAX_TOTAL) AS min_total_tax,
         -- 纳税信息统计
-        AVG(total_tax_amount) AS avg_total_tax_amount,
-        SUM(total_tax_amount) AS sum_total_tax_amount
+        AVG(ti.PAID_AMT) AS avg_total_tax_amount,
+        SUM(ti.PAID_AMT) AS sum_total_tax_amount
     FROM base_data
-    WHERE total_assets IS NOT NULL OR total_revenue IS NOT NULL OR total_tax_amount IS NOT NULL
-    GROUP BY industry_code, company_type, domicile_district_code, business_district_code
+    WHERE ara.ASSET_ZMT IS NOT NULL OR ara.OPT_INCOME_TOTAL IS NOT NULL OR ti.PAID_AMT IS NOT NULL
+    GROUP BY INDV_NM, COMP_TYPE, DOMDI_STRICT, OPT_STRICT
 ),
 
 -- 3. 社保就业统计
 social_security_stats AS (
     SELECT
-        industry_code,
-        company_type,
-        domicile_district_code,
-        business_district_code,
+        INDV_NM AS industry_code,
+        COMP_TYPE AS company_type,
+        DOMDI_STRICT AS domicile_district_code,
+        OPT_STRICT AS business_district_code,
         -- 缴纳社保企业数量
-        SUM(CASE WHEN insurance_type IS NOT NULL OR payment_months > 0 THEN 1 ELSE 0 END) AS social_security_enterprise_count,
+        SUM(CASE WHEN ssd.ISSU_TYPE IS NOT NULL OR ssd.PAY_MONTHS > 0 THEN 1 ELSE 0 END) AS social_security_enterprise_count,
         -- 未缴纳社保企业数量
-        SUM(CASE WHEN (insurance_type IS NULL OR insurance_type = '')
-                  AND (payment_months IS NULL OR payment_months = 0) THEN 1 ELSE 0 END) AS no_social_security_enterprise_count,
+        SUM(CASE WHEN (ssd.ISSU_TYPE IS NULL OR ssd.ISSU_TYPE = '')
+                  AND (ssd.PAY_MONTHS IS NULL OR ssd.PAY_MONTHS = 0) THEN 1 ELSE 0 END) AS no_social_security_enterprise_count,
         -- 社保缴费统计
-        AVG(payment_months) AS avg_payment_months,
-        SUM(payment_months) AS total_payment_months,
-        AVG(personal_payment_base) AS avg_personal_payment_base,
-        SUM(personal_payment_base) AS sum_personal_payment_base,
-        AVG(payment_amount) AS avg_payment_amount,
-        SUM(payment_amount) AS sum_payment_amount,
-        AVG(corporate_payment_amount) AS avg_corporate_payment_amount,
-        SUM(corporate_payment_amount) AS sum_corporate_payment_amount,
-        AVG(personal_payment_amount) AS avg_personal_payment_amount,
-        SUM(personal_payment_amount) AS sum_personal_payment_amount,
+        AVG(ssd.PAY_MONTHS) AS avg_payment_months,
+        SUM(ssd.PAY_MONTHS) AS total_payment_months,
+        AVG(ssd.PER_PAY_BASIS) AS avg_personal_payment_base,
+        SUM(ssd.PER_PAY_BASIS) AS sum_personal_payment_base,
+        AVG(ssd.PAY_AMT) AS avg_payment_amount,
+        SUM(ssd.PAY_AMT) AS sum_payment_amount,
+        AVG(ssd.UNIT_PAY_AMT) AS avg_corporate_payment_amount,
+        SUM(ssd.UNIT_PAY_AMT) AS sum_corporate_payment_amount,
+        AVG(ssd.PER_PAY_AMT) AS avg_personal_payment_amount,
+        SUM(ssd.PER_PAY_AMT) AS sum_personal_payment_amount,
         -- 社保人数统计
-        AVG(pension_count) AS avg_pension_count,
-        SUM(pension_count) AS sum_pension_count,
-        AVG(medical_count) AS avg_medical_count,
-        SUM(medical_count) AS sum_medical_count,
-        AVG(unemployment_count) AS avg_unemployment_count,
-        SUM(unemployment_count) AS sum_unemployment_count,
-        AVG(injury_count) AS avg_injury_count,
-        SUM(injury_count) AS sum_injury_count,
-        AVG(maternity_count) AS avg_maternity_count,
-        SUM(maternity_count) AS sum_maternity_count
+        AVG(ss.PENS_NUM) AS avg_pension_count,
+        SUM(ss.PENS_NUM) AS sum_pension_count,
+        AVG(ss.MEDIC_NUM) AS avg_medical_count,
+        SUM(ss.MEDIC_NUM) AS sum_medical_count,
+        AVG(ss.UNEMPLOY_NUM) AS avg_unemployment_count,
+        SUM(ss.UNEMPLOY_NUM) AS sum_unemployment_count,
+        AVG(ss.INJURY_NUM) AS avg_injury_count,
+        SUM(ss.INJURY_NUM) AS sum_injury_count,
+        AVG(ss.MATERNI_NUM) AS avg_maternity_count,
+        SUM(ss.MATERNI_NUM) AS sum_maternity_count
     FROM base_data
-    GROUP BY industry_code, company_type, domicile_district_code, business_district_code
+    GROUP BY INDV_NM, COMP_TYPE, DOMDI_STRICT, OPT_STRICT
 ),
 
 -- 4. 综合统计视图

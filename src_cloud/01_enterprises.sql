@@ -1,37 +1,32 @@
--- ========================================
--- 文旅企业数据分析 - 全流程SQL脚本
--- 适用于云服务器环境，无需上传CSV文件
--- 按顺序执行所有分析步骤
--- ========================================
--- 作者：AI助手
--- 创建时间：2024年
--- 说明：本文件包含完整的文旅企业数据分析流程
--- ========================================
+-- 将筛选出的文旅企业数据存储到新表中，便于后续操作
 
--- 设置会话参数
-SET SESSION sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO';
+-- 删除表（如果已存在）
+DROP TABLE IF EXISTS enterprises;
 
--- 开始执行时间记录
-SELECT NOW() AS execution_start_time;
+-- 创建 enterprises 表
+CREATE TABLE enterprises AS
 
--- ========================================
--- Step 1-1: 获取全部文旅市场主体数据
--- ========================================
+-- 注意：如果云服务器不允许创建永久表，删除上面的两行代码，使用以下临时表语法之一：
 
--- 直接筛选行业代码在列表中的企业
+-- MySQL 临时表语法：
+-- CREATE TEMPORARY TABLE enterprises AS
+
+-- SQL Server 临时表语法：
+-- CREATE TABLE #enterprises AS
+
 SELECT
-    UNI_SOCIAL_CRD_CD AS social_credit_code,      -- 统一社会信用代码
-    COMP_NM AS company_name,                      -- 企业名称
-    REG_ORG AS reg_authority,                     -- 登记机关
-    COMP_TYPE AS company_type,                    -- 企业类型
-    ADDR AS reg_address,                          -- 地址
-    LEGAL_REPRE AS legal_repre,                   -- 法定代表人
-    INDV_NM AS industry_code,                     -- 行业代码
-    OPT_SCOP AS business_scope,                   -- 经营范围
-    APPR_DT AS approval_date,                     -- 核准日期
-    EST_DT AS establishment_date,                 -- 成立日期
-    DOMDI_STRICT AS domicile_district_code,       -- 住所所在行政区划代码
-    OPT_STRICT AS business_district_code          -- 生产经营地所在行政区划代码
+    UNI_SOCIAL_CRD_CD,                           -- 统一社会信用代码
+    COMP_NM,                                      -- 企业名称
+    REG_ORG,                                      -- 登记机关
+    COMP_TYPE,                                    -- 企业类型
+    ADDR,                                         -- 地址
+    LEGAL_REPRE,                                  -- 法定代表人
+    INDV_NM,                                      -- 行业代码
+    OPT_SCOP,                                     -- 经营范围
+    APPR_DT,                                      -- 核准日期
+    EST_DT,                                       -- 成立日期
+    DOMDI_STRICT,                                 -- 住所所在行政区划代码
+    OPT_STRICT                                    -- 生产经营地所在行政区划代码
 FROM dw_zj_scjdgl_scztxx
 WHERE UNI_SOCIAL_CRD_CD IS NOT NULL
   AND INDV_NM IN (
@@ -109,3 +104,18 @@ WHERE UNI_SOCIAL_CRD_CD IS NOT NULL
     OPT_SCOP LIKE '%酒店%'
   )
 ORDER BY UNI_SOCIAL_CRD_CD;
+
+-- 设置 INDV_NM 为主键
+ALTER TABLE enterprises
+ADD PRIMARY KEY (UNI_SOCIAL_CRD_CD);
+
+-- 显示创建结果
+SELECT
+    COUNT(*) AS total_enterprises,
+    COUNT(DISTINCT INDV_NM) AS unique_industry_codes,
+    COUNT(DISTINCT COMP_TYPE) AS unique_company_types,
+    COUNT(DISTINCT DOMDI_STRICT) AS unique_districts
+FROM enterprises;
+
+-- 显示表结构
+DESCRIBE enterprises;
