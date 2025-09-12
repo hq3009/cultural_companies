@@ -41,18 +41,12 @@ env.bak/
 venv.bak/
 
 # Data files (large files that shouldn't be in git)
-*.xlsx
-*.xls
 *.json
 *.parquet
 *.h5
 *.hdf5
 *.pkl
 *.pickle
-
-# Doc files
-*.docx
-*.doc
 
 # Database files
 *.db
@@ -82,11 +76,9 @@ Thumbs.db
 
 # Output files
 output/
-results/
-reports/
 
 # test
 test/
 
 # Big files
-resources/
+bigfiles/
