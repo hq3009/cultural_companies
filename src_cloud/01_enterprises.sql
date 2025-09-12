@@ -4,7 +4,7 @@
 DROP TABLE IF EXISTS enterprises;
 
 -- 创建 enterprises 表
-CREATE TABLE enterprises
+CREATE TABLE enterprises AS
 SELECT
     REG_ORG,            -- 登记机关
     COMP_TYPE,          -- 企业类型大类（中文）
@@ -26,12 +26,12 @@ SELECT
     PRO_LOC,            -- 生产经营地
     OPT_STRICT,         -- 生产经营地所在行政区划
     POSTAL_CODE,        -- 邮政编码
-    OPT_LOC,            -- 经营场所
+    -- OPT_LOC,            -- 经营场所
     INDV_NM             -- 行业代码（中文）
 FROM
     dw_zj_scjdgl_scztxx
 WHERE
-    AND INDV_NM IN (
+    INDV_NM IN (
         -- 文旅行业代码列表
         '0141', '0143', '0149', '0151', '0152', '0153', '0154', '0159',
         '0412', '1784', '1922', '2221', '2222', '2311', '2312', '2319',
