@@ -23,7 +23,7 @@ SELECT
     OPT_FROM,           -- 经营(营业)起始日期
     OPT_TO,             -- 经营(营业)截止日期
     DOMDI_STRICT,       -- 住所所在行政区划
-    PRO_LOC,            -- 生产经营地
+    -- PRO_LOC,            -- 生产经营地
     OPT_STRICT,         -- 生产经营地所在行政区划
     POSTAL_CODE,        -- 邮政编码
     -- OPT_LOC,            -- 经营场所

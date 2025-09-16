@@ -32,12 +32,7 @@ MANIFEST
 .vscode/
 
 # Environment variables
-.env
-.venv
-env/
 venv/
-ENV/
-env.bak/
 venv.bak/
 
 # Data files (large files that shouldn't be in git)
@@ -76,9 +71,6 @@ Thumbs.db
 
 # Output files
 output/
-
-# test
-test/
 
 # Big files
 bigfiles/
