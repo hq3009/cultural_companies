@@ -8,11 +8,10 @@ WITH latest_records AS (
         ent.*,
 
         -- 法定代表人信息（使用窗口函数获取最新记录）
-        fddb.IDENTI_ID AS FDDB_IDENTI_ID,
-        fddb.INDV_NM AS FDDB_INDV_NM,
-        fddb.LEREP_SIGN,
-        fddb.REG_DT AS FDDB_REG_DT,
-        ROW_NUMBER() OVER (PARTITION BY fddb.UNI_SOCIAL_CRD_CD ORDER BY fddb.REG_DT DESC) AS fddb_rn,
+        -- fddb.IDENTI_ID AS FDDB_IDENTI_ID,
+        MAX(fddb.NM) AS FDDB_NM,
+        MAX(fddb.LEREP_SIGN) AS LEREP_SIGN,
+        MAX(fddb.TEL_NUM) AS FDDB_TEL_NUM,
 
         -- 经营异常名录信息
         jyyc.INCLU_DT AS JYYC_INCLU_DT,
@@ -26,23 +25,22 @@ WITH latest_records AS (
 
         -- 网站信息
         wz.WEB_STORE_URL,
-        wz.WEB_TYPE,
-        wz.ECOM_TYPE,
-        wz.ICP_NO,
-        wz.ANNUAL_ID AS WEB_ANNUAL_ID,
+        -- wz.WEB_TYPE,
+        -- wz.ECOM_TYPE,
+        -- wz.ICP_NO,
+        -- wz.ANNUAL_ID AS WEB_ANNUAL_ID,
         ROW_NUMBER() OVER (PARTITION BY wz.UNI_SOCIAL_CRD_CD ORDER BY CAST(wz.ANNUAL_ID AS INTEGER) DESC) AS wz_rn,
 
         -- 股权变更信息
         gqbg.ALT_DT AS GQBG_ALT_DT,
-        gqbg.INV AS GQBG_INV,
+        -- gqbg.INV AS GQBG_INV,
         ROW_NUMBER() OVER (PARTITION BY gqbg.UNI_SOCIAL_CRD_CD ORDER BY gqbg.ALT_DT DESC) AS gqbg_rn,
 
         -- 企业年报资产信息
         nb.ANNUAL_YEAR AS ASSET_ANNUAL_YEAR,
         nb.ASSET_ZMT,
         nb.DEBT_AMT,
-        nb.OWNER_EQUITY,
-        nb.SALE_INCO AS ASSET_SALE_INCO,
+        nb.OWNER_EQUITY_TOATAL,
         nb.NET_PROFIT,
         nb.TAX_TOTAL,
         ROW_NUMBER() OVER (PARTITION BY nb.UNI_SOCIAL_CRD_CD ORDER BY nb.ANNUAL_YEAR DESC) AS nb_rn,
@@ -50,7 +48,7 @@ WITH latest_records AS (
         -- 担保信息
         db.CREDITOR AS DB_CREDITOR,
         db.MAJOR_CREDIT_AMT AS DB_MAJOR_CREDIT_AMT,
-        ROW_NUMBER() OVER (PARTITION BY db.UNI_SOCIAL_CRD_CD ORDER BY db.GUARANTEE_DT DESC) AS db_rn,
+        ROW_NUMBER() OVER (PARTITION BY db.UNI_SOCIAL_CRD_CD ORDER BY db.PERIOD_FROM DESC) AS db_rn,
 
         -- 科技型小微企业信息
         kjzx.CONGNIZ_ORG AS KJZX_CONGNIZ_ORG,
@@ -79,9 +77,9 @@ WITH latest_records AS (
         xypja.MAJOR_TAX_ORG,
 
         -- 社会保险基本信息（只保留养老保险人数）
-        sb.PENS_NUM,
-        sb.PENS_PAY_YM,
-        ROW_NUMBER() OVER (PARTITION BY sb.UNI_SOCIAL_CRD_CD ORDER BY sb.PENS_PAY_YM DESC) AS sb_rn,
+        -- sb.PENS_NUM,
+        -- sb.PENS_PAY_YM,
+        -- ROW_NUMBER() OVER (PARTITION BY sb.UNI_SOCIAL_CRD_CD ORDER BY sb.PENS_PAY_YM DESC) AS sb_rn,
 
         -- 行政处罚公示信息
         xzcf.ADMIN_PUNISH_DOC AS XZCF_ADMIN_PUNISH_DOC,
@@ -103,7 +101,7 @@ WITH latest_records AS (
     -- 企业年报资产信息
     LEFT JOIN DW_NB_SCJDGL_QYNBZCXX nb ON ent.UNI_SOCIAL_CRD_CD = nb.UNI_SOCIAL_CRD_CD
     -- 担保信息
-    LEFT JOIN DW_NB_SCJDGL_DBXX db ON ent.UNI_SOCIAL_CRD_CD = db.UNI_SOCIAL_CRD_CD
+    LEFT JOIN DW_NB_SCJDGL_DWTGBZDBXX db ON ent.UNI_SOCIAL_CRD_CD = db.UNI_SOCIAL_CRD_CD
     -- 科技型小微企业信息
     LEFT JOIN DW_NB_KJ_SGCZKJXZXQY kjzx ON ent.UNI_SOCIAL_CRD_CD = kjzx.UNI_SOCIAL_CRD_CD
     -- 失信被执行人信息
@@ -118,12 +116,33 @@ WITH latest_records AS (
     LEFT JOIN DW_NB_RLSB_SBJYLYSHBXJBXX sb ON ent.UNI_SOCIAL_CRD_CD = sb.UNI_SOCIAL_CRD_CD
     -- 行政处罚公示信息
     LEFT JOIN DW_NB_SCJDGL_XZCFGSXX xzcf ON ent.UNI_SOCIAL_CRD_CD = xzcf.UNI_SOCIAL_CRD_CD
+    GROUP BY
+        ent.REG_ORG, ent.COMP_TYPE, ent.REG_STATE, ent.UNI_SOCIAL_CRD_CD,
+        ent.COMP_NM, ent.ADDR, ent.LEGAL_REPRE, ent.INDV_ID, ent.REG_CAPT,
+        ent.CAPT_KIND, ent.OPT_SCOP, ent.REG_NO, ent.APPR_DT, ent.EST_DT,
+        ent.OPT_FROM, ent.OPT_TO, ent.DOMDI_STRICT, ent.OPT_STRICT,
+        ent.POSTAL_CODE, ent.INDV_NM,
+        -- 其他非聚合字段
+        jyyc.INCLU_DT, jyyc.INCLU_REASON, jyyc.UNI_SOCIAL_CRD_CD,
+        sxqy.ABN_TM, sxqy.SERILL_REA, sxqy.UNI_SOCIAL_CRD_CD,
+        wz.WEB_STORE_URL, wz.UNI_SOCIAL_CRD_CD,
+        gqbg.ALT_DT, gqbg.UNI_SOCIAL_CRD_CD,
+        nb.ANNUAL_YEAR, nb.ASSET_ZMT, nb.DEBT_AMT, nb.OWNER_EQUITY_TOATAL,
+        nb.NET_PROFIT, nb.TAX_TOTAL, nb.UNI_SOCIAL_CRD_CD,
+        db.CREDITOR, db.MAJOR_CREDIT_AMT, db.UNI_SOCIAL_CRD_CD,
+        kjzx.CONGNIZ_ORG, kjzx.CONGNIZ_TEAR, kjzx.UNI_SOCIAL_CRD_CD,
+        sxr.EXECUTED_NM, sxr.EXECUTED_COURT, sxr.FIL_DT, sxr.UNI_SOCIAL_CRD_CD,
+        ns.TAX_AMT, ns.SALE_INCO, ns.COUNT_DT, ns.UNI_SOCIAL_CRD_CD,
+        xypj.CRED_SCARD, xypj.UNI_SOCIAL_CRD_CD,
+        xypja.CREDI_SCARD, xypja.TAX_CREDI_LEVEL, xypja.EVAL_YEAR,
+        xypja.EVAL_DT, xypja.MAJOR_TAX_ORG, xypja.UNI_SOCIAL_CRD_CD,
+        xzcf.ADMIN_PUNISH_DOC, xzcf.PUNISH_DT, xzcf.PUNISH_REA, xzcf.UNI_SOCIAL_CRD_CD
 ),
 aggregated_counts AS (
     SELECT
         UNI_SOCIAL_CRD_CD,
         -- 计数统计
-        COUNT(DISTINCT fddb.IDENTI_ID) AS FDDB_COUNT,
+        -- COUNT(DISTINCT fddb.IDENTI_ID) AS FDDB_COUNT,
         COUNT(DISTINCT jyyc.INCLU_DT) AS JYYC_COUNT,
         COUNT(DISTINCT sxqy.ABN_TM) AS SXQY_COUNT,
         COUNT(DISTINCT gqbg.ALT_DT) AS GQBG_COUNT,
@@ -222,7 +241,7 @@ SELECT
     lr.MAJOR_TAX_ORG,
 
     -- 社会保险基本信息（最新养老保险缴费年月）
-    CASE WHEN lr.sb_rn = 1 THEN lr.PENS_NUM END AS PENS_NUM,
+    -- CASE WHEN lr.sb_rn = 1 THEN lr.PENS_NUM END AS PENS_NUM,
 
     -- 行政处罚公示信息
     CASE WHEN lr.xzcf_rn = 1 THEN lr.XZCF_ADMIN_PUNISH_DOC END AS LATEST_PUNISH_DOC,
