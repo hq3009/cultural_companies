@@ -24,14 +24,14 @@ DROP TABLE IF EXISTS `dw_nb_hywlqyxyxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_hywlqyxyxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `CREDIT_CMNT_NM` varchar(100) DEFAULT NULL COMMENT '淇＄敤璇勪环鍚嶇О',
-  `CMNT_RESULT` varchar(50) DEFAULT NULL COMMENT '璇勪环缁撴灉',
-  `CMNT_ORG` varchar(100) DEFAULT NULL COMMENT '璇勪环鏈烘瀯',
-  `ASSESS_DT` date DEFAULT NULL COMMENT '璇勪环鏃ユ湡',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `CREDIT_CMNT_NM` varchar(100) DEFAULT NULL
+  `CMNT_RESULT` varchar(50) DEFAULT NULL
+  `CMNT_ORG` varchar(100) DEFAULT NULL
+  `ASSESS_DT` date DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='淇＄敤璇勪环淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,12 +52,12 @@ DROP TABLE IF EXISTS `dw_nb_kj_sgczkjxzxqy`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_kj_sgczkjxzxqy` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `CONGNIZ_TEAR` int DEFAULT NULL COMMENT '璁ゅ畾骞翠唤',
-  `CONGNIZ_ORG` varchar(100) DEFAULT NULL COMMENT '璁ゅ畾鏈烘瀯',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `CONGNIZ_TEAR` int DEFAULT NULL
+  `CONGNIZ_ORG` varchar(100) DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='绉戞妧鍨嬪皬寰?紒涓氫俊鎭?〃';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,17 +78,17 @@ DROP TABLE IF EXISTS `dw_nb_rlsb_cbgryjsybxfhdxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_rlsb_cbgryjsybxfhdxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `INSUR_TYPE` varchar(50) DEFAULT NULL COMMENT '闄╃?绫诲瀷',
-  `PAY_MONS` int DEFAULT NULL COMMENT '缂磋垂鏈堟暟',
-  `PER_PAY_BASE` decimal(10,2) DEFAULT NULL COMMENT '涓?汉缂磋垂鍩烘暟',
-  `PAY_AMT` decimal(10,2) DEFAULT NULL COMMENT '缂磋垂閲戦?',
-  `CORP_PAY_AMT` decimal(10,2) DEFAULT NULL COMMENT '鍗曚綅缂磋垂閲戦?',
-  `PER_PAY_AMT` decimal(10,2) DEFAULT NULL COMMENT '涓?汉缂磋垂閲戦?',
-  `FEE_PERIOD` varchar(10) DEFAULT NULL COMMENT '缂磋垂鏈熼棿',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `INSUR_TYPE` varchar(50) DEFAULT NULL
+  `PAY_MONS` int DEFAULT NULL
+  `PER_PAY_BASE` decimal(10,2) DEFAULT NULL
+  `PAY_AMT` decimal(10,2) DEFAULT NULL
+  `CORP_PAY_AMT` decimal(10,2) DEFAULT NULL
+  `PER_PAY_AMT` decimal(10,2) DEFAULT NULL
+  `FEE_PERIOD` varchar(10) DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='绀句繚缂磋垂鏄庣粏琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,17 +109,17 @@ DROP TABLE IF EXISTS `dw_nb_rlsb_sbjylyshbxjbxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_rlsb_sbjylyshbxjbxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `PENS_NUM` int DEFAULT NULL COMMENT '鍏昏?淇濋櫓浜烘暟',
-  `MEDIC_NUM` int DEFAULT NULL COMMENT '鍖荤枟淇濋櫓浜烘暟',
-  `UNEMPLOY_NUM` int DEFAULT NULL COMMENT '澶变笟淇濋櫓浜烘暟',
-  `INJURY_NUM` int DEFAULT NULL COMMENT '宸ヤ激淇濋櫓浜烘暟',
-  `MATERNI_NUM` int DEFAULT NULL COMMENT '鐢熻偛淇濋櫓浜烘暟',
-  `PENS_PAY_YM` varchar(10) DEFAULT NULL COMMENT '鍏昏?淇濋櫓缂磋垂骞存湀',
-  `MEDIC_PAY_YM` varchar(10) DEFAULT NULL COMMENT '鍖荤枟淇濋櫓缂磋垂骞存湀',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `PENS_NUM` int DEFAULT NULL
+  `MEDIC_NUM` int DEFAULT NULL
+  `UNEMPLOY_NUM` int DEFAULT NULL
+  `INJURY_NUM` int DEFAULT NULL
+  `MATERNI_NUM` int DEFAULT NULL
+  `PENS_PAY_YM` varchar(10) DEFAULT NULL
+  `MEDIC_PAY_YM` varchar(10) DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='绀句繚淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,16 +140,16 @@ DROP TABLE IF EXISTS `dw_nb_scjdgl_dwtgbzdbxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_scjdgl_dwtgbzdbxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `EXTERNAL_GUA` varchar(10) DEFAULT NULL COMMENT '瀵瑰?鎷呬繚鏍囪瘑',
-  `CREDITOR` varchar(200) DEFAULT NULL COMMENT '鍊烘潈浜',
-  `DEBTOR` varchar(200) DEFAULT NULL COMMENT '鍊哄姟浜',
-  `MAJOR_CREDIT_AMT` decimal(15,2) DEFAULT NULL COMMENT '鎷呬繚閲戦?',
-  `PERIOD_FROM` date DEFAULT NULL COMMENT '鎷呬繚璧峰?鏃ユ湡',
-  `PERIOD_TO` date DEFAULT NULL COMMENT '鎷呬繚鎴??鏃ユ湡',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `EXTERNAL_GUA` varchar(10) DEFAULT NULL
+  `CREDITOR` varchar(200) DEFAULT NULL
+  `DEBTOR` varchar(200) DEFAULT NULL
+  `MAJOR_CREDIT_AMT` decimal(15,2) DEFAULT NULL
+  `PERIOD_FROM` date DEFAULT NULL
+  `PERIOD_TO` date DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='瀵瑰?鎷呬繚淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,14 +170,14 @@ DROP TABLE IF EXISTS `dw_nb_scjdgl_gqbg`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_scjdgl_gqbg` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `ALT_DT` date DEFAULT NULL COMMENT '鑲℃潈鍙樻洿鏃ユ湡',
-  `INV` varchar(100) DEFAULT NULL COMMENT '鎶曡祫浜哄?鍚',
-  `TRANSAMPR_BF` decimal(5,2) DEFAULT NULL COMMENT '鍙樻洿鍓嶈偂鏉冩瘮渚',
-  `TRANSAMPR_AF` decimal(5,2) DEFAULT NULL COMMENT '鍙樻洿鍚庤偂鏉冩瘮渚',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `ALT_DT` date DEFAULT NULL
+  `INV` varchar(100) DEFAULT NULL
+  `TRANSAMPR_BF` decimal(5,2) DEFAULT NULL
+  `TRANSAMPR_AF` decimal(5,2) DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='鑲℃潈鍙樻洿淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,15 +198,15 @@ DROP TABLE IF EXISTS `dw_nb_scjdgl_qynbwzhwdxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_scjdgl_qynbwzhwdxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `WEB_ID` varchar(50) DEFAULT NULL COMMENT '缃戠珯鏍囪瘑',
-  `WEB_STORE_NM` varchar(200) DEFAULT NULL COMMENT '缃戠珯锛堢綉搴楋級鍚嶇О',
-  `WEB_STORE_URL` varchar(500) DEFAULT NULL COMMENT '缃戠珯锛堢綉搴楋級缃戝潃',
-  `WEB_STORE_TYPE` varchar(50) DEFAULT NULL COMMENT '缃戠珯绫诲瀷',
-  `ECOM_TYPE` varchar(50) DEFAULT NULL COMMENT '鐢靛晢绫诲瀷',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `WEB_ID` varchar(50) DEFAULT NULL
+  `WEB_STORE_NM` varchar(200) DEFAULT NULL
+  `WEB_STORE_URL` varchar(500) DEFAULT NULL
+  `WEB_STORE_TYPE` varchar(50) DEFAULT NULL
+  `ECOM_TYPE` varchar(50) DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='缃戠珯缃戝簵淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,19 +227,19 @@ DROP TABLE IF EXISTS `dw_nb_scjdgl_qynbzcxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_scjdgl_qynbzcxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `ANNUAL_YEAR` int DEFAULT NULL COMMENT '骞存姤骞村害',
-  `ASSET_ZMT` decimal(15,2) DEFAULT NULL COMMENT '璧勪骇鎬婚?',
-  `DEBT_AMT` decimal(15,2) DEFAULT NULL COMMENT '璐熷?鎬婚?',
-  `OWNER_EQUITY_TOATAL` decimal(15,2) DEFAULT NULL COMMENT '鎵?湁鑰呮潈鐩',
-  `OPT_INCOME_TOTAL` decimal(15,2) DEFAULT NULL COMMENT '钀ヤ笟鎬绘敹鍏',
-  `PROFIT_TOTAL` decimal(15,2) DEFAULT NULL COMMENT '鍒╂鼎鎬婚?',
-  `NET_PROFIT` decimal(15,2) DEFAULT NULL COMMENT '鍑?埄娑',
-  `TAX_TOTAL` decimal(15,2) DEFAULT NULL COMMENT '绾崇◣鎬婚?',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `ANNUAL_YEAR` int DEFAULT NULL
+  `ASSET_ZMT` decimal(15,2) DEFAULT NULL
+  `DEBT_AMT` decimal(15,2) DEFAULT NULL
+  `OWNER_EQUITY_TOATAL` decimal(15,2) DEFAULT NULL
+  `OPT_INCOME_TOTAL` decimal(15,2) DEFAULT NULL
+  `PROFIT_TOTAL` decimal(15,2) DEFAULT NULL
+  `NET_PROFIT` decimal(15,2) DEFAULT NULL
+  `TAX_TOTAL` decimal(15,2) DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`),
   KEY `idx_year` (`ANNUAL_YEAR`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='浼佷笟骞存姤璧勪骇淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -260,14 +260,14 @@ DROP TABLE IF EXISTS `dw_nb_scjdgl_xzcfgsxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_scjdgl_xzcfgsxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `ADMIN_PUNISH_DOC` varchar(100) DEFAULT NULL COMMENT '琛屾斂澶勭綒鍐冲畾涔︽枃鍙',
-  `PUNISH_REA` varchar(500) DEFAULT NULL COMMENT '澶勭綒浜嬬敱',
-  `PUNISH_DT` date DEFAULT NULL COMMENT '澶勭綒鏃ユ湡',
-  `PUNISH_RESULT` varchar(200) DEFAULT NULL COMMENT '澶勭綒缁撴灉',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `ADMIN_PUNISH_DOC` varchar(100) DEFAULT NULL
+  `PUNISH_REA` varchar(500) DEFAULT NULL
+  `PUNISH_DT` date DEFAULT NULL
+  `PUNISH_RESULT` varchar(200) DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='琛屾斂澶勭綒淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,15 +288,15 @@ DROP TABLE IF EXISTS `dw_nb_scjdgl_xzxk`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_scjdgl_xzxk` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `LIC_NO` varchar(100) DEFAULT NULL COMMENT '璁稿彲璇佸彿',
-  `LIC_NM` varchar(200) DEFAULT NULL COMMENT '璁稿彲璇佸悕绉',
-  `LIC_ANTH` varchar(100) DEFAULT NULL COMMENT '鍙戣瘉鏈哄叧',
-  `VAL_FROM` date DEFAULT NULL COMMENT '鏈夋晥鏈熻捣',
-  `VAL_TO` date DEFAULT NULL COMMENT '鏈夋晥鏈熸?',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `LIC_NO` varchar(100) DEFAULT NULL
+  `LIC_NM` varchar(200) DEFAULT NULL
+  `LIC_ANTH` varchar(100) DEFAULT NULL
+  `VAL_FROM` date DEFAULT NULL
+  `VAL_TO` date DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='琛屾斂璁稿彲淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -317,14 +317,14 @@ DROP TABLE IF EXISTS `dw_nb_sw_sbjnxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_sw_sbjnxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `PAID_AMT` decimal(15,2) DEFAULT NULL COMMENT '瀹炵即閲戦?',
-  `COLL_ITEM` varchar(200) DEFAULT NULL COMMENT '寰佹敹椤圭洰',
-  `PERIOD_FROM` date DEFAULT NULL COMMENT '寰佹敹鏈熼棿璧',
-  `PERIOD_TO` date DEFAULT NULL COMMENT '寰佹敹鏈熼棿姝',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `PAID_AMT` decimal(15,2) DEFAULT NULL
+  `COLL_ITEM` varchar(200) DEFAULT NULL
+  `PERIOD_FROM` date DEFAULT NULL
+  `PERIOD_TO` date DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='绾崇◣淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -345,13 +345,13 @@ DROP TABLE IF EXISTS `dw_nb_sw_xypjxxa`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_sw_xypjxxa` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `TAX_CREDI_LEVEL` varchar(10) DEFAULT NULL COMMENT '绾崇◣淇＄敤绛夌骇',
-  `EVAL_ORG` varchar(100) DEFAULT NULL COMMENT '璇勪环鏈烘瀯',
-  `EVAL_DT` date DEFAULT NULL COMMENT '璇勪环鏃ユ湡',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `TAX_CREDI_LEVEL` varchar(10) DEFAULT NULL
+  `EVAL_ORG` varchar(100) DEFAULT NULL
+  `EVAL_DT` date DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='A绾х撼绋庝汉淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -372,14 +372,14 @@ DROP TABLE IF EXISTS `dw_nb_swbgxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_nb_swbgxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `CHAN_DT` date DEFAULT NULL COMMENT '鍙樻洿鏃ユ湡',
-  `CHAN_PROJECT` varchar(100) DEFAULT NULL COMMENT '鍙樻洿椤圭洰',
-  `CHAN_BEF_TEXT` text COMMENT '鍙樻洿鍓嶅唴瀹',
-  `CHAN_AFT_TEXT` text COMMENT '鍙樻洿鍚庡唴瀹',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `CHAN_DT` date DEFAULT NULL
+  `CHAN_PROJECT` varchar(100) DEFAULT NULL
+  `CHAN_BEF_TEXT` text
+  `CHAN_AFT_TEXT` text
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='浼佷笟鍙樻洿淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -400,14 +400,14 @@ DROP TABLE IF EXISTS `dw_shl_qywlxsxcpxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_shl_qywlxsxcpxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `EXECUTE_COURT` varchar(100) DEFAULT NULL COMMENT '鎵ц?娉曢櫌',
-  `EXECUTE_AMT` decimal(15,2) DEFAULT NULL COMMENT '鎵ц?閲戦?',
-  `NOT_EXECUTE_AMT` decimal(15,2) DEFAULT NULL COMMENT '鏈?墽琛岄噾棰',
-  `FILING_DT` date DEFAULT NULL COMMENT '绔嬫?鏃ユ湡',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `EXECUTE_COURT` varchar(100) DEFAULT NULL
+  `EXECUTE_AMT` decimal(15,2) DEFAULT NULL
+  `NOT_EXECUTE_AMT` decimal(15,2) DEFAULT NULL
+  `FILING_DT` date DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='澶变俊琚?墽琛屼汉淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -428,17 +428,17 @@ DROP TABLE IF EXISTS `dw_zj_scjdgl_fddbrxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_zj_scjdgl_fddbrxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `NM` varchar(50) DEFAULT NULL COMMENT '濮撳悕',
-  `CER_NO` varchar(20) DEFAULT NULL COMMENT '韬?唤璇佷欢鍙风爜',
-  `TEL_NUM` varchar(20) DEFAULT NULL COMMENT '鍥哄畾鐢佃瘽',
-  `MOBTEL` varchar(20) DEFAULT NULL COMMENT '绉诲姩鐢佃瘽',
-  `EMAIL` varchar(100) DEFAULT NULL COMMENT '鐢靛瓙閭??',
-  `POSITION_CN` varchar(50) DEFAULT NULL COMMENT '鑱屽姟锛堜腑鏂囧悕绉帮級',
-  `LEREP_SIGN` tinyint DEFAULT NULL COMMENT '娉曞畾浠ｈ〃浜烘爣蹇',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `NM` varchar(50) DEFAULT NULL
+  `CER_NO` varchar(20) DEFAULT NULL
+  `TEL_NUM` varchar(20) DEFAULT NULL
+  `MOBTEL` varchar(20) DEFAULT NULL
+  `EMAIL` varchar(100) DEFAULT NULL
+  `POSITION_CN` varchar(50) DEFAULT NULL
+  `LEREP_SIGN` tinyint DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='娉曞畾浠ｈ〃浜轰俊鎭?〃';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -459,14 +459,14 @@ DROP TABLE IF EXISTS `dw_zj_scjdgl_jyycmlxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_zj_scjdgl_jyycmlxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `INCLU_REASON` varchar(200) DEFAULT NULL COMMENT '鍒楀叆缁忚惀寮傚父鍚嶅綍鍘熷洜',
-  `INCLU_DT` date DEFAULT NULL COMMENT '鍒楀叆鏃ユ湡',
-  `REMEXCPRES_CN` varchar(200) DEFAULT NULL COMMENT '绉诲嚭缁忚惀寮傚父鍚嶅綍鍘熷洜',
-  `REMOVE_DT` date DEFAULT NULL COMMENT '绉诲嚭鏃ユ湡',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `INCLU_REASON` varchar(200) DEFAULT NULL
+  `INCLU_DT` date DEFAULT NULL
+  `REMEXCPRES_CN` varchar(200) DEFAULT NULL
+  `REMOVE_DT` date DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='缁忚惀寮傚父鍚嶅綍淇℃伅琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -487,25 +487,25 @@ DROP TABLE IF EXISTS `dw_zj_scjdgl_scztxx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_zj_scjdgl_scztxx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `COMP_NM` varchar(200) NOT NULL COMMENT '浼佷笟鍚嶇О',
-  `REG_ORG` varchar(100) DEFAULT NULL COMMENT '鐧昏?鏈哄叧',
-  `COMP_TYPE` varchar(100) DEFAULT NULL COMMENT '浼佷笟绫诲瀷',
-  `ADDR` varchar(500) DEFAULT NULL COMMENT '鍦板潃',
-  `LEGAL_REPRE` varchar(50) DEFAULT NULL COMMENT '娉曞畾浠ｈ〃浜',
-  `INDV_NM` varchar(20) DEFAULT NULL COMMENT '琛屼笟浠ｇ爜',
-  `OPT_SCOP` text COMMENT '缁忚惀鑼冨洿',
-  `APPR_DT` date DEFAULT NULL COMMENT '鏍稿噯鏃ユ湡',
-  `EST_DT` date DEFAULT NULL COMMENT '鎴愮珛鏃ユ湡',
-  `DOMDI_STRICT` varchar(50) DEFAULT NULL COMMENT '鎵?湪鍖哄幙',
-  `OPT_STRICT` varchar(50) DEFAULT NULL COMMENT '鍖哄幙甯',
-  `REG_CAPT` decimal(15,2) DEFAULT NULL COMMENT '娉ㄥ唽璧勬湰',
-  `REG_STATE` varchar(20) DEFAULT NULL COMMENT '鐧昏?鐘舵?',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `COMP_NM` varchar(200) NOT NULL
+  `REG_ORG` varchar(100) DEFAULT NULL
+  `COMP_TYPE` varchar(100) DEFAULT NULL
+  `ADDR` varchar(500) DEFAULT NULL
+  `LEGAL_REPRE` varchar(50) DEFAULT NULL
+  `INDV_NM` varchar(20) DEFAULT NULL
+  `OPT_SCOP` text
+  `APPR_DT` date DEFAULT NULL
+  `EST_DT` date DEFAULT NULL
+  `DOMDI_STRICT` varchar(50) DEFAULT NULL
+  `OPT_STRICT` varchar(50) DEFAULT NULL
+  `REG_CAPT` decimal(15,2) DEFAULT NULL
+  `REG_STATE` varchar(20) DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`),
   KEY `idx_industry_code` (`INDV_NM`),
   KEY `idx_area` (`DOMDI_STRICT`)
-) ENGINE=InnoDB AUTO_INCREMENT=3001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='甯傚満涓讳綋淇℃伅琛';
+) ENGINE=InnoDB AUTO_INCREMENT=3001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -528,14 +528,14 @@ DROP TABLE IF EXISTS `dw_zj_scjdgl_yzwfsx`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dw_zj_scjdgl_yzwfsx` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `SERILL_REA` varchar(200) DEFAULT NULL COMMENT '鍒楀叆涓ラ噸杩濇硶澶变俊浼佷笟鍚嶅崟鍘熷洜',
-  `ABN_TM` date DEFAULT NULL COMMENT '鍒楀叆鏃ユ湡',
-  `REM_EXCPRES_REA` varchar(200) DEFAULT NULL COMMENT '绉诲嚭涓ラ噸杩濇硶澶变俊浼佷笟鍚嶅崟鍘熷洜',
-  `REM_DT` date DEFAULT NULL COMMENT '绉诲嚭鏃ユ湡',
+  `UNI_SOCIAL_CRD_CD` varchar(50) NOT NULL
+  `SERILL_REA` varchar(200) DEFAULT NULL
+  `ABN_TM` date DEFAULT NULL
+  `REM_EXCPRES_REA` varchar(200) DEFAULT NULL
+  `REM_DT` date DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`UNI_SOCIAL_CRD_CD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='涓ラ噸杩濇硶澶变俊浼佷笟鍚嶅崟琛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -556,113 +556,113 @@ DROP TABLE IF EXISTS `enriched_cultural_tourism`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `enriched_cultural_tourism` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `social_credit_code` varchar(50) NOT NULL COMMENT '缁熶竴绀句細淇＄敤浠ｇ爜',
-  `company_name` varchar(200) DEFAULT NULL COMMENT '浼佷笟鍚嶇О',
-  `reg_authority` varchar(100) DEFAULT NULL COMMENT '鐧昏?鏈哄叧',
-  `company_type` varchar(100) DEFAULT NULL COMMENT '浼佷笟绫诲瀷',
-  `address` varchar(500) DEFAULT NULL COMMENT '鍦板潃',
-  `legal_rep` varchar(50) DEFAULT NULL COMMENT '娉曞畾浠ｈ〃浜',
-  `industry_code` varchar(20) DEFAULT NULL COMMENT '琛屼笟浠ｇ爜',
-  `business_scope` text COMMENT '缁忚惀鑼冨洿',
-  `approval_date` date DEFAULT NULL COMMENT '鏍稿噯鏃ユ湡',
-  `establishment_date` date DEFAULT NULL COMMENT '鎴愮珛鏃ユ湡',
-  `domicile_district_code` varchar(50) DEFAULT NULL COMMENT '鎵?湪鍖哄幙',
-  `business_district_code` varchar(50) DEFAULT NULL COMMENT '鍖哄幙甯',
-  `legal_rep_name` varchar(50) DEFAULT NULL COMMENT '娉曞畾浠ｈ〃浜哄?鍚',
-  `id_card_number` varchar(20) DEFAULT NULL COMMENT '韬?唤璇佸彿鐮',
-  `fixed_phone` varchar(20) DEFAULT NULL COMMENT '鍥哄畾鐢佃瘽',
-  `mobile_phone` varchar(20) DEFAULT NULL COMMENT '绉诲姩鐢佃瘽',
-  `email` varchar(100) DEFAULT NULL COMMENT '鐢靛瓙閭??',
-  `position_title` varchar(50) DEFAULT NULL COMMENT '鑱屽姟',
-  `has_business_abnormal` tinyint DEFAULT '0' COMMENT '鏄?惁鏈夌粡钀ュ紓甯',
-  `abnormal_reason` varchar(200) DEFAULT NULL COMMENT '寮傚父鍘熷洜',
-  `abnormal_include_date` date DEFAULT NULL COMMENT '鍒楀叆鏃ユ湡',
-  `removal_reason` varchar(200) DEFAULT NULL COMMENT '绉诲嚭鍘熷洜',
-  `abnormal_removal_date` date DEFAULT NULL COMMENT '绉诲嚭鏃ユ湡',
-  `has_serious_violation` tinyint DEFAULT '0' COMMENT '鏄?惁涓ラ噸杩濇硶澶变俊',
-  `violation_reason` varchar(200) DEFAULT NULL COMMENT '杩濇硶鍘熷洜',
-  `violation_include_date` date DEFAULT NULL COMMENT '鍒楀叆鏃ユ湡',
-  `violation_removal_reason` varchar(200) DEFAULT NULL COMMENT '绉诲嚭鍘熷洜',
-  `violation_removal_date` date DEFAULT NULL COMMENT '绉诲嚭鏃ユ湡',
-  `has_website_shop` tinyint DEFAULT '0' COMMENT '鏄?惁鏈夌綉绔欑綉搴',
-  `website_shop_name` varchar(200) DEFAULT NULL COMMENT '缃戠珯缃戝簵鍚嶇О',
-  `website_shop_url` varchar(500) DEFAULT NULL COMMENT '缃戠珯缃戝簵缃戝潃',
-  `website_type` varchar(50) DEFAULT NULL COMMENT '缃戠珯绫诲瀷',
-  `ecommerce_type` varchar(50) DEFAULT NULL COMMENT '鐢靛晢绫诲瀷',
-  `has_equity_change` tinyint DEFAULT '0' COMMENT '鏄?惁鏈夎偂鏉冨彉鏇',
-  `equity_change_date` date DEFAULT NULL COMMENT '鍙樻洿鏃ユ湡',
-  `investor_name` varchar(100) DEFAULT NULL COMMENT '鎶曡祫浜哄?鍚',
-  `equity_before` decimal(5,2) DEFAULT NULL COMMENT '鍙樻洿鍓嶈偂鏉冩瘮渚',
-  `equity_after` decimal(5,2) DEFAULT NULL COMMENT '鍙樻洿鍚庤偂鏉冩瘮渚',
-  `report_year` int DEFAULT NULL COMMENT '骞存姤骞村害',
-  `total_assets` decimal(15,2) DEFAULT NULL COMMENT '璧勪骇鎬婚?',
-  `total_liabilities` decimal(15,2) DEFAULT NULL COMMENT '璐熷?鎬婚?',
-  `owner_equity` decimal(15,2) DEFAULT NULL COMMENT '鎵?湁鑰呮潈鐩',
-  `total_revenue` decimal(15,2) DEFAULT NULL COMMENT '钀ヤ笟鎬绘敹鍏',
-  `total_profit` decimal(15,2) DEFAULT NULL COMMENT '鍒╂鼎鎬婚?',
-  `net_profit` decimal(15,2) DEFAULT NULL COMMENT '鍑?埄娑',
-  `total_tax` decimal(15,2) DEFAULT NULL COMMENT '绾崇◣鎬婚?',
-  `has_external_guarantee` tinyint DEFAULT '0' COMMENT '鏄?惁鏈夊?澶栨媴淇',
-  `creditor` varchar(200) DEFAULT NULL COMMENT '鍊烘潈浜',
-  `debtor` varchar(200) DEFAULT NULL COMMENT '鍊哄姟浜',
-  `guarantee_amount` decimal(15,2) DEFAULT NULL COMMENT '鎷呬繚閲戦?',
-  `guarantee_start_date` date DEFAULT NULL COMMENT '鎷呬繚璧峰?鏃ユ湡',
-  `guarantee_end_date` date DEFAULT NULL COMMENT '鎷呬繚鎴??鏃ユ湡',
-  `is_tech_small_enterprise` tinyint DEFAULT '0' COMMENT '鏄?惁绉戞妧鍨嬪皬寰?紒涓',
-  `recognition_organization` varchar(100) DEFAULT NULL COMMENT '璁ゅ畾鏈烘瀯',
-  `recognition_year` int DEFAULT NULL COMMENT '璁ゅ畾骞翠唤',
-  `is_dishonest_person` tinyint DEFAULT '0' COMMENT '鏄?惁澶变俊琚?墽琛屼汉',
-  `execute_court` varchar(100) DEFAULT NULL COMMENT '鎵ц?娉曢櫌',
-  `execute_amount` decimal(15,2) DEFAULT NULL COMMENT '鎵ц?閲戦?',
-  `not_execute_amount` decimal(15,2) DEFAULT NULL COMMENT '鏈?墽琛岄噾棰',
-  `filing_date` date DEFAULT NULL COMMENT '绔嬫?鏃ユ湡',
-  `credit_evaluation_name` varchar(100) DEFAULT NULL COMMENT '淇＄敤璇勪环鍚嶇О',
-  `evaluation_result` varchar(50) DEFAULT NULL COMMENT '璇勪环缁撴灉',
-  `evaluation_organization` varchar(100) DEFAULT NULL COMMENT '璇勪环鏈烘瀯',
-  `evaluation_date` date DEFAULT NULL COMMENT '璇勪环鏃ユ湡',
-  `change_date` date DEFAULT NULL COMMENT '鍙樻洿鏃ユ湡',
-  `change_project` varchar(100) DEFAULT NULL COMMENT '鍙樻洿椤圭洰',
-  `change_before` text COMMENT '鍙樻洿鍓嶅唴瀹',
-  `change_after` text COMMENT '鍙樻洿鍚庡唴瀹',
-  `total_tax_amount` decimal(15,2) DEFAULT NULL COMMENT '瀹炵即閲戦?',
-  `tax_items` varchar(200) DEFAULT NULL COMMENT '寰佹敹椤圭洰',
-  `tax_period_start` date DEFAULT NULL COMMENT '寰佹敹鏈熼棿璧',
-  `tax_period_end` date DEFAULT NULL COMMENT '寰佹敹鏈熼棿姝',
-  `is_grade_a_taxpayer` tinyint DEFAULT '0' COMMENT '鏄?惁A绾х撼绋庝汉',
-  `evaluation_department` varchar(100) DEFAULT NULL COMMENT '璇勪环鏈烘瀯',
-  `evaluation_date_tax` date DEFAULT NULL COMMENT '璇勪环鏃ユ湡',
-  `tax_credit_level` varchar(10) DEFAULT NULL COMMENT '绾崇◣淇＄敤绛夌骇',
-  `pension_count` int DEFAULT NULL COMMENT '鍏昏?淇濋櫓浜烘暟',
-  `medical_count` int DEFAULT NULL COMMENT '鍖荤枟淇濋櫓浜烘暟',
-  `unemployment_count` int DEFAULT NULL COMMENT '澶变笟淇濋櫓浜烘暟',
-  `injury_count` int DEFAULT NULL COMMENT '宸ヤ激淇濋櫓浜烘暟',
-  `maternity_count` int DEFAULT NULL COMMENT '鐢熻偛淇濋櫓浜烘暟',
-  `pension_pay_date` varchar(10) DEFAULT NULL COMMENT '鍏昏?淇濋櫓缂磋垂骞存湀',
-  `medical_pay_date` varchar(10) DEFAULT NULL COMMENT '鍖荤枟淇濋櫓缂磋垂骞存湀',
-  `insurance_type` varchar(50) DEFAULT NULL COMMENT '闄╃?绫诲瀷',
-  `payment_months` int DEFAULT NULL COMMENT '缂磋垂鏈堟暟',
-  `personal_payment_base` decimal(10,2) DEFAULT NULL COMMENT '涓?汉缂磋垂鍩烘暟',
-  `payment_amount` decimal(10,2) DEFAULT NULL COMMENT '缂磋垂閲戦?',
-  `corporate_payment_amount` decimal(10,2) DEFAULT NULL COMMENT '鍗曚綅缂磋垂閲戦?',
-  `personal_payment_amount_detail` decimal(10,2) DEFAULT NULL COMMENT '涓?汉缂磋垂閲戦?',
-  `fee_period` varchar(10) DEFAULT NULL COMMENT '缂磋垂鏈熼棿',
-  `has_penalty` tinyint DEFAULT '0' COMMENT '鏄?惁鏈夎?鏀垮?缃',
-  `penalty_document` varchar(100) DEFAULT NULL COMMENT '琛屾斂澶勭綒鍐冲畾涔︽枃鍙',
-  `penalty_reason` varchar(500) DEFAULT NULL COMMENT '澶勭綒浜嬬敱',
-  `penalty_date` date DEFAULT NULL COMMENT '澶勭綒鏃ユ湡',
-  `penalty_result` varchar(200) DEFAULT NULL COMMENT '澶勭綒缁撴灉',
-  `has_license` tinyint DEFAULT '0' COMMENT '鏄?惁鏈夎?鏀胯?鍙',
-  `license_number` varchar(100) DEFAULT NULL COMMENT '璁稿彲璇佸彿',
-  `license_name` varchar(200) DEFAULT NULL COMMENT '璁稿彲璇佸悕绉',
-  `license_authority` varchar(100) DEFAULT NULL COMMENT '鍙戣瘉鏈哄叧',
-  `valid_from` date DEFAULT NULL COMMENT '鏈夋晥鏈熻捣',
-  `valid_to` date DEFAULT NULL COMMENT '鏈夋晥鏈熸?',
+  `social_credit_code` varchar(50) NOT NULL
+  `company_name` varchar(200) DEFAULT NULL
+  `reg_authority` varchar(100) DEFAULT NULL
+  `company_type` varchar(100) DEFAULT NULL
+  `address` varchar(500) DEFAULT NULL
+  `legal_rep` varchar(50) DEFAULT NULL
+  `industry_code` varchar(20) DEFAULT NULL
+  `business_scope` text
+  `approval_date` date DEFAULT NULL
+  `establishment_date` date DEFAULT NULL
+  `domicile_district_code` varchar(50) DEFAULT NULL
+  `business_district_code` varchar(50) DEFAULT NULL
+  `legal_rep_name` varchar(50) DEFAULT NULL
+  `id_card_number` varchar(20) DEFAULT NULL
+  `fixed_phone` varchar(20) DEFAULT NULL
+  `mobile_phone` varchar(20) DEFAULT NULL
+  `email` varchar(100) DEFAULT NULL
+  `position_title` varchar(50) DEFAULT NULL
+  `has_business_abnormal` tinyint DEFAULT '0'
+  `abnormal_reason` varchar(200) DEFAULT NULL
+  `abnormal_include_date` date DEFAULT NULL
+  `removal_reason` varchar(200) DEFAULT NULL
+  `abnormal_removal_date` date DEFAULT NULL
+  `has_serious_violation` tinyint DEFAULT '0'
+  `violation_reason` varchar(200) DEFAULT NULL
+  `violation_include_date` date DEFAULT NULL
+  `violation_removal_reason` varchar(200) DEFAULT NULL
+  `violation_removal_date` date DEFAULT NULL
+  `has_website_shop` tinyint DEFAULT '0'
+  `website_shop_name` varchar(200) DEFAULT NULL
+  `website_shop_url` varchar(500) DEFAULT NULL
+  `website_type` varchar(50) DEFAULT NULL
+  `ecommerce_type` varchar(50) DEFAULT NULL
+  `has_equity_change` tinyint DEFAULT '0'
+  `equity_change_date` date DEFAULT NULL
+  `investor_name` varchar(100) DEFAULT NULL
+  `equity_before` decimal(5,2) DEFAULT NULL
+  `equity_after` decimal(5,2) DEFAULT NULL
+  `report_year` int DEFAULT NULL
+  `total_assets` decimal(15,2) DEFAULT NULL
+  `total_liabilities` decimal(15,2) DEFAULT NULL
+  `owner_equity` decimal(15,2) DEFAULT NULL
+  `total_revenue` decimal(15,2) DEFAULT NULL
+  `total_profit` decimal(15,2) DEFAULT NULL
+  `net_profit` decimal(15,2) DEFAULT NULL
+  `total_tax` decimal(15,2) DEFAULT NULL
+  `has_external_guarantee` tinyint DEFAULT '0'
+  `creditor` varchar(200) DEFAULT NULL
+  `debtor` varchar(200) DEFAULT NULL
+  `guarantee_amount` decimal(15,2) DEFAULT NULL
+  `guarantee_start_date` date DEFAULT NULL
+  `guarantee_end_date` date DEFAULT NULL
+  `is_tech_small_enterprise` tinyint DEFAULT '0'
+  `recognition_organization` varchar(100) DEFAULT NULL
+  `recognition_year` int DEFAULT NULL
+  `is_dishonest_person` tinyint DEFAULT '0'
+  `execute_court` varchar(100) DEFAULT NULL
+  `execute_amount` decimal(15,2) DEFAULT NULL
+  `not_execute_amount` decimal(15,2) DEFAULT NULL
+  `filing_date` date DEFAULT NULL
+  `credit_evaluation_name` varchar(100) DEFAULT NULL
+  `evaluation_result` varchar(50) DEFAULT NULL
+  `evaluation_organization` varchar(100) DEFAULT NULL
+  `evaluation_date` date DEFAULT NULL
+  `change_date` date DEFAULT NULL
+  `change_project` varchar(100) DEFAULT NULL
+  `change_before` text
+  `change_after` text
+  `total_tax_amount` decimal(15,2) DEFAULT NULL
+  `tax_items` varchar(200) DEFAULT NULL
+  `tax_period_start` date DEFAULT NULL
+  `tax_period_end` date DEFAULT NULL
+  `is_grade_a_taxpayer` tinyint DEFAULT '0'
+  `evaluation_department` varchar(100) DEFAULT NULL
+  `evaluation_date_tax` date DEFAULT NULL
+  `tax_credit_level` varchar(10) DEFAULT NULL
+  `pension_count` int DEFAULT NULL
+  `medical_count` int DEFAULT NULL
+  `unemployment_count` int DEFAULT NULL
+  `injury_count` int DEFAULT NULL
+  `maternity_count` int DEFAULT NULL
+  `pension_pay_date` varchar(10) DEFAULT NULL
+  `medical_pay_date` varchar(10) DEFAULT NULL
+  `insurance_type` varchar(50) DEFAULT NULL
+  `payment_months` int DEFAULT NULL
+  `personal_payment_base` decimal(10,2) DEFAULT NULL
+  `payment_amount` decimal(10,2) DEFAULT NULL
+  `corporate_payment_amount` decimal(10,2) DEFAULT NULL
+  `personal_payment_amount_detail` decimal(10,2) DEFAULT NULL
+  `fee_period` varchar(10) DEFAULT NULL
+  `has_penalty` tinyint DEFAULT '0'
+  `penalty_document` varchar(100) DEFAULT NULL
+  `penalty_reason` varchar(500) DEFAULT NULL
+  `penalty_date` date DEFAULT NULL
+  `penalty_result` varchar(200) DEFAULT NULL
+  `has_license` tinyint DEFAULT '0'
+  `license_number` varchar(100) DEFAULT NULL
+  `license_name` varchar(200) DEFAULT NULL
+  `license_authority` varchar(100) DEFAULT NULL
+  `valid_from` date DEFAULT NULL
+  `valid_to` date DEFAULT NULL
   PRIMARY KEY (`id`),
   KEY `idx_social_credit` (`social_credit_code`),
   KEY `idx_industry_code` (`industry_code`),
   KEY `idx_area` (`domicile_district_code`),
   KEY `idx_company_type` (`company_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='鏂囨梾浼佷笟瀹屾暣淇℃伅琛?紙Step2缁撴灉锛';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

@@ -1,356 +1,152 @@
-# 文旅市场主体数据处理
+# 宁波市文化企业数据仓库项目
 
-## 简介
+## 项目概述
 
-对文旅市场主体数据进行提取、清洗、分类和整合，形成结构化的文旅企业信息表，并增加相关企业维度信息，支持后续的数据分析与决策。
+本项目是一个完整的文化企业数据仓库解决方案，旨在为宁波市文化企业提供全方位的数据管理和分析服务。项目通过整合多源异构数据，构建了从数据采集、清洗、建模到统计分析的完整数据链路，为文化企业的监管、服务和发展提供数据支撑。
 
-## 项目结构
+## 项目架构
 
 ```
 cultural_companies/
-├── queries_cloud/                 # 云服务器环境SQL（堡垒机环境，行业代码硬编码）
-│   ├── step1_get_enterprises_directly.sql      # Step1: 直接查询文旅企业
-│   ├── step2_add_enterprise_dimensions.sql     # Step2: 增加企业信息维度
-│   ├── step3_filter_by_types.sql               # Step3: 交叉对照筛选具体行业门类
-│   └── step4_statistical_analysis.sql          # Step4: 统计分析
-├── local_validation_queries/       # 本地验证环境SQL（支持CSV，便于调试）
-│   ├── step1_get_enterprises_from_csv.sql      # Step1: 从CSV读取文旅企业
-│   ├── step2_add_enterprise_dimensions.sql     # Step2: 增加企业信息维度
-│   ├── step3_filter_by_types.sql               # Step3: 交叉对照筛选具体行业门类
-│   └── step4_statistical_analysis.sql          # Step4: 统计分析
-├── test_database/                  # 测试数据库（建表、假数据、测试查询）
-│   ├── 01_create_database.sql
-│   ├── 02_insert_sample_data.sql
-│   └── 03_test_queries.sql
-├── scripts/                        # Python工具脚本
-│   ├── generate_fake_data.py       # 生成假数据
-│   ├── data_preparing.py           # 数据准备
-│   ├── extract_field_mapping.py
-│   ├── find_dw_zj_scjdgl_scztxx.py
-│   ├── generate_table_fields_md.py
-│   └── read_excel_fields.py
-├── codes/                          # 行业代码及白名单文件
-│   ├── cultural_industry_codes.csv
-│   ├── tourism_industry_codes.csv
-│   └── social_credit_codes.csv
-├── data/                           # 数据文件
-├── resources/                      # 资源文件
-├── table_fields.md                 # 表字段文档
-└── README.md                       # 项目说明
+├── assets/                    # 原始数据资源
+├── bigfiles/                  # 大数据文件存储
+├── columns.md                 # 数据字典文档
+├── industry_codes/            # 行业代码分类
+├── local_db/                  # 本地数据库脚本
+├── pyscripts/                 # Python数据处理脚本
+├── resources/                 # 资源文件
+├── src_cloud/                 # 云端数据处理SQL
+├── src_local/                 # 本地数据处理SQL
+└── test/                      # 测试文件
 ```
 
-## 数据表说明
+## 核心功能模块
 
-### 主要数据表：dw_zj_scjdgl_scztxx
+### 1. 数据建模层
+- **数据字典管理** (`columns.md`)
+  - 62个核心数据表的完整字段定义
+  - 标准化字段命名规范
+  - 数据类型和约束定义
+  - 业务规则说明
 
-**表名含义**：浙江省市场监督管理局市场主体信息数据仓库表
-**中文名称**：市场主体信息（含个体)
-**主键**：PRIPID,ENTNAME,CREDIT_CODE
+- **数据库设计** (`local_db/`, `src_local/`, `src_cloud/`)
+  - MySQL数据库结构定义
+  - 本地和云端双环境支持
+  - 完整的建表和数据初始化脚本
 
-### 字段映射说明
+### 2. 数据处理层
+- **Python脚本** (`pyscripts/`)
+  - `data_preparing.py`: 数据预处理和清洗
+  - `generate_fake_data.py`: 测试数据生成
+  - `backup_database.py`: 数据库备份
+  - `batch_update_table.py`: 批量数据更新
+  - `extract_field_mapping.py`: 字段映射提取
 
-本文档中所有字段名都已在各步骤中标注了对应的标准化字段名。主要字段包括：
+- **SQL处理脚本**
+  - `01_ent.sql`: 企业基础信息表创建
+  - `02_ent_ext.sql`: 企业扩展信息聚合
+  - `03_stats_general.sql`: 通用统计分析
+  - `04_stats_wenhua.sql`: 文化企业统计
+  - `05_stats_lyuyou.sql`: 旅游企业统计
+  - `06_stats_wenhua_lyuyou.sql`: 文旅融合统计
 
-- **基础信息**：统一社会信用代码 (`UNI_SOCIAL_CRD_CD`)、企业名称 (`COMP_NM`)、登记机关 (`REG_ORG`) 等
-- **经营信息**：经营范围 (`OPT_SCOP`)、行业代码 (`INDV_CODE`)、成立日期 (`EST_DT`) 等
-- **扩展维度**：法定代表人信息、经营异常信息、年报资产信息、社保信息等
+### 3. 行业分类体系
+- **文化行业代码** (`industry_codes/wenhua.txt`)
+  - 涵盖文化制造、文化服务、文化创意等
+  - 支持细分的行业分类统计
 
-### SQL查询示例
+- **旅游行业代码** (`industry_codes/lyuyou.txt`)
+  - 旅游服务、住宿餐饮、交通等
+  - 与文化产业交叉分析
 
-```sql
--- 基础企业信息查询
-SELECT
-    UNI_SOCIAL_CRD_CD AS social_credit_code,
-    COMP_NM AS company_name,
-    REG_ORG AS reg_authority,
-    COMP_TYPE AS company_type,
-    ADDR AS reg_address,
-    LEGAL_REPRE AS legal_repre,
-    INDV_ID AS industry_name,
-    INDV_CODE AS industry_code,
-    INDV_NM AS industry_name_full,
-    OPT_SCOP AS business_scope,
-    APPR_DT AS approval_date,
-    EST_DT AS establishment_date,
-    DOMDI_STRICT AS domicile_district_code,
-    PRO_LOC AS production_address,
-    OPT_STRICT AS business_district_code,
-    OPT_LOC AS business_premises
-FROM dw_zj_scjdgl_scztxx
-WHERE UNI_SOCIAL_CRD_CD IS NOT NULL;
+- **文旅融合代码** (`industry_codes/wenhua_lyuyou.txt`)
+  - 文化+旅游融合业态
+  - 新兴业态识别和统计
+
+### 4. 数据源整合
+- **市场监管数据** (SCJDGL)
+  - 企业注册、变更、注销信息
+  - 经营异常、行政处罚记录
+  - 股权变更、行政许可信息
+
+- **财税金融数据** (SW/YBJ)
+  - 税务登记、纳税记录
+  - 社保缴纳、公积金信息
+  - 金融许可证管理
+
+- **科技服务数据** (KJ)
+  - 高新技术企业认定
+  - 科技型企业发展跟踪
+
+- **信用评价数据** (DSJ/JT)
+  - 企业信用评级
+  - 资质证书管理
+  - 失信记录跟踪
+
+## 技术特色
+
+### 数据标准化
+- **统一标识体系**: 以统一社会信用代码为核心关联键
+- **字段命名规范**: 英文标准化命名，支持业务语义理解
+- **数据类型统一**: 统一的数据类型定义和约束规则
+
+### 多环境支持
+- **本地开发环境**: 支持本地MySQL数据库开发和测试
+- **云端生产环境**: 支持云端数据库部署和运维
+- **数据同步机制**: 本地和云端数据一致性保障
+
+### 行业分类体系
+- **文化行业**: 涵盖文化制造、文化服务、文化创意等细分领域
+- **旅游行业**: 包含旅游服务、住宿餐饮、交通等相关业态
+- **文旅融合**: 识别和统计文化+旅游融合发展的新兴业态
+
+## 使用指南
+
+### 环境准备
+1. **数据库环境**: MySQL 8.0+
+2. **Python环境**: Python 3.7+
+3. **依赖包**: pandas, pymysql等
+
+### 数据初始化
+```bash
+# 1. 创建数据库
+mysql -u root -p < local_db/cul_comp_db.sql
+
+# 2. 运行数据处理脚本
+python pyscripts/data_preparing.py
+
+# 3. 执行统计分析
+mysql -u root -p cul_comp < src_local/03_stats_general.sql
 ```
 
-## 字段映射说明
+### 数据查询
+- **企业基础信息**: 通过统一社会信用代码查询企业全量信息
+- **行业统计分析**: 按文化、旅游、文旅融合等维度进行统计
+- **信用评价查询**: 查询企业信用等级和资质信息
 
-本文档中的字段名采用以下格式：
-- 中文字段名 (`标准化字段名`)
+## 数据质量保障
 
-其中：
-- **中文字段名**：业务需求中的中文描述
-- **标准化字段名**：数据库中的实际字段名（大写字母和下划线组成）
+- **数据完整性**: 建立数据完整性检查机制
+- **数据准确性**: 多源数据交叉验证和清洗
+- **数据时效性**: 支持实时和批量数据更新
+- **数据一致性**: 统一的数据标准和业务规则
 
-**注意**：部分字段标记为"待确认"，表示需要根据实际数据库结构进一步确认对应的标准化字段名。
+## 项目维护
 
-## 操作步骤
+### 版本管理
+- 采用Git进行版本控制
+- 详细记录每次数据模型变更
+- 支持数据模型回滚和恢复
 
-### Step1：获取全部文旅市场主体数据
+### 数据更新
+- 定期更新行业代码分类
+- 持续优化数据处理脚本
+- 扩展新的数据源和统计维度
 
-1. 表名（中文）：市场主体信息（含个体) / 表名（数据库）：`dw_zj_scjdgl_scztxx`) 标准化字段名：
-   - 统一社会信用代码 (`UNI_SOCIAL_CRD_CD`)
-   - 企业名称（字号名称） (`COMP_NM`)
-   - 登记机关 (`REG_ORG`)
-   - 企业类型大类（中文） (`COMP_TYPE`)
-   - 住所（登记、个体户经营场所） (`ADDR`)
-   - 法定代表人（经营者姓名） (`LEGAL_REPRE`)
-   - 行业代码（中文） (`INDV_ID`)
-   - 行业代码 (`INDV_CODE`)
-   - 行业名称 (`INDV_NM`)
-   - 经营范围 (`OPT_SCOP`)
-   - 核准日期（登记、吊销、注销日期） (`APPR_DT`)
-   - 成立日期 (`EST_DT`)
-   - 住所所在行政区划 (`DOMDI_STRICT`)
-   - 生产经营地 (`PRO_LOC`)
-   - 生产经营地所在行政区划 (`OPT_STRICT`)
-   - 经营场所 (`OPT_LOC`)
+## 联系方式
 
-2. `dw_zj_scjdgl_scztxx` 和 "文旅目录0722.xlsx"，按照行业代码（中文）、行业代码进行并表。
-
-3. 筛选出具有文化、旅游标记的所有企业。
-
-4. 将所有企业分为两张子表：
-   - (1) 按照"国民经济行业小类均归属文化或旅游产业"，形成一张表格"文旅1表"
-   - (2) 按照"国民经济行业小类均不全部归属文化或旅游产业"，形成一张表格"文旅2表"
-
-5. 对"文旅2表"，按照经营范围查找关键词，没有下列关键词的删掉：
-
-   - `wh_keywords: "文化","多媒体","游戏","动漫","数字出版","建筑设计","舞台","婚庆","娱乐","版权","会议","展览","广告","工艺美术"`
-   - `ly_keywords: "旅游","出行","游客","观光","游览","旅行","体育","娱乐","休闲","公共交通","娱乐","健康""休养","会展","展览","翻译","健身","保健","酒店"`
-
-6. 将文旅1表和删减后的文旅2表合并。
-
-### Step2：增加文旅企业信息维度
-
-1. 法定代表人信息：
-   - 姓名 (`NM`)
-   - 身份证号码 (`CER_NO`)
-   - 固定电话 (`TEL_NUM`)
-
-2. 经营异常名录信息：
-   - 列入经营异常名录原因 (`INCLU_REASON`)
-   - 移出经营异常名录原因 (`REMEXCPRES_CN`)
-
-3. 严重违法失信企业名单信息：
-   - 列入严重违法失信企业名单原因 (`SERILL_REA`)
-   - 移出严重违法失信企业名单原因 (`REM_EXCPRES_REA`)
-
-4. 宁波市市场监督领域企业年报网站或网店信息：
-   - 网站标识 (`WEB_ID`)
-   - 网站（网店）名称 (`WEB_STORE_NM`)
-   - 网站（网店）网址 (`WEB_STORE_URL`)
-
-5. 股权变更公示信息：
-   - 股权变更日期 (`ALT_DT`)
-   - 变更前股权比例 (`TRANSAMPR_BF`)
-   - 变更后股权比例 (`TRANSAMPR_AF`)
-
-6. 企业年报资产信息：
-   - 年报年度 (`ANNUAL_YEAR`)
-   - 资产总额 (`ASSET_ZMT`)
-   - 负债总额 (`DEBT_AMT`)
-   - 营业总收入 (`OPT_INCOME_TOTAL`)
-   - 利润总额 (`PROFIT_TOTAL`)
-   - 纳税总额 (`TAX_TOTAL`)
-
-7. 宁波市市场监督领域企业年报对外提供保证担保信息：
-   - 对外担保标识ID (`EXTERNAL_GUA`)
-   - 债权人 (`CREDITOR`)
-   - 债务人 (`DEBTOR`)
-   - 主债权数额 (`MAJOR_CREDIT_AMT`)
-
-8. 宁波市科技型小微企业信息：
-   - 认定年份 (`CONGNIZ_TEAR`)
-   - 认定机构 (`CONGNIZ_ORG`)
-
-9. 失信被执行人信息：
-   - 执行法院 (`EXECUTE_COURT`)
-   - 执行金额 (`EXECUTE_AMT`)
-   - 未执行金额 (`NOT_EXECUTE_AMT`)
-
-10. 信用评价信息：
-    - 信用评价名称 (`CREDIT_CMNT_NM`)
-    - 评价结果 (`CMNT_RESULT`)
-    - 评价机构 (`CMNT_ORG`)
-
-11. 宁波市企业注销信息：
-    - 变更日期 (`CHAN_DT`)
-    - 变更项目 (`CHAN_PROJECT`)
-
-12. 纳税信息：
-    - 实缴金额 (`PAID_AMT`)
-    - 征收项目 (`COLL_ITEM`)
-
-13. 信用评价信息（A级纳税人）：
-    - 信用等级 (`TAX_CREDIT_LEVEL`)
-    - 评价单位 (`EVALUA_DEPT`)
-    - 评定时间 (`EVALUA_DT`)
-
-14. 宁波市社保就业领域社会保险基本信息：
-    - 险种类型 (`INSUR_TYPE`)
-    - 缴费月数 (`PAY_MONS`)
-    - 人员缴费基数 (`PER_PAY_BASE`)
-    - 缴费总金额 (`PAY_AMT`)
-    - 单位应缴金额 (`CORP_PAY_AMT`)
-    - 个人应缴金额 (`PER_PAY_AMT`)
-
-15. 将上述数据按照行业代码（中文）、行业代码归并到step1结果中，形成数据库"wl××××"。
-
-### Step3：统计分析思路
-
-1. 企业家数：
-   - 各文旅小类的企业数量以及新业态数量
-   - 报告期内的注销企业数
-   - 经营异常企业数
-   - 失信企业数
-
-2. 经营状况：
-   - 一般经营信息：
-     - 资产总额 (`ASSET_ZMT`)
-     - 负债总额 (`DEBT_AMT`)
-     - 营业总收入 (`OPT_INCOME_TOTAL`)
-     - 利润总额 (`PROFIT_TOTAL`)
-     - 纳税总额 (`TAX_TOTAL`)
-   - 股权变更 (`ALT_DT`)
-   - 对外保证担保 (`EXTERNAL_GUA`)
-
-3. 社保就业：
-   - 缴纳社保企业数量（未缴纳数量）
-   - 各社保缴纳人数
-
-## 云服务器环境下的操作
-
-### 场景
-- 通过堡垒机连接云服务器上的MySQL数据库
-- 无法上传 Excel、CSV 等文档
-- 所有行业代码和数据列表必须硬编码在SQL中
-
-### 特点
-- 行业代码列表硬编码在SQL中
-- 经营范围关键词硬编码在SQL中
-- 无需外部文件依赖
-- 可直接在堡垒机环境中执行
-- 适用于生产环境
-
-### 使用方法
-1. 将SQL文件复制到云服务器
-2. 直接在MySQL客户端中执行
-3. 按顺序执行：step1 → step2 → step3
-
-## 本地验证环境
-
-### 适用场景
-- 本地开发环境
-- 可以读取CSV文件
-- 用于验证操作思路和过程
-- 便于调试和测试
-
-### 特点
-- 从CSV文件读取行业代码列表
-- 支持动态更新行业代码
-- 便于本地验证和调试
-- 支持白名单企业管理
-- 适用于开发测试环境
-
-### 依赖文件
-需要以下CSV文件存在于 `industry_codes` 目录：
-- `indv_nm.csv` - 文化产业行业代码
-- `social_credit_codes.csv` - 企业社会信用代码
-- `cross_type.csv` - 交叉分类
-
-### 使用方法
-1. 确保CSV文件存在于正确位置
-2. 在本地MySQL环境中执行
-3. 按顺序执行：step1 → step2 → step3
-
-## 分析步骤说明
-
-### Step1：获取文旅市场主体数据
-- 从基础企业表中筛选文旅相关企业
-- 根据行业代码和经营范围进行筛选
-- 输出基础企业信息
-
-### Step2：增加企业信息维度
-- 关联法定代表人信息
-- 关联经营异常、违法失信信息
-- 关联财务、社保、纳税等信息
-- 输出完整的企业画像数据
-
-### Step3：统计分析
-- 企业数量统计
-- 经营状况分析
-- 风险企业分析
-- 社保参与度分析
-- 行业分布统计
+如有问题或建议，请联系项目维护团队。
 
 ---
 
-## ⚠️ 注意事项
-
-1. **环境适配**：确保在正确的环境中使用对应的查询文件
-2. **数据安全**：云服务器环境中注意数据安全，避免敏感信息泄露
-3. **文件路径**：本地环境中确保CSV文件路径正确
-4. **权限设置**：确保数据库用户有足够的查询权限
-5. **性能优化**：大数据量时注意查询性能，可能需要分批处理
-
-## 维护说明
-
-### 更新行业代码
-- **云服务器环境**：直接修改SQL文件中的硬编码列表
-- **本地环境**：更新对应的CSV文件
-
-### 添加新的分析维度
-- 在两个环境中同步更新Step2文件
-- 确保字段映射一致
-
-### 优化查询性能
-- 根据实际数据量调整查询策略
-- 考虑添加适当的索引
-- 必要时进行查询优化
-
-## 测试数据
-
-### 1. 创建测试数据库
-```sql
--- 执行建表脚本
-mysql -u username -p < test_database/01_create_database.sql
-
--- 插入测试数据
-mysql -u username -p < test_database/02_insert_sample_data.sql
-
--- 运行测试查询
-mysql -u username -p < test_database/03_test_queries.sql
-```
-
-### 2. 生成更多测试数据
-```bash
-cd scripts
-python generate_fake_data.py
-```
-
-### 3. 执行业务分析
-```sql
--- 执行Step1：获取文旅企业
-mysql -u username -p < analysis_queries/step1_get_enterprises_directly.sql
-
--- 执行Step2：关联维度信息
-mysql -u username -p < analysis_queries/step2_add_enterprise_dimensions.sql
-
--- 执行Step3：统计分析
-mysql -u username -p < analysis_queries/step3_statistical_analysis.sql
-```
-
-## 注意事项
-
-1. **数据类型**: 数据类型可能需要根据实际数据库类型进行调整
-2. **表关联**: 不同表之间的关联字段需要确认是否一致
-3. **数据质量**: 需要注意数据的完整性和准确性
-4. **性能优化**: 大数据量查询时需要考虑索引和查询优化
+*最后更新时间: 2024年*
