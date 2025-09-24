@@ -183,7 +183,7 @@ class FakeDataGenerator:
 
     def generate_enterprise_data(self, count: int = 3000) -> List[Dict[str, Any]]:
         """生成企业基础数据"""
-        enterprises = []
+        company = []
 
         for i in range(count):
             social_credit_code = self.generate_social_credit_code()
@@ -234,16 +234,16 @@ class FakeDataGenerator:
             else:
                 enterprise['change_date'] = None
 
-            enterprises.append(enterprise)
+            company.append(enterprise)
 
-        return enterprises
+        return company
 
-    def generate_sql_insert_statements(self, enterprises: List[Dict[str, Any]]) -> str:
+    def generate_sql_insert_statements(self, company: List[Dict[str, Any]]) -> str:
         """生成SQL插入语句"""
         sql_statements = []
 
         # 主表数据
-        for enterprise in enterprises:
+        for enterprise in company:
             sql = f"""INSERT INTO dw_zj_scjdgl_scztxx (
                 UNI_SOCIAL_CRD_CD, COMP_NM, REG_ORG, COMP_TYPE, ADDR, LEGAL_REPRE,
                 INDV_NM, OPT_SCOP, APPR_DT, EST_DT, DOMDI_STRICT, OPT_STRICT,
@@ -261,41 +261,41 @@ class FakeDataGenerator:
 
         return '\n'.join(sql_statements)
 
-    def save_to_files(self, enterprises: List[Dict[str, Any]], output_dir: str = 'fake_database'):
+    def save_to_files(self, company: List[Dict[str, Any]], output_dir: str = 'fake_database'):
         """保存数据到文件"""
         import os
         os.makedirs(output_dir, exist_ok=True)
 
         # 保存JSON格式的完整数据
-        with open(f'{output_dir}/enterprises_data.json', 'w', encoding='utf-8') as f:
-            json.dump(enterprises, f, ensure_ascii=False, indent=2)
+        with open(f'{output_dir}/company_data.json', 'w', encoding='utf-8') as f:
+            json.dump(company, f, ensure_ascii=False, indent=2)
 
         # 保存SQL插入语句
-        sql_content = self.generate_sql_insert_statements(enterprises)
+        sql_content = self.generate_sql_insert_statements(company)
         with open(f'{output_dir}/03_insert_sample_data.sql', 'w', encoding='utf-8') as f:
             f.write("-- 文旅企业假数据插入脚本\n")
             f.write("-- 生成时间: " + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "\n\n")
             f.write(sql_content)
 
         print(f"数据已保存到 {output_dir}/ 目录")
-        print(f"生成了 {len(enterprises)} 条企业记录")
+        print(f"生成了 {len(company)} 条企业记录")
 
 def main():
     """主函数"""
     print("开始生成文旅企业假数据...")
 
     generator = FakeDataGenerator()
-    enterprises = generator.generate_enterprise_data(3000)  # 生成3000条记录
+    company = generator.generate_enterprise_data(3000)  # 生成3000条记录
 
-    generator.save_to_files(enterprises)
+    generator.save_to_files(company)
 
     print("数据生成完成！")
-    print(f"总计生成 {len(enterprises)} 条企业记录")
+    print(f"总计生成 {len(company)} 条企业记录")
 
     # 统计信息
     areas_count = {}
     types_count = {}
-    for enterprise in enterprises:
+    for enterprise in company:
         area = enterprise['domicile_district_code']
         company_type = enterprise['company_type']
         areas_count[area] = areas_count.get(area, 0) + 1

@@ -1,56 +1,56 @@
--- Step2：扩展 enterprises 表的数据维度
--- 基于已创建的 enterprises 表，添加法定代表人、经营异常、行政处罚等详细信息
+-- Step2：扩展 company 表的数据维度
+-- 基于已创建的 company 表，添加法定代表人、经营异常、行政处罚等详细信息
 -- 不使用别名，保持原字段名，通过注释说明字段含义
--- 将扩展后的结果创建为新表 enterprises_extended
+-- 将扩展后的结果创建为新表 company_extended
 
 -- ==========================================
 
 -- 删除表（如果已存在）
-DROP TABLE IF EXISTS enterprises_extended;
+DROP TABLE IF EXISTS company_extended;
 
--- 创建 enterprises_extended 表，包含所有扩展维度信息
+-- 创建 company_extended 表，包含所有扩展维度信息
 -- 使用聚合函数避免一对多关系导致的数据膨胀，确保每个企业只有一条记录
-CREATE TABLE enterprises_extended AS
+CREATE TABLE company_extended AS
 SELECT
-    -- 市场主体信息 （来自 enterprises 表）
-    ent.REG_ORG,            -- 登记机关
-    ent.COMP_TYPE,          -- 企业类型大类（中文）
-    ent.REG_STATE,          -- 登记状态（中文）
-    ent.UNI_SOCIAL_CRD_CD,  -- 统一社会信用代码
-    ent.COMP_NM,            -- 企业名称（字号名称）
-    ent.ADDR,               -- 住所（登记、个体户经营场所）
-    ent.LEGAL_REPRE,        -- 法定代表人(经营者姓名)
-    ent.INDV_ID,            -- 行业代码（中文）
-    ent.REG_CAPT,           -- 注册资本(资金数额)
-    ent.CAPT_KIND,          -- 币种
-    ent.OPT_SCOP,           -- 经营范围
+    -- 市场主体信息 （来自 company 表）
+    ent.reg_org,            -- 登记机关
+    ent.comp_type,          -- 企业类型大类（中文）
+    ent.reg_state,          -- 登记状态（中文）
+    ent.uni_social_crd_cd,  -- 统一社会信用代码
+    ent.comp_nm,            -- 企业名称（字号名称）
+    ent.addr,               -- 住所（登记、个体户经营场所）
+    ent.legal_repre,        -- 法定代表人(经营者姓名)
+    ent.indv_id,            -- 行业代码（中文）
+    ent.reg_capt,           -- 注册资本(资金数额)
+    ent.capt_kind,          -- 币种
+    ent.opt_scop,           -- 经营范围
     -- ent.REG_NO,             -- 注册号
     -- ent.APPR_DT,            -- 核准日期（登记、吊销、注销日期）
-    ent.EST_DT,             -- 成立日期
+    ent.est_dt,             -- 成立日期
     -- ent.OPT_FROM,           -- 经营(营业)起始日期
     ent.OPT_TO,             -- 经营(营业)截止日期
-    ent.DOMDI_STRICT,       -- 住所所在行政区划
+    ent.domdi_strict,       -- 住所所在行政区划
     -- ent.PRO_LOC,            -- 生产经营地
-    ent.OPT_STRICT,         -- 生产经营地所在行政区划
-    ent.POSTAL_CODE,        -- 邮政编码
+    ent.opt_strict,         -- 生产经营地所在行政区划
+    ent.postal_code,        -- 邮政编码
     -- ent.OPT_LOC,            -- 经营场所
-    ent.INDV_NM,            -- 行业代码（中文）
+    ent.indv_nm,            -- 行业代码（中文）
 
     -- 法定代表人信息 （来自 DW_ZJ_SCJDGL_FDDBRXX 表）
     -- MAX(fddb.LEREP_SIGN) AS LEREP_SIGN,        -- 法定代表人标志/首席代表标志/负责人标识
-    MAX(fddb.NM) AS FDDB_NM,                   -- 姓名
+    MAX(fddb.NM) AS fddb_nm,                   -- 姓名
     -- MAX(fddb.CER_NO) AS FDDB_CER_NO,           -- 身份证件号码
-    MAX(fddb.TEL_NUM) AS FDDB_TEL_NUM,         -- 固定电话
+    MAX(fddb.tel_num) AS fddb_tel_num,         -- 固定电话
 
     -- 经营异常名录信息 （来自 DW_ZJ_SCJDGL_JYYCMLXX 表）
-    COUNT(jyyc.UNI_SOCIAL_CRD_CD) AS JYYC_COUNT,  -- 经营异常记录数
+    COUNT(jyyc.uni_social_crd_cd) AS jyyc_count,  -- 经营异常记录数
 
     -- 子查询版本（获取按日期最新的记录）：
-    (SELECT jyyc.INCLU_DT
+    (SELECT jyyc.inclu_dt
      FROM DW_ZJ_SCJDGL_JYYCMLXX jyyc
-     WHERE jyyc.UNI_SOCIAL_CRD_CD = ent.UNI_SOCIAL_CRD_CD
-     ORDER BY jyyc.INCLU_DT DESC
-     LIMIT 1) AS JYYC_LATEST_INCLU_DT,  -- 最新列入日期
+     WHERE jyyc.uni_social_crd_cd = ent.uni_social_crd_cd
+     ORDER BY jyyc.inclu_dt DESC
+     LIMIT 1) AS jyyc_latest_inclu_dt,  -- 最新列入日期
     (SELECT jyyc.INCLU_REASON
      FROM DW_ZJ_SCJDGL_JYYCMLXX jyyc
      WHERE jyyc.UNI_SOCIAL_CRD_CD = ent.UNI_SOCIAL_CRD_CD
@@ -197,32 +197,32 @@ SELECT
      FROM DW_NB_SW_NSXX ns1
      WHERE ns1.UNI_SOCIAL_CRD_CD = ent.UNI_SOCIAL_CRD_CD
      ORDER BY ns1.COUNT_DT DESC
-     LIMIT 1) AS COUNT_DT,               -- 最新统计时间
+     LIMIT 1) AS count_dt,               -- 最新统计时间
 
     -- 信用评价信息（来自 DW_NB_DSJ_XYPJXX 表）
-    (SELECT xypj1.CRED_SCARD
-     FROM DW_NB_DSJ_XYPJXX xypj1
-     WHERE xypj1.UNI_SOCIAL_CRD_CD = ent.UNI_SOCIAL_CRD_CD
-     ORDER BY xypj1.EVAL_DT DESC
-     LIMIT 1) AS CRED_SCARD,         -- 最新评价日期的信用分
+    (SELECT xypj1.cred_scard
+     FROM dw_nb_dsj_xypjxx xypj1
+     WHERE xypj1.uni_social_crd_cd = ent.uni_social_crd_cd
+     ORDER BY xypj1.eval_dt DESC
+     LIMIT 1) AS cred_scard,         -- 最新评价日期的信用分
 
     -- 信用评价信息（A级纳税人） （来自 DW_NB_SW_XYPJXXA 表）
-    (SELECT xypja1.CREDI_SCARD
+    (SELECT xypja1.credi_scard
      FROM DW_NB_SW_XYPJXXA xypja1
      WHERE xypja1.UNI_SOCIAL_CRD_CD = ent.UNI_SOCIAL_CRD_CD
      ORDER BY xypja1.EVAL_DT DESC
-     LIMIT 1) AS TAX_CREDI_SCARD,  -- 最新评定日期的纳税信用分
+     LIMIT 1) AS tax_credi_scard,  -- 最新评定日期的纳税信用分
     -- MAX(xypja.EVAL_ORG) AS EVAL_ORG,            -- 评价机构
-    (SELECT xypja1.TAX_CREDI_LEVEL
-     FROM DW_NB_SW_XYPJXXA xypja1
-     WHERE xypja1.UNI_SOCIAL_CRD_CD = ent.UNI_SOCIAL_CRD_CD
+    (SELECT xypja1.tax_credi_level
+     FROM dw_nb_sw_xypjxxa xypja1
+     WHERE xypja1.uni_social_crd_cd = ent.uni_social_crd_cd
      ORDER BY xypja1.EVAL_DT DESC
-     LIMIT 1) AS TAX_CREDI_LEVEL, -- 最新评定日期的纳税信用等级
+     LIMIT 1) AS tax_credi_level, -- 最新评定日期的纳税信用等级
     (SELECT xypja1.EVAL_YEAR
-     FROM DW_NB_SW_XYPJXXA xypja1
-     WHERE xypja1.UNI_SOCIAL_CRD_CD = ent.UNI_SOCIAL_CRD_CD
+     FROM dw_nb_sw_xypjxxa xypja1
+     WHERE xypja1.uni_social_crd_cd = ent.uni_social_crd_cd
      ORDER BY xypja1.EVAL_DT DESC
-     LIMIT 1) AS EVAL_YEAR,          -- 最新评定日期的纳税信用等级评定年度
+     LIMIT 1) AS eval_year,          -- 最新评定日期的纳税信用等级评定年度
     -- (SELECT xypja1.EVAL_DT
     --  FROM DW_NB_SW_XYPJXXA xypja1
     --  WHERE xypja1.UNI_SOCIAL_CRD_CD = ent.UNI_SOCIAL_CRD_CD
@@ -278,7 +278,7 @@ SELECT
      ORDER BY xzcf.PUNISH_DT DESC
      LIMIT 1) AS LATEST_PUNISH_REA   -- 最新处罚原因
 
-FROM enterprises ent
+FROM company ent
 -- 法定代表人信息
 LEFT JOIN DW_ZJ_SCJDGL_FDDBRXX fddb ON ent.UNI_SOCIAL_CRD_CD = fddb.UNI_SOCIAL_CRD_CD AND fddb.LEREP_SIGN = 1
 -- 经营异常名录信息
@@ -320,17 +320,17 @@ GROUP BY
     ent.POSTAL_CODE, ent.INDV_NM;
 
 -- 为新表添加主键约束
--- ALTER TABLE enterprises_extended
+-- ALTER TABLE company_extended
 -- ADD PRIMARY KEY (UNI_SOCIAL_CRD_CD);
 
 -- 显示创建结果
 SELECT
-    COUNT(*) AS total_enterprises_extended,
-    COUNT(DISTINCT UNI_SOCIAL_CRD_CD) AS unique_enterprises,
+    COUNT(*) AS total_company_extended,
+    COUNT(DISTINCT UNI_SOCIAL_CRD_CD) AS unique_company,
     COUNT(DISTINCT INDV_NM) AS unique_industry_codes
-FROM enterprises_extended;
+FROM company_extended;
 
 -- 显示表结构
-DESCRIBE enterprises_extended;
+DESCRIBE company_extended;
 
-SELECT * FROM enterprises_extended LIMIT 10;
+SELECT * FROM company_extended LIMIT 10;

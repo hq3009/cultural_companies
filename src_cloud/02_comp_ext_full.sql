@@ -1,18 +1,18 @@
--- Step2：扩展 enterprises 表的数据维度
--- 基于已创建的 enterprises 表，添加法定代表人、经营异常、行政处罚等详细信息
+-- Step2：扩展 company 表的数据维度
+-- 基于已创建的 company 表，添加法定代表人、经营异常、行政处罚等详细信息
 -- 不使用别名，保持原字段名，通过注释说明字段含义
--- 将扩展后的结果创建为新表 enterprises_extended
+-- 将扩展后的结果创建为新表 company_extended
 
 -- 注意：如果云服务器不允许创建永久表，请使用以下临时表语法之一：
 -- MySQL 临时表语法：
--- CREATE TEMPORARY TABLE enterprises_extended AS
+-- CREATE TEMPORARY TABLE company_extended AS
 
 -- SQL Server 临时表语法：
--- CREATE TABLE #enterprises_extended AS
+-- CREATE TABLE #company_extended AS
 
 -- 别名对应关系：
 -- 表别名说明（用于后续SQL字段注释）
--- ent   : enterprises（主表，市场主体基本信息）
+-- ent   : company（主表，市场主体基本信息）
 -- fddb  : DW_ZJ_SCJDGL_FDDBRXX（法定代表人信息）
 -- jyyc  : DW_ZJ_SCJDGL_JYYCMLXX（经营异常名录信息）
 -- sxqy    : DW_ZJ_SCJDGL_YZWFSX（严重违法失信企业名单信息）
@@ -34,12 +34,12 @@
 -- ==========================================
 
 -- 删除表（如果已存在）
-DROP TABLE IF EXISTS enterprises_extended;
+DROP TABLE IF EXISTS company_extended;
 
--- 创建 enterprises_extended 表，包含所有扩展维度信息
-CREATE TABLE enterprises_extended AS
+-- 创建 company_extended 表，包含所有扩展维度信息
+CREATE TABLE company_extended AS
 SELECT
-    -- 市场主体信息 （来自 enterprises 表）
+    -- 市场主体信息 （来自 company 表）
     ent.REG_ORG,            -- 登记机关
     ent.COMP_TYPE,          -- 企业类型大类（中文）
     ent.REG_STATE,          -- 登记状态（中文）
@@ -214,7 +214,7 @@ SELECT
     xzcf.PUNISH_DT,           -- 处罚时间
     xzcf.PUNISH_RESULT        -- 处罚结果
 
-FROM enterprises ent
+FROM company ent
 -- 法定代表人信息
 LEFT JOIN DW_ZJ_SCJDGL_FDDBRXX fddb ON ent.UNI_SOCIAL_CRD_CD = fddb.UNI_SOCIAL_CRD_CD AND fddb.LEREP_SIGN = 1
 -- 经营异常名录信息
@@ -249,17 +249,17 @@ LEFT JOIN DW_NB_RLSB_SBJYLYSHBXJBXX sb ON ent.UNI_SOCIAL_CRD_CD = sb.UNI_SOCIAL_
 LEFT JOIN DW_NB_SCJDGL_XZCFGSXX xzcf ON ent.UNI_SOCIAL_CRD_CD = xzcf.UNI_SOCIAL_CRD_CD;
 
 -- 为新表添加主键约束
--- ALTER TABLE enterprises_extended
+-- ALTER TABLE company_extended
 -- ADD PRIMARY KEY (UNI_SOCIAL_CRD_CD);
 
 -- 显示创建结果
 SELECT
-    COUNT(*) AS total_enterprises_extended,
-    COUNT(DISTINCT UNI_SOCIAL_CRD_CD) AS unique_enterprises,
+    COUNT(*) AS total_company_extended,
+    COUNT(DISTINCT UNI_SOCIAL_CRD_CD) AS unique_company,
     COUNT(DISTINCT INDV_NM) AS unique_industry_codes
-FROM enterprises_extended;
+FROM company_extended;
 
 -- 显示表结构
-DESCRIBE enterprises_extended;
+DESCRIBE company_extended;
 
-SELECT * FROM enterprises_extended LIMIT 10;
+SELECT * FROM company_extended LIMIT 10;

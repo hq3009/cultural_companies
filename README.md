@@ -47,19 +47,19 @@ cultural_companies/
   - `02_ent_ext.sql`: 企业扩展信息聚合
   - `03_stats_general.sql`: 通用统计分析
   - `04_stats_wenhua.sql`: 文化企业统计
-  - `05_stats_lyuyou.sql`: 旅游企业统计
-  - `06_stats_wenhua_lyuyou.sql`: 文旅融合统计
+  - `05_stats_lvyou.sql`: 旅游企业统计
+  - `06_stats_wenhua_lvyou.sql`: 文旅融合统计
 
 ### 3. 行业分类体系
 - **文化行业代码** (`industry_codes/wenhua.txt`)
   - 涵盖文化制造、文化服务、文化创意等
   - 支持细分的行业分类统计
 
-- **旅游行业代码** (`industry_codes/lyuyou.txt`)
+- **旅游行业代码** (`industry_codes/lvyou.txt`)
   - 旅游服务、住宿餐饮、交通等
   - 与文化产业交叉分析
 
-- **文旅融合代码** (`industry_codes/wenhua_lyuyou.txt`)
+- **文旅融合代码** (`industry_codes/wenhua_lvyou.txt`)
   - 文化+旅游融合业态
   - 新兴业态识别和统计
 

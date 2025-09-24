@@ -3,9 +3,9 @@
 -- 基于Step1的CSV导入结果进行扩展
 
 
-WITH enterprises AS (
+WITH company AS (
     -- 从Step1的结果开始，使用CSV导入的行业代码
-    WITH base_enterprises AS (
+    WITH base_company AS (
         SELECT
             UNI_SOCIAL_CRD_CD,                           -- 统一社会信用代码
             COMP_NM,                                      -- 企业名称
@@ -28,52 +28,52 @@ WITH enterprises AS (
     ),
 
     -- 将基础企业信息与文化目录进行关联
-    cultural_enterprises AS (
+    cultural_company AS (
         SELECT
             be.*,
             '文化产业' AS industry_category,
             1 AS is_cultural,
             0 AS is_tourism
-        FROM base_enterprises be
+        FROM base_company be
         INNER JOIN cultural_industry_codes cic
             ON be.INDV_CODE = cic.industry_code
     ),
 
     -- 将基础企业信息与旅游目录进行关联
-    tourism_enterprises AS (
+    tourism_company AS (
         SELECT
             be.*,
             '旅游产业' AS industry_category,
             0 AS is_cultural,
             1 AS is_tourism
-        FROM base_enterprises be
+        FROM base_company be
         INNER JOIN tourism_industry_codes tic
             ON be.INDV_CODE = tic.industry_code
     ),
 
     -- 根据白名单企业的社会信用代码，将文旅目录与基础企业信息进行关联
-    white_list_enterprises AS (
+    white_list_company AS (
         SELECT
             be.*,
             '白名单企业' AS industry_category,
             1 AS is_cultural,
             1 AS is_tourism
-        FROM base_enterprises be
+        FROM base_company be
         INNER JOIN social_credit_codes scc
             ON be.UNI_SOCIAL_CRD_CD = scc.social_credit_code
     ),
 
     -- 合并所有文旅企业
     all_cultural_tourism AS (
-        SELECT * FROM cultural_enterprises
+        SELECT * FROM cultural_company
         UNION ALL
-        SELECT * FROM tourism_enterprises
+        SELECT * FROM tourism_company
         UNION ALL
-        SELECT * FROM white_list_enterprises
+        SELECT * FROM white_list_company
     ),
 
     -- 去重处理（按社会信用代码去重，优先保留白名单企业）
-    ranked_enterprises AS (
+    ranked_company AS (
         SELECT
             *,
             ROW_NUMBER() OVER (
@@ -110,7 +110,7 @@ WITH enterprises AS (
         industry_category,                                -- 行业类别
         is_cultural,                                      -- 是否文化产业
         is_tourism                                        -- 是否旅游产业
-    FROM ranked_enterprises
+    FROM ranked_company
     WHERE rn = 1
 ),
 
@@ -450,7 +450,7 @@ SELECT
     al.LIC_ANTH,                                          -- 许可机关
     al.VAL_FROM,                                          -- 有效期自
     al.VAL_TO                                             -- 有效期至
-FROM enterprises bct
+FROM company bct
 LEFT JOIN legal_rep_info lri ON bct.UNI_SOCIAL_CRD_CD = lri.UNI_SOCIAL_CRD_CD
 LEFT JOIN business_abnormal ba ON bct.UNI_SOCIAL_CRD_CD = ba.UNI_SOCIAL_CRD_CD
 LEFT JOIN serious_violation sv ON bct.UNI_SOCIAL_CRD_CD = sv.UNI_SOCIAL_CRD_CD
