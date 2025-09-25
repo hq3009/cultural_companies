@@ -31,21 +31,27 @@ DROP TABLE IF EXISTS company_jyyc;
 CREATE TABLE company_jyyc AS
 SELECT
     core.*,
-    COUNT(jyyc.uni_social_crd_cd) AS jyyc_count,  -- 经营异常记录数
-    (SELECT jyyc.inclu_dt
-     FROM dw_zj_scjdgl_jyycmlxx jyyc
-     WHERE jyyc.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY jyyc.inclu_dt DESC
-     LIMIT 1) AS jyyc_latest_inclu_dt,  -- 最新列入日期
-    (SELECT jyyc.inclu_reason
-     FROM dw_zj_scjdgl_jyycmlxx jyyc
-     WHERE jyyc.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY jyyc.inclu_dt DESC
-     LIMIT 1) AS jyyc_latest_reason     -- 最新列入原因
-
+    COALESCE(jyyc_agg.jyyc_count, 0) AS jyyc_count,                -- 经营异常记录数
+    jyyc_agg.jyyc_latest_inclu_dt,                                 -- 最新列入日期
+    jyyc_agg.jyyc_latest_reason                                   -- 最新列入原因
 FROM company_core core
-LEFT JOIN dw_zj_scjdgl_jyycmlxx jyyc ON core.uni_social_crd_cd = jyyc.uni_social_crd_cd
-GROUP BY core.uni_social_crd_cd;
+LEFT JOIN (
+    SELECT
+        uni_social_crd_cd,
+        COUNT(*) AS jyyc_count,
+        MAX(CASE WHEN rn = 1 THEN inclu_dt END) AS jyyc_latest_inclu_dt,
+        MAX(CASE WHEN rn = 1 THEN inclu_reason END) AS jyyc_latest_reason
+    FROM (
+        SELECT
+            uni_social_crd_cd,
+            inclu_dt,
+            inclu_reason,
+            ROW_NUMBER() OVER (PARTITION BY uni_social_crd_cd ORDER BY inclu_dt DESC) AS rn
+        FROM dw_zj_scjdgl_jyycmlxx
+    ) t
+    GROUP BY uni_social_crd_cd
+) jyyc_agg
+ON core.uni_social_crd_cd = jyyc_agg.uni_social_crd_cd;
 
 SELECT
     COUNT(*) AS jyyc_count
@@ -62,15 +68,24 @@ DROP TABLE IF EXISTS company_yzwf;
 CREATE TABLE company_yzwf AS
 SELECT
     core.*,
-    COUNT(yzwf.uni_social_crd_cd) AS yzwf_count, -- 严重违法失信企业名单记录数
-    (SELECT yzwf.serill_rea
-     FROM dw_zj_scjdgl_yzwfsx yzwf
-     WHERE yzwf.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY yzwf.abn_tm DESC
-     LIMIT 1) AS latest_serill_rea  -- 最新列入严重违法失信企业名单原因
+    COALESCE(yzwf_agg.yzwf_count, 0) AS yzwf_count,         -- 严重违法失信企业名单记录数
+    yzwf_agg.latest_serill_rea                              -- 最新列入严重违法失信企业名单原因
 FROM company_core core
-LEFT JOIN dw_zj_scjdgl_yzwfsx yzwf ON core.uni_social_crd_cd = yzwf.uni_social_crd_cd
-GROUP BY core.UNI_SOCIAL_CRD_CD;
+LEFT JOIN (
+    SELECT
+        uni_social_crd_cd,
+        COUNT(*) AS yzwf_count,
+        MAX(CASE WHEN rn = 1 THEN serill_rea END) AS latest_serill_rea
+    FROM (
+        SELECT
+            uni_social_crd_cd,
+            serill_rea,
+            ROW_NUMBER() OVER (PARTITION BY uni_social_crd_cd ORDER BY abn_tm DESC) AS rn
+        FROM dw_zj_scjdgl_yzwfsx
+    ) t
+    GROUP BY uni_social_crd_cd
+) yzwf_agg
+ON core.uni_social_crd_cd = yzwf_agg.uni_social_crd_cd;
 
 SELECT
     COUNT(*) AS yzwf_count
@@ -135,50 +150,49 @@ DROP TABLE IF EXISTS company_nb;
 CREATE TABLE company_nb AS
 SELECT
     core.*,
-    (SELECT nb.asset_zmt
-     FROM dw_nb_scjdgl_qynbzcxx nb
-     WHERE nb.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY nb.annual_year DESC
-     LIMIT 1) AS asset_zmt,             -- 最新年报年度的资产总额
-    (SELECT nb.debt_amt
-     FROM dw_nb_scjdgl_qynbzcxx nb
-     WHERE nb.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY nb.annual_year DESC
-     LIMIT 1) AS debt_amt,              -- 最新年报年度的负债总额
-    (SELECT nb.opt_income_total
-     FROM dw_nb_scjdgl_qynbzcxx nb
-     WHERE nb.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY nb.annual_year DESC
-     LIMIT 1) AS nb_opt_income_total,      -- 最新年报年度的营业总收入
-    (SELECT nb.profit_total
-     FROM dw_nb_scjdgl_qynbzcxx nb
-     WHERE nb.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY nb.annual_year DESC
-     LIMIT 1) AS nb_profit_total,          -- 最新年报年度的利润总额
-    (SELECT nb.net_profit
-     FROM dw_nb_scjdgl_qynbzcxx nb
-     WHERE nb.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY nb.annual_year DESC
-     LIMIT 1) AS nb_net_profit,            -- 最新年报年度的净利润
-    (SELECT nb.tax_total
-     FROM dw_nb_scjdgl_qynbzcxx nb
-     WHERE nb.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY nb.annual_year DESC
-     LIMIT 1) AS nb_tax_total,             -- 最新年报年度的纳税总额
-    (SELECT nb.annual_year
-     FROM dw_nb_scjdgl_qynbzcxx nb
-     WHERE nb.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY nb.annual_year DESC
-     LIMIT 1) AS nb_year      -- 最新年报年度
+    nb_latest.asset_zmt,             -- 最新年报年度的资产总额
+    nb_latest.debt_amt,              -- 最新年报年度的负债总额
+    nb_latest.opt_income_total AS nb_opt_income_total,      -- 最新年报年度的营业总收入
+    nb_latest.profit_total AS nb_profit_total,          -- 最新年报年度的利润总额
+    nb_latest.net_profit AS nb_net_profit,            -- 最新年报年度的净利润
+    nb_latest.tax_total AS nb_tax_total,             -- 最新年报年度的纳税总额
+    nb_latest.annual_year AS nb_year      -- 最新年报年度
 FROM company_core core
-LEFT JOIN dw_nb_scjdgl_qynbzcxx nb ON core.uni_social_crd_cd = nb.uni_social_crd_cd
-GROUP BY core.uni_social_crd_cd;
+LEFT JOIN (
+    SELECT
+        uni_social_crd_cd,
+        asset_zmt,
+        debt_amt,
+        opt_income_total,
+        profit_total,
+        net_profit,
+        tax_total,
+        annual_year,
+        ROW_NUMBER() OVER (PARTITION BY uni_social_crd_cd ORDER BY annual_year DESC) as rn
+    FROM dw_nb_scjdgl_qynbzcxx
+) nb_latest ON core.uni_social_crd_cd = nb_latest.uni_social_crd_cd
+    AND nb_latest.rn = 1;
+
+
+-- SELECT * FROM dw_nb_scjdgl_qynbzcxx LIMIT 10;
 
 SELECT
     COUNT(*) AS nb_count
 FROM company_nb;
 
-SELECT * FROM company_nb LIMIT 10;
+SELECT * FROM company_nb WHERE nb_year IS NOT NULL LIMIT 100;
+
+SELECT * FROM company_nb WHERE nb_year >= 2020 LIMIT 100;
+
+SELECT
+    COUNT(*) AS nb_year_not_zero_count
+FROM company_nb
+WHERE nb_year IS NOT NULL AND nb_year <> 0;
+
+SELECT
+    AVG(asset_zmt) AS avg_asset_zmt_2019
+FROM company_nb
+WHERE nb_year = 2019 AND nb_year IS NOT NULL AND asset_zmt > 10 AND asset_zmt < 10000;
 
 -- ==========================================
 -- 扩展纳税信息
@@ -189,22 +203,19 @@ DROP TABLE IF EXISTS company_ns;
 CREATE TABLE company_ns AS
 SELECT
     core.*,
-    (SELECT ns.tax_amt
-     FROM dw_nb_sw_nsxx ns
-     WHERE ns.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY ns.count_dt DESC
-     LIMIT 1) AS tax_amt,               -- 最新纳税总额
-    (SELECT ns.sale_inco
-     FROM dw_nb_sw_nsxx ns
-     WHERE ns.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY ns.count_dt DESC
-     LIMIT 1) AS tax_sale_inco,             -- 最新销售收入
-    (SELECT ns.count_dt
-     FROM dw_nb_sw_nsxx ns
-     WHERE ns.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY ns.count_dt DESC
-     LIMIT 1) AS tax_count_dt,              -- 最新统计时间
-FROM company_core core;
+    ns_latest.tax_amt,         -- 最新纳税总额
+    ns_latest.sale_inco,       -- 最新销售收入
+    ns_latest.count_dt         -- 最新统计时间
+FROM company_core core
+LEFT JOIN (
+    SELECT
+        uni_social_crd_cd,
+        tax_amt,
+        sale_inco,
+        count_dt,
+        ROW_NUMBER() OVER (PARTITION BY uni_social_crd_cd ORDER BY count_dt DESC) as rn
+    FROM dw_nb_sw_nsxx
+) ns_latest ON core.uni_social_crd_cd = ns_latest.uni_social_crd_cd AND ns_latest.rn = 1;
 
 SELECT
     COUNT(*) AS ns_count
@@ -221,17 +232,18 @@ DROP TABLE IF EXISTS company_xypj;
 CREATE TABLE company_xypj AS
 SELECT
     core.*,
-    (SELECT xypj.tax_credi_level
-     FROM dw_nb_sw_xypjxxa xypj
-     WHERE xypj.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY xypj.eval_dt DESC
-     LIMIT 1) AS tax_credi_level,       -- 最新评定日期的纳税信用等级
-    (SELECT xypj.eval_year
-     FROM dw_nb_sw_xypjxxa xypj
-     WHERE xypj.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY xypj.eval_dt DESC
-     LIMIT 1) AS eval_year              -- 最新评定日期的纳税信用等级评定年度
-FROM company_core core;
+    xypj_latest.tax_credi_level,  -- 最新评定日期的纳税信用等级
+    xypj_latest.eval_year         -- 最新评定日期的纳税信用等级评定年度
+FROM company_core core
+LEFT JOIN (
+    SELECT
+        uni_social_crd_cd,
+        tax_credi_level,
+        eval_year,
+        ROW_NUMBER() OVER (PARTITION BY uni_social_crd_cd ORDER BY eval_dt DESC) AS rn
+    FROM dw_nb_sw_xypjxxa
+) xypj_latest
+ON core.uni_social_crd_cd = xypj_latest.uni_social_crd_cd AND xypj_latest.rn = 1;
 
 SELECT
     COUNT(*) AS xypj_count
@@ -248,25 +260,31 @@ DROP TABLE IF EXISTS company_sxr;
 CREATE TABLE company_sxr AS
 SELECT
     core.*,
-    COUNT(sxr.uni_social_crd_cd) AS sxr_count,  -- 失信记录数
-    (SELECT sxr.executed_nm
-     FROM dw_zj_fzgg_sxbzxrxx sxr
-     WHERE sxr.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY sxr.fil_dt DESC
-     LIMIT 1) AS latest_executed_nm,     -- 最新被执行人姓名
-    (SELECT sxr.executed_court
-     FROM dw_zj_fzgg_sxbzxrxx sxr
-     WHERE sxr.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY sxr.fil_dt DESC
-     LIMIT 1) AS latest_executed_court,  -- 最新执行法院
-    (SELECT sxr.fil_dt
-     FROM dw_zj_fzgg_sxbzxrxx sxr
-     WHERE sxr.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY sxr.fil_dt DESC
-     LIMIT 1) AS latest_fil_dt           -- 最新立案时间
+    COALESCE(sxr_agg.sxr_count, 0) AS sxr_count,  -- 失信记录数
+    sxr_agg.latest_executed_nm,                   -- 最新被执行人姓名
+    sxr_agg.latest_executed_court,                -- 最新执行法院
+    sxr_agg.latest_fil_dt                         -- 最新立案时间
 FROM company_core core
-LEFT JOIN dw_zj_fzgg_sxbzxrxx sxr ON core.uni_social_crd_cd = sxr.uni_social_crd_cd
-GROUP BY core.uni_social_crd_cd;
+LEFT JOIN (
+    SELECT
+        uni_social_crd_cd,
+        COUNT(*) AS sxr_count,
+        -- 使用窗口函数获取最新记录
+        MAX(CASE WHEN rn = 1 THEN executed_nm END) AS latest_executed_nm,
+        MAX(CASE WHEN rn = 1 THEN executed_court END) AS latest_executed_court,
+        MAX(CASE WHEN rn = 1 THEN fil_dt END) AS latest_fil_dt
+    FROM (
+        SELECT
+            uni_social_crd_cd,
+            executed_nm,
+            executed_court,
+            fil_dt,
+            ROW_NUMBER() OVER (PARTITION BY uni_social_crd_cd ORDER BY fil_dt DESC) AS rn
+        FROM dw_zj_fzgg_sxbzxrxx
+    ) t
+    GROUP BY uni_social_crd_cd
+) sxr_agg
+ON core.uni_social_crd_cd = sxr_agg.uni_social_crd_cd;
 
 SELECT
     COUNT(*) AS sxr_count
@@ -283,25 +301,30 @@ DROP TABLE IF EXISTS company_xzcf;
 CREATE TABLE company_xzcf AS
 SELECT
     core.*,
-    COUNT(xzcf.uni_social_crd_cd) AS xzcf_count,  -- 行政处罚次数
-    (SELECT xzcf.admin_punish_doc
-     FROM dw_nb_scjdgl_xzcfgsxx xzcf
-     WHERE xzcf.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY xzcf.punish_dt DESC
-     LIMIT 1) AS latest_punish_doc,     -- 最新行政处罚文号
-    (SELECT xzcf.punish_dt
-     FROM dw_nb_scjdgl_xzcfgsxx xzcf
-     WHERE xzcf.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY xzcf.punish_dt DESC
-     LIMIT 1) AS latest_punish_dt,      -- 最新处罚时间
-    (SELECT xzcf.punish_rea
-     FROM dw_nb_scjdgl_xzcfgsxx xzcf
-     WHERE xzcf.uni_social_crd_cd = core.uni_social_crd_cd
-     ORDER BY xzcf.punish_dt DESC
-     LIMIT 1) AS latest_punish_rea      -- 最新处罚原因
+    COALESCE(xzcf_agg.xzcf_count, 0) AS xzcf_count,         -- 行政处罚次数
+    xzcf_agg.latest_punish_doc,                             -- 最新行政处罚文号
+    xzcf_agg.latest_punish_dt,                              -- 最新处罚时间
+    xzcf_agg.latest_punish_rea                              -- 最新处罚原因
 FROM company_core core
-LEFT JOIN dw_nb_scjdgl_xzcfgsxx xzcf ON core.uni_social_crd_cd = xzcf.uni_social_crd_cd
-GROUP BY core.uni_social_crd_cd;
+LEFT JOIN (
+    SELECT
+        uni_social_crd_cd,
+        COUNT(*) AS xzcf_count,
+        MAX(CASE WHEN rn = 1 THEN admin_punish_doc END) AS latest_punish_doc,
+        MAX(CASE WHEN rn = 1 THEN punish_dt END) AS latest_punish_dt,
+        MAX(CASE WHEN rn = 1 THEN punish_rea END) AS latest_punish_rea
+    FROM (
+        SELECT
+            uni_social_crd_cd,
+            admin_punish_doc,
+            punish_dt,
+            punish_rea,
+            ROW_NUMBER() OVER (PARTITION BY uni_social_crd_cd ORDER BY punish_dt DESC) AS rn
+        FROM dw_nb_scjdgl_xzcfgsxx
+    ) t
+    GROUP BY uni_social_crd_cd
+) xzcf_agg
+ON core.uni_social_crd_cd = xzcf_agg.uni_social_crd_cd;
 
 SELECT
     COUNT(*) AS xzcf_count

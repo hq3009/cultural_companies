@@ -5,7 +5,7 @@
 -- ===========================
 
 -- 创建 company 表
-DROP TABLE IF EXISTS compapy;
+DROP TABLE IF EXISTS company;
 
 CREATE TABLE company AS
 SELECT
@@ -110,19 +110,28 @@ WHERE
 ORDER BY uni_social_crd_cd;
 
 -- 显示创建结果
-SELECT
-    COUNT(*) AS company,
-    COUNT(DISTINCT indv_nm) AS unique_indv_nm,
-    COUNT(DISTINCT comp_type) AS unique_company_types,
-    COUNT(DISTINCT domdi_strict) AS unique_districts
-FROM
-    company;
+-- SELECT
+    -- COUNT(*) AS company
+    -- COUNT(DISTINCT indv_nm) AS unique_indv_nm,
+    -- COUNT(DISTINCT comp_type) AS unique_company_types,
+    -- COUNT(DISTINCT domdi_strict) AS unique_districts
+-- FROM
+    -- company;
 
 -- 显示表结构
-DESCRIBE company;
+-- DESCRIBE company_init;
 
 -- 显示前10条记录
 SELECT * FROM company LIMIT 10;
+
+SELECT * FROM company WHERE uni_social_crd_cd = '91130403MA098UE859';
+
+-- 查看 reg_state 的所有可能值
+SELECT DISTINCT reg_state FROM company ORDER BY reg_state;
+
+-- 统计每种 reg_state 的数量
+SELECT reg_state, COUNT(*) AS count_per_state FROM company GROUP BY reg_state ORDER BY count_per_state DESC;
+
 
 -- ===========================
 -- 企业核心信息
@@ -145,7 +154,7 @@ SELECT
     indv_nm             -- 行业代码（中文）
 FROM company;
 
-COUNT(*) FROM company_core;
+COUNT(*) as core_count FROM company_core;
 
 DESCRIBE company_core;
 
