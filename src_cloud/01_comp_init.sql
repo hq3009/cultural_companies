@@ -110,28 +110,25 @@ WHERE
 ORDER BY uni_social_crd_cd;
 
 -- 显示创建结果
--- SELECT
-    -- COUNT(*) AS company
-    -- COUNT(DISTINCT indv_nm) AS unique_indv_nm,
-    -- COUNT(DISTINCT comp_type) AS unique_company_types,
-    -- COUNT(DISTINCT domdi_strict) AS unique_districts
--- FROM
-    -- company;
+SELECT
+    COUNT(*) AS company
+    COUNT(DISTINCT indv_nm) AS unique_indv_nm,
+    COUNT(DISTINCT comp_type) AS unique_company_types,
+    COUNT(DISTINCT domdi_strict) AS unique_districts
+FROM
+    company;
 
 -- 显示表结构
--- DESCRIBE company_init;
+DESCRIBE company;
 
 -- 显示前10条记录
 SELECT * FROM company LIMIT 10;
-
-SELECT * FROM company WHERE uni_social_crd_cd = '91130403MA098UE859';
 
 -- 查看 reg_state 的所有可能值
 SELECT DISTINCT reg_state FROM company ORDER BY reg_state;
 
 -- 统计每种 reg_state 的数量
 SELECT reg_state, COUNT(*) AS count_per_state FROM company GROUP BY reg_state ORDER BY count_per_state DESC;
-
 
 -- ===========================
 -- 企业核心信息
@@ -218,6 +215,8 @@ where indv_nm IN (
     '8921', '8929', '8930', '8930', '9221', '9222', '9522', '9542'
     );
 
+COUNT(*) as lvyou_count FROM lvyou;
+
 -- =========================
 -- 文旅融合企业
 -- =========================
@@ -231,3 +230,8 @@ where indv_nm IN (
     '7715', '7716', '7719', '7850', '8060', '8810', '8820', '8840', '8850', '8860'
     '9011', '9012', '9019', '9020', '9030', '9090'
     );
+
+COUNT(*) as wenlv_count FROM wenlv;
+
+-- =========================
+--
