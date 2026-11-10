@@ -28,9 +28,6 @@ MANIFEST
 # PyCharm
 .idea/
 
-# VS Code
-.vscode/
-
 # Environment variables
 venv/
 venv.bak/

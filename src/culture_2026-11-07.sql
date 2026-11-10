@@ -1,9 +1,9 @@
--- 宁波市文旅经营主体数据分析脚本（MaxCompute 版）
+-- 宁波市文旅经营主体数据分析脚本（MaxCompute版）
 --
 -- 运行环境：阿里云 MaxCompute，连接项目 jrsjc_dev；源表在 odps_jrsjc_pod，
 -- 一律写全限定名 odps_jrsjc_pod.dw_xxx；自建表在 jrsjc_dev，保持裸名。
 --
--- 逐条执行：DROP 与 CREATE 连续跑完，CREATE 后用 DESC 确认表存在。
+-- 逐条执行：DROP 与 CREATE 连续跑完，CREATE 后用自检 SELECT 确认表建成。
 -- 往下跑之前必须看 1.2 的 matched_rows，为 0 则停止。
 --
 -- SECTION 0  执行前检查
@@ -15,21 +15,15 @@
 -- SECTION 6  报告取数 rpt_wenlv
 -- SECTION 7  执行后核对
 -- SECTION 8  TOP 3000 遴选
--- ############################################################################
+--
+-- ============================================================================
 -- SECTION 0  执行前检查
--- ############################################################################
+-- ============================================================================
+--
 -- 0.0 全局自检：单独跑这一条，对照 README 的输出表清单找缺哪张表
 SHOW TABLES;
--- 0.1 确认源表可读，并查看企业类型字段 comp_type 的实际取值形态。
---     该字段既可能是数字代码，也可能是中文名称，先看一眼再决定如何归类。
-SELECT comp_type,
-    COUNT(*) AS cnt
-FROM odps_jrsjc_pod.dw_zj_scjdgl_scztxx
-GROUP BY comp_type
-ORDER BY cnt DESC
-LIMIT 20;
--- 0.2 确认行业代码字段形态。本文件假设 indv_nm 在当前数据中存放的是四位
---     国民经济行业小类代码，字段名容易让人误以为是行业名称。
+
+-- 0.1 确认行业代码字段形态。本文件假设 indv_nm 在当前数据中存放的是四位
 --     下面只看前 10 个高频取值；是否真的能与代码表匹配，要看 SECTION 1
 --     建完 industry_codes 之后的 1.2 核对，那条才是硬校验。
 SELECT indv_nm,
@@ -38,18 +32,22 @@ FROM odps_jrsjc_pod.dw_zj_scjdgl_scztxx
 GROUP BY indv_nm
 ORDER BY cnt DESC
 LIMIT 10;
--- ############################################################################
+
+--
+-- ============================================================================
 -- SECTION 1  基础代码与字典表
--- 建 industry_codes（63 个四位行业代码）；企业类型取 comp_type 原值。
--- ############################################################################
+-- 建 industry_codes（63 个四位行业代码）
+-- ============================================================================
+--
 -- ----------------------------------------------------------------------------
 -- 1.1 文旅行业代码表：来源 docs/文旅行业名称与行业代码.xlsx，只存代码。
+--     63 个代码只在此维护，下游统一用 IN (SELECT indv_nm FROM industry_codes)。
 --     MaxCompute 版为 STRING、无主键、COMMENT 不带等号；每次先 DROP 再 CREATE。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS industry_codes;
-CREATE TABLE industry_codes (indv_nm STRING COMMENT '行业代码（四位国民经济行业小类）') COMMENT '文旅行业代码表';
--- 确认表已建成：能列出 indv_nm STRING 再继续
-DESC industry_codes;
+
+CREATE TABLE industry_codes (indv_nm STRING COMMENT '国民经济行业小类') COMMENT '文旅行业代码表';
+
 INSERT INTO TABLE industry_codes
 VALUES ('3471'),
     ('3931'),
@@ -114,9 +112,10 @@ VALUES ('3471'),
     ('9059'),
     ('9090'),
     ('9542');
--- 校验：结果应为 63（单独执行这一条才看得到结果集）
-SELECT COUNT(*) AS code_count
+
+SELECT COUNT(*) AS industry_code_count
 FROM industry_codes;
+
 -- ----------------------------------------------------------------------------
 -- 1.2 硬校验：确认 indv_nm 与代码表能否匹配。
 --     matched_rows 为 0 或明显偏小，说明该字段不是四位代码，SECTION 2 会筛出
@@ -135,11 +134,9 @@ FROM odps_jrsjc_pod.dw_zj_scjdgl_scztxx s
         SELECT DISTINCT indv_nm
         FROM industry_codes
     ) c ON s.indv_nm = c.indv_nm;
+
 -- ############################################################################
 -- SECTION 2  文旅经营主体筛选
--- 2.1 company       按 63 个行业代码提取，按信用代码去重留最新一条
--- 2.2 company_core  抽取核心字段，作为全链路基准表
--- 各段自带 COUNT / DESC / LIMIT 用于人工核对，逐条执行。
 -- ############################################################################
 -- 去重前核对：看同一信用代码是否确有多条记录，以及 appr_dt 能否区分新旧
 SELECT uni_social_crd_cd,
@@ -156,32 +153,33 @@ GROUP BY uni_social_crd_cd
 HAVING COUNT(*) > 1
 ORDER BY record_count DESC
 LIMIT 20;
--- 创建 company 表
+
+-- ----------------------------------------------------------------------------
+-- 2.1 创建 company 表
+--     按 63 个行业代码提取，按信用代码去重留最新一条
+-- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company;
+
 CREATE TABLE company AS
 SELECT reg_org,
-    comp_type,
-    reg_state,
-    uni_social_crd_cd,
     comp_nm,
-    addr,
-    legal_repre,
-    indv_id,
-    reg_capt,
-    capt_kind,
+    uni_social_crd_cd addr,
+    domdi_strict,
+    comp_type,
     appr_dt,
     est_dt,
-    opt_from,
-    opt_to,
-    domdi_strict,
-    indv_nm
-FROM (
+    indv_id,
+    indv_nm,
+    legal_repre,
+    reg_capt,
+    reg_org,
+    reg_state,
+    reg_state,
+    FROM (
         SELECT s.*,
             ROW_NUMBER() OVER (
                 PARTITION BY s.uni_social_crd_cd
-                ORDER BY s.appr_dt DESC,
-                    s.est_dt DESC,
-                    s.opt_from DESC
+                ORDER BY s.appr_dt DESC
             ) AS rn
         FROM odps_jrsjc_pod.dw_zj_scjdgl_scztxx s
         WHERE s.indv_nm IN (
@@ -190,6 +188,7 @@ FROM (
             )
     ) t
 WHERE rn = 1;
+
 -- MaxCompute 表存储无序，CTAS 末尾的 ORDER BY 无意义且会触发 LIMIT 校验，已删除。
 -- 显示创建结果：company 与 unique_company 应相等，否则说明去重未生效
 SELECT COUNT(*) AS company,
@@ -198,17 +197,21 @@ SELECT COUNT(*) AS company,
     COUNT(DISTINCT comp_type) AS unique_company_types,
     COUNT(DISTINCT domdi_strict) AS unique_districts
 FROM company;
+
 -- 显示表结构
 DESC company;
+
 -- 显示前10条记录
 SELECT *
 FROM company
 LIMIT 10;
--- 查看 reg_state 的所有可能值（MaxCompute 要求 ORDER BY 带 LIMIT）
+
+-- 查看 reg_state 的所有可能值
 SELECT DISTINCT reg_state
 FROM company
 ORDER BY reg_state
-LIMIT 1000;
+LIMIT 100;
+
 -- 统计每种 reg_state 的数量
 SELECT reg_state,
     COUNT(*) AS count_per_state
@@ -216,63 +219,58 @@ FROM company
 GROUP BY reg_state
 ORDER BY count_per_state DESC
 LIMIT 1000;
--- 企业核心信息
--- 创建企业核心信息表：company 已一企业一行，这里只抽取核心字段
+
+-- 企业类型分布（筛选后）：按 comp_type 原值看文旅企业的构成，供报告阶段归类
+SELECT COALESCE(comp_type, '未知') AS comp_type_value,
+    COUNT(*) AS company_count
+FROM company
+GROUP BY COALESCE(comp_type, '未知')
+ORDER BY company_count DESC
+LIMIT 1000;
+
+-- ----------------------------------------------------------------------------
+-- 2.2 创建企业核心信息表
+--     抽取核心字段，作为全链路基准表
+-- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company_core;
+
 CREATE TABLE company_core AS
-SELECT comp_type,
-    reg_state,
+SELECT comp_nm,
     uni_social_crd_cd,
-    comp_nm,
-    addr,
+    indv_nm,
     indv_id,
+    comp_type,
+    addr,
+    domdi_strict,
+    reg_org,
+    reg_state,
     reg_capt,
     est_dt,
-    indv_nm,
-    domdi_strict,
-    reg_org
-FROM company;
-SELECT COUNT(*) as core_count
+    appr_dt,
+    FROM company;
+
+SELECT COUNT(*) AS core_count
 FROM company_core;
+
+-- 显示表结构
 DESC company_core;
+
+-- 显示前10条记录
 SELECT *
 FROM company_core
 LIMIT 10;
--- ############################################################################
--- SECTION 3  企业维度扩展（一企业一行）
+
+-- ============================================================================
+-- SECTION 3  企业维度扩展
 -- 以 company_core 为基准，各扩展表平行生成、先在源表内预聚合再左连。
 -- 字段命名：*_count 次数、latest_* 最新值、nb_ 年报财务。
--- 段落：3.1 法代 / 3.2 异常 / 3.3 严重违法 / 3.4 网店 / 3.5 年报 /
---       3.6 纳税 / 3.7 纳税信用 / 3.8 失信被执行 / 3.9 处罚 /
---       3.11 股权变更 / 3.12 担保 / 3.13 社保 / 3.14 科技型小微 /
---       3.15 公共信用分 / 3.16 汇总宽表 / 3.17 校验（3.10 留空）
--- ############################################################################
--- ==========================================
--- 扩展法定代表人信息
--- ==========================================
-DROP TABLE IF EXISTS company_fddb;
-CREATE TABLE company_fddb AS
-SELECT core.*,
-    agg.fddb_nm,
-    agg.fddb_tel_num
-FROM company_core core
-    LEFT JOIN (
-        SELECT uni_social_crd_cd,
-            MAX(nm) AS fddb_nm,
-            MAX(tel_num) AS fddb_tel_num
-        FROM odps_jrsjc_pod.dw_zj_scjdgl_fddbrxx
-        WHERE lerep_sign = 1
-        GROUP BY uni_social_crd_cd
-    ) agg ON core.uni_social_crd_cd = agg.uni_social_crd_cd;
-SELECT COUNT(*) AS fddb_count
-FROM company_fddb;
-SELECT *
-FROM company_fddb
-LIMIT 10;
--- ==========================================
--- 扩展经营异常名录信息
--- ==========================================
+-- ============================================================================
+--
+-- ----------------------------------------------------------------------------
+-- 3.1 扩展经营异常名录信息
+-- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company_jyyc;
+
 CREATE TABLE company_jyyc AS
 SELECT core.*,
     COALESCE(jyyc_agg.jyyc_count, 0) AS jyyc_count,
@@ -305,15 +303,19 @@ FROM company_core core
             ) t
         GROUP BY uni_social_crd_cd
     ) jyyc_agg ON core.uni_social_crd_cd = jyyc_agg.uni_social_crd_cd;
+
 SELECT COUNT(*) AS jyyc_count
 FROM company_jyyc;
+
 SELECT *
 FROM company_jyyc
 LIMIT 10;
--- ==========================================
+
+-- ----------------------------------------------------------------------------
 -- 扩展严重违法失信企业名单信息
--- ==========================================
+-- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company_yzwf;
+
 CREATE TABLE company_yzwf AS
 SELECT core.*,
     COALESCE(yzwf_agg.yzwf_count, 0) AS yzwf_count,
@@ -339,8 +341,10 @@ FROM company_core core
             ) t
         GROUP BY uni_social_crd_cd
     ) yzwf_agg ON core.uni_social_crd_cd = yzwf_agg.uni_social_crd_cd;
+
 SELECT COUNT(*) AS yzwf_count
 FROM company_yzwf;
+
 -- 3.3 数据形态核对：abn_tm 若为 '2019-9-4' 这类非补零字符串，字典序降序会误判月份，
 --     需改用 ORDER BY TO_DATE(abn_tm, 'yyyy-MM-dd') DESC, ill_comp_id。
 SELECT abn_tm,
@@ -349,13 +353,16 @@ FROM odps_jrsjc_pod.dw_zj_scjdgl_yzwfsx
 GROUP BY abn_tm
 ORDER BY cnt DESC
 LIMIT 20;
+
 SELECT *
 FROM company_yzwf
 LIMIT 10;
+
 -- ==========================================
 -- 扩展企业年报网站或网店信息（先 ROW_NUMBER 取最新再左连，不用相关标量子查询）
 -- ==========================================
 DROP TABLE IF EXISTS company_wzwd;
+
 CREATE TABLE company_wzwd AS
 SELECT core.*,
     w.web_store_url AS wzwd_url
@@ -375,16 +382,20 @@ FROM company_core core
             ) t
         WHERE rn = 1
     ) w ON core.uni_social_crd_cd = w.uni_social_crd_cd;
+
 SELECT COUNT(*) AS wzwd_count
 FROM company_wzwd;
+
 SELECT *
 FROM company_wzwd
 LIMIT 10;
+
 -- ==========================================
 -- 扩展企业年报资产信息：只取不晚于 2025 年度的最新年报，annual_year 先 CAST。
 -- 本段口径为“不晚于 2025”，8.1 遴选要求恰为 2025，两处差异见 README。
 -- ==========================================
 DROP TABLE IF EXISTS company_nb;
+
 CREATE TABLE company_nb AS
 SELECT core.*,
     nb_latest.asset_zmt,
@@ -408,36 +419,43 @@ FROM company_core core
                 PARTITION BY uni_social_crd_cd
                 ORDER BY annual_year DESC,
                     annual_id
-            ) as rn
+            ) AS rn
         FROM odps_jrsjc_pod.dw_nb_scjdgl_qynbzcxx
         WHERE CAST(annual_year AS BIGINT) <= 2025
     ) nb_latest ON core.uni_social_crd_cd = nb_latest.uni_social_crd_cd
     AND nb_latest.rn = 1;
+
 -- SELECT * FROM odps_jrsjc_pod.dw_nb_scjdgl_qynbzcxx LIMIT 10;
 SELECT COUNT(*) AS nb_count
 FROM company_nb;
+
 SELECT *
 FROM company_nb
 WHERE nb_year IS NOT NULL
 LIMIT 100;
+
 SELECT *
 FROM company_nb
 WHERE CAST(nb_year AS BIGINT) >= 2020
 LIMIT 100;
+
 SELECT COUNT(*) AS nb_year_not_zero_count
 FROM company_nb
 WHERE nb_year IS NOT NULL
     AND CAST(nb_year AS BIGINT) <> 0;
+
 SELECT AVG(asset_zmt) AS avg_asset_zmt_2019
 FROM company_nb
 WHERE CAST(nb_year AS BIGINT) = 2019
     AND nb_year IS NOT NULL
     AND asset_zmt > 10
     AND asset_zmt < 10000;
+
 -- ==========================================
 -- 扩展纳税信息
 -- ==========================================
 DROP TABLE IF EXISTS company_ns;
+
 CREATE TABLE company_ns AS
 SELECT core.*,
     ns_latest.tax_amt,
@@ -453,19 +471,23 @@ FROM company_core core
                 PARTITION BY uni_social_crd_cd
                 ORDER BY count_dt DESC,
                     tax_amt
-            ) as rn
+            ) AS rn
         FROM odps_jrsjc_pod.dw_nb_sw_nsxx
     ) ns_latest ON core.uni_social_crd_cd = ns_latest.uni_social_crd_cd
     AND ns_latest.rn = 1;
+
 SELECT COUNT(*) AS ns_count
 FROM company_ns;
+
 SELECT *
 FROM company_ns
 LIMIT 10;
+
 -- ==========================================
 -- 扩展信用评价信息（A级纳税人）
 -- ==========================================
 DROP TABLE IF EXISTS company_xypj;
+
 CREATE TABLE company_xypj AS
 SELECT core.*,
     xypj_latest.tax_credi_level,
@@ -483,15 +505,19 @@ FROM company_core core
         FROM odps_jrsjc_pod.dw_nb_sw_xypjxxa
     ) xypj_latest ON core.uni_social_crd_cd = xypj_latest.uni_social_crd_cd
     AND xypj_latest.rn = 1;
+
 SELECT COUNT(*) AS xypj_count
 FROM company_xypj;
+
 SELECT *
 FROM company_xypj
 LIMIT 10;
+
 -- ==========================================
 -- 扩展失信被执行人信息
 -- ==========================================
 DROP TABLE IF EXISTS company_sxr;
+
 CREATE TABLE company_sxr AS
 SELECT core.*,
     COALESCE(sxr_agg.sxr_count, 0) AS sxr_count,
@@ -531,6 +557,7 @@ FROM company_core core
             ) t
         GROUP BY uni_social_crd_cd
     ) sxr_agg ON core.uni_social_crd_cd = sxr_agg.uni_social_crd_cd;
+
 -- 3.8 关联键核对：dw_zj_fzgg_sxbzxrxx.uni_social_crd_cd 字典标为“组织机构代码”，
 --     matched_company 明显偏低时 sxr_count 不可信，需先确认真实关联字段。
 SELECT COUNT(*) AS total_company,
@@ -541,15 +568,19 @@ SELECT COUNT(*) AS total_company,
         END
     ) AS matched_company
 FROM company_sxr;
+
 SELECT COUNT(*) AS sxr_count
 FROM company_sxr;
+
 SELECT *
 FROM company_sxr
 LIMIT 10;
+
 -- ==========================================
 -- 扩展行政处罚信息（最终表）
 -- ==========================================
 DROP TABLE IF EXISTS company_xzcf;
+
 CREATE TABLE company_xzcf AS
 SELECT core.*,
     COALESCE(xzcf_agg.xzcf_count, 0) AS xzcf_count,
@@ -589,16 +620,20 @@ FROM company_core core
             ) t
         GROUP BY uni_social_crd_cd
     ) xzcf_agg ON core.uni_social_crd_cd = xzcf_agg.uni_social_crd_cd;
+
 SELECT COUNT(*) AS xzcf_count
 FROM company_xzcf;
+
 SELECT *
 FROM company_xzcf
 LIMIT 10;
+
 -- ----------------------------------------------------------------------------
 -- 3.11 股权变更补建：源表 odps_jrsjc_pod.dw_nb_scjdgl_gqbg，先在源表按信用代码
 --      聚合保证一企业一行，再 LEFT JOIN（字段见 tables.md）。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company_gqbg;
+
 CREATE TABLE company_gqbg AS
 SELECT core.*,
     COALESCE(agg.gqbg_count, 0) AS gqbg_count,
@@ -611,6 +646,7 @@ FROM company_core core
         FROM odps_jrsjc_pod.dw_nb_scjdgl_gqbg
         GROUP BY uni_social_crd_cd
     ) agg ON core.uni_social_crd_cd = agg.uni_social_crd_cd;
+
 -- 3.11 关联命中率核对：为 0 说明源表关联键不是统一社会信用代码
 SELECT COUNT(*) AS total_company,
     SUM(
@@ -620,11 +656,13 @@ SELECT COUNT(*) AS total_company,
         END
     ) AS matched_company
 FROM company_gqbg;
+
 -- ----------------------------------------------------------------------------
 -- 3.12 对外担保
 --      取年报年度最新一条担保记录，同时统计担保记录数。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company_db;
+
 CREATE TABLE company_db AS
 SELECT core.*,
     COALESCE(agg.db_count, 0) AS db_count,
@@ -657,13 +695,16 @@ FROM company_core core
             ) t
         GROUP BY uni_social_crd_cd
     ) agg ON core.uni_social_crd_cd = agg.uni_social_crd_cd;
+
 SELECT COUNT(*) AS db_count
 FROM company_db;
+
 -- ----------------------------------------------------------------------------
 -- 3.13 社会保险参保：源表 dw_nb_rlsb_sbjylyshbxjbxx 按 pens_pay_ym 取最新一条。
 --      该表无 issue_end_dt，字段以官方字典为准。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company_sb_jbxx;
+
 CREATE TABLE company_sb_jbxx AS
 SELECT core.*,
     sb.pens_num,
@@ -694,14 +735,17 @@ FROM company_core core
             ) t
         WHERE rn = 1
     ) sb ON core.uni_social_crd_cd = sb.uni_social_crd_cd;
+
 SELECT COUNT(*) AS sb_count
 FROM company_sb_jbxx;
+
 -- ----------------------------------------------------------------------------
 -- 3.14 科技型小微：源表无 uni_social_crd_cd，按 comp_nm 关联；先按名称聚合取
 --      最早认定年份。源字段 congniz_tear 输出别名 congniz_year。
 --      名称匹配覆盖率偏低，两侧 TRIM，全半角差异仍需另行清洗。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company_kjzx;
+
 CREATE TABLE company_kjzx AS
 SELECT core.*,
     agg.congniz_year
@@ -712,13 +756,16 @@ FROM company_core core
         FROM odps_jrsjc_pod.dw_nb_kj_sgczkjxzxqy
         GROUP BY TRIM(comp_nm)
     ) agg ON TRIM(core.comp_nm) = agg.comp_nm_key;
+
 SELECT COUNT(*) AS kjzx_count
 FROM company_kjzx;
+
 -- ----------------------------------------------------------------------------
 -- 3.15 公共信用分：取 dw_nb_dsj_xypjxx 的信用分，评价日期字段 evalu_dt，
 --      输出别名 eval_dt（与 3.7 的 eval_dt 不是同一字段）。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company_cred;
+
 CREATE TABLE company_cred AS
 SELECT core.*,
     agg.cred_scard,
@@ -739,13 +786,16 @@ FROM company_core core
             ) t
         WHERE rn = 1
     ) agg ON core.uni_social_crd_cd = agg.uni_social_crd_cd;
+
 SELECT COUNT(*) AS cred_count
 FROM company_cred;
+
 -- ----------------------------------------------------------------------------
 -- 3.16 汇总宽表 company_profile：按信用代码拼 14 张平行扩展表，供统计与导出。
 --      缺 company_gqbg（3.11）会报 Table not found。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS company_profile;
+
 CREATE TABLE company_profile AS
 SELECT c.uni_social_crd_cd,
     c.comp_nm,
@@ -814,6 +864,7 @@ FROM company_core c
     LEFT JOIN company_db d ON c.uni_social_crd_cd = d.uni_social_crd_cd
     LEFT JOIN company_sb_jbxx sb ON c.uni_social_crd_cd = sb.uni_social_crd_cd
     LEFT JOIN company_kjzx kj ON c.uni_social_crd_cd = kj.uni_social_crd_cd;
+
 -- 3.17 扩展结果校验：三个数字应当完全相等，否则说明有表出现了一对多膨胀
 --      MaxCompute 不支持无 FROM 的多个标量子查询，改用 CROSS JOIN 聚合结果。
 SELECT a.core_rows,
@@ -828,6 +879,7 @@ FROM (
             COUNT(DISTINCT uni_social_crd_cd) AS profile_unique
         FROM company_profile
     ) b;
+
 -- ############################################################################
 -- SECTION 4  文旅企业统计（统一口径）
 -- 基于 company_profile 全量，每段输出一行“统计类别 + 指标列”的宽表。
@@ -840,6 +892,7 @@ SELECT '基础数据' AS statistics_category,
     COUNT(DISTINCT comp_type) AS company_type_count,
     COUNT(DISTINCT domdi_strict) AS district_count
 FROM company_profile;
+
 -- 4.2 企业家数：各类监管、信用、经营特征覆盖多少家企业
 SELECT '企业家数统计' AS statistics_category,
     COUNT(*) AS total_company,
@@ -904,6 +957,7 @@ SELECT '企业家数统计' AS statistics_category,
         END
     ) AS company_with_social_insurance
 FROM company_profile;
+
 -- 4.3 经营状况：只看有财务或纳税数据的企业，均值与合计
 --     年报财务（nb_*）与税务纳税（tax_amt / sale_inco）分开列示。
 SELECT '经营状况统计' AS statistics_category,
@@ -923,6 +977,7 @@ FROM company_profile
 WHERE asset_zmt IS NOT NULL
     OR nb_opt_income_total IS NOT NULL
     OR tax_amt IS NOT NULL;
+
 -- 4.4 社保参与：参保企业数、参保率、五险平均参保人数
 SELECT '社保参与统计' AS statistics_category,
     COUNT(*) AS total_company,
@@ -953,6 +1008,7 @@ SELECT '社保参与统计' AS statistics_category,
     ROUND(AVG(injury_num), 2) AS avg_work_injury_insurance_count,
     ROUND(AVG(materni_num), 2) AS avg_maternity_insurance_count
 FROM company_profile;
+
 -- 4.5 变更活动：人均各类监管与变更记录数
 SELECT '企业变更活动统计' AS statistics_category,
     COUNT(*) AS total_company,
@@ -963,6 +1019,7 @@ SELECT '企业变更活动统计' AS statistics_category,
     ROUND(AVG(db_count), 2) AS avg_guarantee_records,
     ROUND(AVG(xzcf_count), 2) AS avg_penalty_records
 FROM company_profile;
+
 -- 4.6 信用状况：纳税信用等级分布，以及公共信用评价覆盖率
 SELECT '企业信用状况统计' AS statistics_category,
     COUNT(*) AS total_company,
@@ -1015,6 +1072,7 @@ SELECT '企业信用状况统计' AS statistics_category,
         2
     ) AS credit_evaluation_rate
 FROM company_profile;
+
 -- 4.7 成立时间分布：四个时间段的企业数与占比
 --     增加“成立日期缺失”一列：原写法下四个时间段之和可能小于总数、四段
 --     百分比相加不足 100%，原因无法从结果里看出来。
@@ -1099,6 +1157,7 @@ SELECT '企业成立时间分布' AS statistics_category,
         2
     ) AS percentage_without_est_dt
 FROM company_profile;
+
 -- 4.8 行业分布：企业数最多的 20 个行业小类
 --     分母原来是 SELECT 列表里的标量子查询，改为 CROSS JOIN 聚合结果，
 --     MaxCompute 与 MySQL 都能稳定执行；GROUP BY 时用 MAX(t.total_company) 取值。
@@ -1114,6 +1173,7 @@ FROM company_profile p
 GROUP BY p.indv_nm
 ORDER BY company_count DESC
 LIMIT 20;
+
 -- ############################################################################
 -- SECTION 5  区域结构（统一文旅口径）
 -- 数据取自 company_profile，行业小类分布见 4.8 与 6.4。
@@ -1131,6 +1191,7 @@ FROM company_profile p
 GROUP BY COALESCE(p.domdi_strict, '未填写')
 ORDER BY company_count DESC
 LIMIT 1000;
+
 -- 5.2 按登记机关分布
 SELECT COALESCE(reg_org, '未填写') AS reg_org,
     COUNT(*) AS company_count
@@ -1138,6 +1199,7 @@ FROM company_profile
 GROUP BY COALESCE(reg_org, '未填写')
 ORDER BY company_count DESC
 LIMIT 1000;
+
 -- ############################################################################
 -- SECTION 6  报告取数（统一文旅口径）
 -- 基于 SECTION 2 的 company，先建 rpt_wenlv，再出各口径数字。
@@ -1147,6 +1209,7 @@ LIMIT 1000;
 --     MaxCompute 表存储无序，CTAS 末尾不写 ORDER BY。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS rpt_wenlv;
+
 CREATE TABLE rpt_wenlv AS
 SELECT c.uni_social_crd_cd,
     c.comp_nm,
@@ -1157,6 +1220,7 @@ SELECT c.uni_social_crd_cd,
     c.est_dt,
     c.domdi_strict
 FROM company c;
+
 -- 校验：rpt_wenlv 行数应与 company 一致
 SELECT a.company_rows,
     b.rpt_wenlv_rows
@@ -1168,12 +1232,14 @@ FROM (
         SELECT COUNT(*) AS rpt_wenlv_rows
         FROM rpt_wenlv
     ) b;
+
 -- ----------------------------------------------------------------------------
 -- 6.2 报告核心数字：经营主体总量与企业类型取值数（分类见 6.5）。
 -- ----------------------------------------------------------------------------
 SELECT COUNT(DISTINCT uni_social_crd_cd) AS total_wenlv_company,
     COUNT(DISTINCT comp_type) AS comp_type_value_count
 FROM rpt_wenlv;
+
 -- ----------------------------------------------------------------------------
 -- 6.3 行业覆盖度：63 个行业代码中实际覆盖了多少个
 -- ----------------------------------------------------------------------------
@@ -1188,6 +1254,7 @@ FROM rpt_wenlv r
         SELECT COUNT(*) AS total_industry_count
         FROM industry_codes
     ) c;
+
 -- ----------------------------------------------------------------------------
 -- 6.4 企业数量最多的 10 个行业小类（按行业代码）
 -- ----------------------------------------------------------------------------
@@ -1205,6 +1272,7 @@ FROM rpt_wenlv r
 GROUP BY r.indv_nm
 ORDER BY company_count DESC
 LIMIT 10;
+
 -- ----------------------------------------------------------------------------
 -- 6.5 企业类型与登记状态分布
 --     企业类型直接按市场主体总表的 comp_type 原值分组，供报告阶段自行归类。
@@ -1215,12 +1283,14 @@ FROM rpt_wenlv
 GROUP BY COALESCE(comp_type, '未知')
 ORDER BY company_count DESC
 LIMIT 1000;
+
 SELECT COALESCE(reg_state, '未知') AS reg_state,
     COUNT(DISTINCT uni_social_crd_cd) AS company_count
 FROM rpt_wenlv
 GROUP BY COALESCE(reg_state, '未知')
 ORDER BY company_count DESC
 LIMIT 1000;
+
 -- ----------------------------------------------------------------------------
 -- 6.6 社会贡献与信用：取自 SECTION 3 的 company_profile。
 -- ----------------------------------------------------------------------------
@@ -1259,6 +1329,7 @@ SELECT COUNT(*) AS total_company,
         END
     ) AS with_credit_score
 FROM company_profile;
+
 -- ############################################################################
 -- SECTION 7  执行后核对清单
 -- ############################################################################
@@ -1279,6 +1350,7 @@ UNION ALL
 SELECT 'rpt_wenlv',
     COUNT(*)
 FROM rpt_wenlv;
+
 -- 7.2 统一口径核对：四张表的去重企业数应当完全一致。
 --     原写法是 4 个无 FROM 的标量子查询，MaxCompute 不支持，改 CROSS JOIN。
 --     注意本条只比去重数；JOIN 膨胀要靠 3.17 与 7.1 的 COUNT(*) 才能发现。
@@ -1302,9 +1374,11 @@ FROM (
         SELECT COUNT(DISTINCT uni_social_crd_cd) AS rpt_count
         FROM rpt_wenlv
     ) d;
+
 -- 7.3 行业覆盖度：宁波文旅主体实际覆盖的国民经济行业小类数。
 SELECT COUNT(DISTINCT indv_nm) AS covered_industry_count
 FROM rpt_wenlv;
+
 -- 7.4 抽查扩展表的空值情况，判断是源表确实没有数据还是关联键没对上。
 SELECT COUNT(*) AS total_company,
     SUM(
@@ -1350,6 +1424,7 @@ SELECT COUNT(*) AS total_company,
         END
     ) AS with_equity_change
 FROM company_profile;
+
 -- ############################################################################
 -- SECTION 8  信用质量较好企业遴选（TOP 3000）
 -- 候选池取 company_profile；删除情形 xzcf_count / yzwf_count / jyyc_count /
@@ -1360,6 +1435,7 @@ FROM company_profile;
 -- 8.1 候选池：逐项打删除标记，excl_no_2025_asset 为数据时点标记。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS selection_pool;
+
 CREATE TABLE selection_pool AS
 SELECT p.uni_social_crd_cd,
     p.comp_nm,
@@ -1395,13 +1471,16 @@ SELECT p.uni_social_crd_cd,
         ELSE 1
     END AS excl_no_2025_asset
 FROM company_profile p;
+
 SELECT COUNT(*) AS pool_count
 FROM selection_pool;
+
 -- ----------------------------------------------------------------------------
 -- 8.2 通过删除条件与时点要求的企业，按资产规模与社保人数分别排名
 --     RANK 让取值相同的企业共用一个名次，避免并列被随机拆开。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS selection_ranked;
+
 CREATE TABLE selection_ranked AS
 SELECT t.*,
     RANK() OVER (
@@ -1419,13 +1498,16 @@ FROM (
             AND s.excl_sxr = 0
             AND s.excl_no_2025_asset = 0
     ) t;
+
 SELECT COUNT(*) AS ranked_count
 FROM selection_ranked;
+
 -- ----------------------------------------------------------------------------
 -- 8.3 最终名单：综合名次升序取前 3000 名
 --     末尾 ORDER BY 带 LIMIT 3000，符合 MaxCompute 的 ORDER BY 校验。
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS selected_top3000;
+
 CREATE TABLE selected_top3000 AS
 SELECT ROW_NUMBER() OVER (
         ORDER BY r.asset_rank + r.social_rank,
@@ -1454,8 +1536,10 @@ ORDER BY r.asset_rank + r.social_rank,
     r.pens_num DESC,
     r.uni_social_crd_cd
 LIMIT 3000;
+
 SELECT COUNT(*) AS selected_rows
 FROM selected_top3000;
+
 -- 8.4 删除过程核对：四类情形分别命中多少家，另有几家取不到 2025 年末资产
 SELECT COUNT(*) AS pool_total,
     SUM(excl_xzcf) AS excl_xzcf_company,
@@ -1474,6 +1558,7 @@ SELECT COUNT(*) AS pool_total,
         END
     ) AS eligible_company
 FROM selection_pool;
+
 -- 8.5 名单核对：应为 3000 家且无重复；不足 3000 说明合格企业数不够。
 --     asset_from_2025_report 应等于入选家数，without_asset_data 应为 0。
 SELECT COUNT(*) AS selected_rows,
@@ -1504,6 +1589,7 @@ SELECT COUNT(*) AS selected_rows,
         END
     ) AS without_social_data
 FROM selected_top3000;
+
 -- 8.6 残留检查：入选名单里不应有任一删除情形，也不应缺 2025 年末资产，结果应为 0
 SELECT COUNT(*) AS residual_excluded
 FROM selected_top3000 s
@@ -1513,6 +1599,7 @@ WHERE p.excl_xzcf = 1
     OR p.excl_jyyc = 1
     OR p.excl_sxr = 1
     OR p.excl_no_2025_asset = 1;
+
 -- ----------------------------------------------------------------------------
 -- 8.7 基准日核对：财务年度不应晚于 2025；若企业停在往年，报告统计仍会用其数据，
 --     引用时须注明年度口径。第二条看有无晚于 2025-12-31 成立的企业。
@@ -1529,6 +1616,7 @@ FROM company_profile
 GROUP BY nb_year
 ORDER BY nb_year DESC
 LIMIT 100;
+
 SELECT SUM(
         CASE
             WHEN est_dt > '2025-12-31' THEN 1
@@ -1543,6 +1631,7 @@ SELECT SUM(
     ) AS company_without_est_dt,
     MAX(est_dt) AS latest_est_dt
 FROM company_profile;
+
 -- 名单预览
 SELECT *
 FROM selected_top3000

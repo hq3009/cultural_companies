@@ -1,1175 +1,2456 @@
 # 表名和字段名汇总
 
-## 源表中文名和标准表名
+本文件以 `docs/数据库结构与字段表/金融主题库字段表_20250715.xlsx` 为准，用于查询标准表名与字段名。字段清单按 Excel 中每张清单自己标注的表名归档，不使用工作表编号。只收录标注为 `dw_*` 的标准表，标注为 `v_ods_` 或 `v_stg_` 的贴源层清单未收录。字段名统一转小写，并把 Excel 中因排版产生的空格按连续下划线规范化；中文字段名、数据类型、样例数据照录 Excel。
 
-| 源表中文名                                               | 标准表名                   |
-| -------------------------------------------------------- | -------------------------- |
-| 市场主体信息（含个体）                                   | dw_zj_scjdgl_scztxx        |
-| 法定代表人信息                                           | dw_zj_scjdgl_fddbrxx       |
-| 经营异常名录信息                                         | dw_zj_scjdgl_jyycmlxx      |
-| 严重违法失信企业名单信息                                 | dw_zj_scjdgl_yzwfsx        |
-| 宁波市市场监督领域企业年报网站或网店信息                 | dw_nb_scjdgl_qynbwzhwdxx   |
-| 行政处罚公示信息                                         | dw_nb_scjdgl_xzcfgsxx      |
-| 股权变更公示信息                                         | dw_nb_scjdgl_gqbg          |
-| 宁波市市场监督领域小微企业名录基本信息                   | dw_nb_scjdgl_xwqymljbxx    |
-| 行政许可公示信息                                         | dw_nb_scjdgl_xzxk          |
-| 餐饮经营许可证信息                                       | dw_nb_scjdgl_cyjyxkzxx     |
-| 企业年报资产信息                                         | dw_nb_scjdgl_qynbzcxx      |
-| 知识产权出质登记公示信息                                 | dw_nb_scjdgl_zscqczdj      |
-| 宁波市市场监督领域企业年报对外提供保证担保信息           | dw_nb_scjdgl_dwtgbzdbxx    |
-| 宁波市市场监督领域企业年报股东及出资信息                 | dw_nb_scjdgl_qynbgdjczxx   |
-| 个体经营异常标记信息                                     | dw_nb_scjdgl_gtjyycbjxx    |
-| 宁波市市场监督领域企业公示\_出资人认缴明细信息           | dw_nb_scjdgl_czrrjmxxx     |
-| 宁波市市场监督领域企业公示\_出资人实缴明细信息           | dw_nb_scjdgl_czrsjmxxx     |
-| 宁波市年报信息                                           | dw_nb_sgzw_nbxx            |
-| 宁波市财税金融领域金融许可证信息                         | dw_nb_ybj_jrxkxx           |
-| 社保缴纳信息                                             | dw_nb_sw_sbjnxx            |
-| 企业公积金年度缴存信息                                   | dw_zj_js_qygjjndjcxx       |
-| 企业公积金月度缴存信息                                   | dw_zj_js_qygjjydjcxx       |
-| 高新技术企业信息（新）                                   | dw_nb_kj_gxjsqyxx          |
-| 省级科技型中小企业信息（数改）                           | dw_nb_kj_sjkjxzxqyxx       |
-| 宁波市科技型小微企业信息                                 | dw_nb_kj_nbskjxxwqyxx      |
-| 省高成长科技型中小企业信息                               | dw_nb_kj_sgczkjxzxqy       |
-| 处罚基本信息                                             | dw_zj_fzgg_cfjbxx          |
-| 行政处罚决定信息                                         | dw_zj_fzgg_xzcfjdxx        |
-| 失信被执行人信息                                         | dw_zj_fzgg_sxbzxrxx        |
-| 欠缴水费的企业信息                                       | dw_nb_sl_qjsfqyxx          |
-| 宁波市用户每月用水量信息（法人）                         | dw_nb_zhzf_fryssjxx        |
-| 宁波市用户每月用气量信息（法人）                         | dw_nb_zhzf_fryqsjxx        |
-| 信用评价信息                                             | dw_nb_dsj_xypjxx           |
-| 企业资质证书信息                                         | dw_nb_jt_qyzhzsxx          |
-| 宁波市财税金融领域纳税人基础信息                         | dw_nb_sw_nsrjcxx           |
-| 宁波市财税金融领域公共信用纳税非正常户认定信息           | dw_nb_sw_fzchrd            |
-| 宁波市财税金融领域企业税款征收信息                       | dw_nb_sw_qyskzsxx          |
-| 宁波市财税金融领域税务重大税收违法黑名单信息             | dw_nb_sw_zdsswfhmd         |
-| 宁波市公共信用欠税信息                                   | dw_nb_sw_qsxx              |
-| 宁波市财税金融领域公共信用纳税信用等级信息               | dw_nb_sw_nsxydjxx          |
-| 宁波市财税金融领域新行政处罚信息                         | dw_nb_sw_csjrxzcfxx        |
-| 宁波市财税金融领域新税务稽查信息                         | dw_nb_sw_csjrswjcxx        |
-| 宁波市企业注销信息                                       | dw_nb_scjdgl_qyzxxx        |
-| 宁波市企业变更公示信息                                   | dw_nb_scjdgl_qybggs        |
-| 宁波市财税金融领域税务变更信息                           | dw_nb_swbgxx               |
-| 宁波市信用服务领域航运物流企业信用等级信息               | dw_nb_hywlqyxydjxx         |
-| 省回流-宁波市高级专业技术职务任职资格证书信息            | dw_shl_gjzyjszwrzzgzsxx    |
-| 省回流-宁波市个人未履行生效裁判信息                      | dw_shl_grwlxsxcpxx         |
-| 省回流-宁波市企业未履行生效裁判信息                      | dw_shl_qywlxsxcpxx         |
-| 省回流-宁波市统一社会信用代码信息（国家下发数据）        | dw_shl_tyshxydmxxgjxf      |
-| 省回流-宁波市全省双公示行政处罚归集信息                  | dw_shl_sgsxzcf             |
-| 省回流-宁波市全省双公示行政许可归集信息                  | dw_shl_sgsxzxk             |
-| 纳税信息                                                 | dw_nb_sw_nsxx              |
-| 信用评价信息（a级纳税人）                                | dw_nb_sw_xypjxxa           |
-| 企业社保参保人数信息                                     | dw_nb_rlsb_qysbcbrsxx      |
-| 宁波市社保就业领域社会保险基本信息                       | dw_nb_rlsb_sbjylyshbxjbxx  |
-| 宁波市社保就业领域个体劳动者（灵活就业人员）参保登记信息 | dw_nb_rlsb_gtldzcbdjxx     |
-| 宁波市社保就业领域参保个人应缴失业保险费核定信息         | dw_nb_rlsb_cbgryjsybxfhdxx |
-| 宁波市社保就业领域人员参保信息                           | dw_nb_rlsb_sbjylyrycbxx    |
-| 省回流-宁波市a级纳税人信息（国家下发数据）               | dw_shl_ajnsrxx             |
-| 省回流-宁波市企业注销登记信息                            | dw_shl_qyzxdjxx            |
-| 省回流-宁波市企业环境行为信用评价信息                    | dw_shl_qyhjxwxypjxx        |
+## 目录
 
-## dw_zj_scjdgl_scztxx - 市场主体信息（含个体）
+| 标准表名 | 中文名 | 字段数 |
+| --- | --- | --- |
+| `dw_zj_scjdgl_scztxx` | 市场主体信息（含个体) | 31 |
+| `dw_zj_scjdgl_fddbrxx` | 法定代表人信息 | 19 |
+| `dw_zj_scjdgl_jyycmlxx` | 经营异常名录信息 | 11 |
+| `dw_zj_scjdgl_yzwfsx` | 严重违法失信企业名单信息 | 13 |
+| `dw_nb_scjdgl_qynbwzhwdxx` | 宁波市市场监督领域企业年报网站或网店信息 | 19 |
+| `dw_nb_scjdgl_xzcfgsxx` | 行政处罚公示信息 | 10 |
+| `dw_nb_scjdgl_gqbg` | 股权变更公示信息 | 8 |
+| `dw_nb_scjdgl_xwqymljbxx` | 宁波市市场监督领域小微企业名录基本信息 | 9 |
+| `dw_nb_scjdgl_xzxk` | 行政许可公示信息 | 10 |
+| `dw_nb_scjdgl_cyjyxkzxx` | 餐饮经营许可证信息 | 3 |
+| `dw_nb_scjdgl_qynbzcxx` | 企业年报资产信息 | 12 |
+| `dw_nb_scjdgl_zscqczdj` | 知识产权出质登记公示信息 | 10 |
+| `dw_nb_scjdgl_dwtgbzdbxx` | 宁波市市场监督领域企业年报对外提供保证担保信息 | 15 |
+| `dw_nb_scjdgl_qynbgdjczxx` | 宁波市市场监督领域企业年报股东及出资信息 | 15 |
+| `dw_nb_scjdgl_spjyxkz` | 食品经营许可证 | 16 |
+| `dw_nb_scjdgl_gtjyycbjxx` | 个体经营异常标记信息 | 7 |
+| `dw_nb_scjdgl_czrrjmxxx` | 宁波市市场监督领域企业公示_出资人认缴明细信息 | 11 |
+| `dw_nb_scjdgl_czrsjmxxx` | 宁波市市场监督领域企业公示_出资人实缴明细信息 | 11 |
+| `dw_nb_scjdgl_scjdlyllyxx` | 宁波市市场监督领域联络员信息 | 10 |
+| `dw_nb_sgzw_nbxx` | 宁波市年报信息 | 29 |
+| `dw_nb_ybj_jrxkxx` | 宁波市财税金融领域金融许可证信息 | 9 |
+| `dw_nb_sw_sbjnxx` | 社保缴纳信息 | 9 |
+| `dw_zj_js_qygjjndjcxx` | 企业公积金年度缴存信息 | 6 |
+| `dw_zj_js_qygjjydjcxx` | 企业公积金月度缴存信息 | 7 |
+| `dw_nb_kj_gxjsqyxx` | 高新技术企业信息（新） | 13 |
+| `dw_nb_kj_sjkjxzxqyxx` | 省级科技型中小企业信息（数改） | 4 |
+| `dw_nb_kj_nbskjxxwqyxx` | 宁波市科技型小微企业信息 | 5 |
+| `dw_nb_kj_sgczkjxzxqy` | 省高成长科技型中小企业信息 | 5 |
+| `dw_zj_fzgg_cfjbxx` | 处罚基本信息 | 46 |
+| `dw_zj_fzgg_xzcfjdxx` | 行政处罚决定信息 | 19 |
+| `dw_zj_fzgg_sxbzxrxx` | 失信被执行人信息 | 23 |
+| `dw_nb_sl_slswlyqypjxx` | 宁波市水利水务领域企业评价信息 | 6 |
+| `dw_nb_sl_qjsfqyxx` | 欠缴水费的企业信息 | 10 |
+| `dw_nb_zhzf_fryssjxx` | 宁波市用户每月用水量信息（法人） | 7 |
+| `dw_nb_zhzf_fryqsjxx` | 宁波市用户每月用气量信息（法人） | 16 |
+| `dw_nb_sthj_wxfwjyxk` | 危险废物经营许可证 | 20 |
+| `dw_nb_dsj_xypjxx` | 信用评价信息 | 6 |
+| `dw_nb_jt_qyzhzsxx` | 企业资质证书信息 | 5 |
+| `dw_nb_sw_nsrjcxx` | 宁波市财税金融领域纳税人基础信息 | 9 |
+| `dw_nb_sw_fzchrd` | 宁波市财税金融领域公共信用纳税非正常户认定信息 | 5 |
+| `dw_nb_sw_qyskzsxx` | 宁波市财税金融领域企业税款征收信息 | 11 |
+| `dw_nb_sw_zdsswfhmd` | 宁波市财税金融领域税务重大税收违法黑名单信息 | 13 |
+| `dw_nb_sw_qsxx` | 宁波市公共信用欠税信息 | 7 |
+| `dw_nb_sw_nsxydjxx` | 宁波市财税金融领域公共信用纳税信用等级信息 | 10 |
+| `dw_nb_sw_csjrxzcfxx` | 宁波市财税金融领域新行政处罚信息 | 9 |
+| `dw_nb_sw_csjrswjcxx` | 宁波市财税金融领域新税务稽查信息 | 12 |
+| `dw_nb_scjdgl_qyzxxx` | 宁波市企业注销信息 | 0 |
+| `dw_nb_scjdgl_qybggs` | 宁波市企业变更公示信息 | 0 |
+| `dw_zj_ga_ldrkjbxx` | 流动人口基本信息 | 23 |
+| `dw_zj_ga_czrkhk` | 中华人民共和国常住人口户口簿 | 35 |
+| `dw_zj_js_gjjgrjcxx` | 公积金个人缴存信息 | 16 |
+| `dw_zj_js_gjjgrdkxx` | 公积金个人贷款信息 | 13 |
+| `dw_nb_yb_cxjmjbylbxcbdj` | 宁波市医疗卫生领域城乡居民基本医疗保险参保登记信息 | 7 |
+| `dw_nb_yb_cxjmjbylbxjfxx` | 宁波市医疗卫生领域城乡居民基本医疗保险参保人员缴费信息 | 15 |
+| `dw_nb_rlsb_gryjjbylbxhdxx` | 宁波市社会保险管理个人参保月缴费明细信息 | 25 |
+| `dw_nb_swbgxx` | 宁波市财税金融领域税务变更信息 | 8 |
+| `dw_nb_hywlqyxydjxx` | 宁波市信用服务领域航运物流企业信用等级信息 | 14 |
+| `dw_shl_gjzyjszwrzzgzsxx` | 省回流-宁波市高级专业技术职务任职资格证书信息 | 41 |
+| `dw_shl_grwlxsxcpxx` | 省回流-宁波市个人未履行生效裁判信息 | 22 |
+| `dw_shl_hjyxbgbspyjxx` | 省回流-宁波市建设项目环境影响报告表审批意见信息 | 19 |
+| `dw_shl_qywlxsxcpxx` | 省回流-宁波市企业未履行生效裁判信息 | 24 |
+| `dw_shl_rskswjxx` | 省回流-宁波市人事考试违纪信息 | 11 |
+| `dw_shl_tyshxydmxxgjxf` | 省回流-宁波市统一社会信用代码信息（国家下发数据） | 5 |
+| `dw_shl_scjrxxgjxf` | 省回流-宁波市证监领域市场禁入信息（国家下发数据） | 15 |
+| `dw_shl_sgsxzcf` | 省回流-宁波市全省双公示行政处罚归集信息 | 0 |
+| `dw_shl_sgsxzxk` | 省回流-宁波市全省双公示行政许可归集信息 | 48 |
+| `dw_shl_gjjgrdkxx` | 省回流-公积金个人贷款信息 | 13 |
+| `dw_nb_shfwlyxfjxx` | 宁波市生活服务领域12345信访件信息 | 18 |
+| `dw_shl_smdxfblbdxx` | 省回流-宁波市省矛调信访办理表单信息 | 12 |
+| `dw_shl_smdxfslbdxx` | 省回流-宁波市省矛调信访受理表单信息 | 21 |
+| `dw_shl_xfrzdryxx` | 省回流-宁波市信访人重点人员信息 | 4 |
+| `dw_shl_xfjblgkxx` | 省回流-信访件办理公开信息 | 19 |
+| `dw_shl_xfjxfsxxx` | 省回流-信访件信访事项信息 | 103 |
+| `dw_shl_xfjxfsxbljlxx` | 省回流-信访件信访事项办理记录信息 | 51 |
+| `dw_nb_sw_nsxx` | 纳税信息 | 10 |
+| `dw_nb_sw_xypjxxa` | 信用评价信息（A级纳税人） | 14 |
+| `dw_nb_rlsb_qysbcbrsxx` | 企业社保参保人数信息 | 10 |
+| `dw_nb_rlsb_sbjylyshbxjbxx` | 宁波市社保就业领域社会保险基本信息 | 17 |
+| `dw_nb_rlsb_gtldzcbdjxx` | 宁波市社保就业领域个体劳动者（灵活就业人员）参保登记信息 | 12 |
+| `dw_nb_rlsb_cbgryjsybxfhdxx` | 宁波市社保就业领域参保个人应缴失业保险费核定信息 | 23 |
+| `dw_nb_rlsb_sbjylyrycbxx` | 宁波市社保就业领域人员参保信息 | 10 |
+| `dw_shl_ajnsrxx` | 省回流-宁波市A级纳税人信息（国家下发数据） | 0 |
+| `dw_shl_qyzxdjxx` | 省回流-宁波市企业注销登记信息 | 0 |
+| `dw_shl_qyhjxwxypjxx` | 省回流-宁波市企业环境行为信用评价信息 | 12 |
+| `dw_nb_xflybcdfbxx` | 宁波市信访领域补充答复表信息 | 18 |
+| `dw_nb_xflydfgzhfxx` | 宁波市信访领域答复告知回复信息 | 31 |
+| `dw_nb_xflydhydfxx` | 宁波市信访领域电话已答复信息 | 73 |
+| `dw_nb_xflyhsdhxx` | 宁波市信访领域核实电话信息 | 18 |
+| `dw_nb_xflyhssdxx` | 宁波市信访领域核实实地信息 | 21 |
+| `dw_nb_xflyhswlxx` | 宁波市信访领域核实网络信息 | 18 |
+| `dw_nb_xflyhfxx` | 宁波市信访领域回访信息 | 18 |
+| `dw_nb_xflywdfdhxx` | 宁波市信访领域未答复电话信息 | 46 |
+| `dw_nb_xflyxfjxx` | 宁波市信访领域信访件信息 | 140 |
+| `dw_nb_xflyxfrxxx` | 宁波市信访领域信访人信息（新） | 25 |
+| `dw_nb_xflyxjdbxx` | 宁波市信访领域信件督办信息 | 17 |
+| `dw_shl_xfjxx` | 省回流-宁波市信访件信息 | 46 |
+| `dw_nb_xsxx` | 省回流_学生信息 | 22 |
+| `dw_nb_zzxsxx` | 省回流_中职学生信息 | 0 |
+| `dw_nb_xqxsxx` | 省回流_学前学生信息 | 0 |
+| `dw_nb_gxxsxx` | 省回流_高校学生信息 | 0 |
+| `dw_nb_zxxxsxx` | 省回流_中小学学生信息 | 0 |
+| `dw_nb_xxxx` | 省回流_学校信息 | 0 |
+| `dw_nb_yeyyqxx` | 省回流_幼儿园园区信息 | 0 |
+| `dw_nb_yeyzyyershzxx` | 省回流_数字政府-幼儿园在园幼儿人数汇总信息 | 0 |
+| `dw_nb_jsxx` | 省回流_教师信息 | 0 |
+| `dw_nb_zrzygh_bdcqzxx` | 宁波市不动产权证 | 24 |
+| `dw_shl_xfrxx` | 省回流-宁波市信访人信息 | 24 |
+| `dw_shl_xzcfxxgjxf` | 省回流-宁波市证监领域行政处罚信息（国家下发数据） | 0 |
 
-| 中文字段名                       | 标准化字段名      | 数据类型 | 样例数据                                           |
-| -------------------------------- | ----------------- | -------- | -------------------------------------------------- |
-| 主体身份代码                     | main_identi_id    | string   | 3302140000185548                                   |
-| 登记机关                         | reg_org           | string   | 宁波市海曙区市场监督管理局                         |
-| 企业类型大类（中文）             | comp_type         | string   | 有限责任公司(自然人投资或控股)                     |
-| 登记状态（中文）                 | reg_state         | string   | 开业                                               |
-| 统一社会信用代码                 | uni_social_crd_cd | string   | 91330203674737244w                                 |
-| 企业名称（字号名称）             | comp_nm           | string   | 宁波海曙引钲机电设备有限公司                       |
-| 住所（登记、个体户经营场所）     | addr              | string   | 浙江省宁波市海曙区联丰路182号(集中办公区)          |
-| 法定代表人(经营者姓名)           | legal_repre       | string   | 林英雄                                             |
-| 行业代码（中文）                 | indv_id           | string   | 其他机械设备及电子产品批发                         |
-| 注册资本(资金数额)               | reg_capt          | float    | 50.000000                                          |
-| 币种                             | capt_kind         | string   | 人民币元                                           |
-| 经营范围                         | opt_scop          | string   | 气动元器件、机电设备、缝纫设备、建筑材料、五金交电 |
-| 注册号                           | reg_no            | string   | 330203000030639                                    |
-| 核准日期（登记、吊销、注销日期） | appr_dt           | datetime | 2020-6-18                                          |
-| 成立日期                         | est_dt            | datetime | 2008-6-16                                          |
-| 经营(营业)起始日期               | opt_from          | datetime | 2008-6-16                                          |
-| 经营(营业)截止日期               | opt_to            | datetime | 9999-9-9                                           |
-| 住所所在行政区划                 | domdi_strict      | string   | 330203001                                          |
-| 生产经营地                       | pro_loc           | string   | 浙江省宁波市海曙区联丰路182号(集中办公区)          |
-| 生产经营地所在行政区划           | opt_strict        | string   | 330203001                                          |
-| 邮政编码                         | postal_code       | string   | 315010                                             |
-| 是否个转企                       | sfgzq             | string   | \n                                                 |
-| 是否个转企二次转型               | sfgzqzx           | string   | \n                                                 |
-| 组成形式                         | compform          | string   | \n                                                 |
-| 经营场所                         | opt_loc           | string   | 浙江省宁波市海曙区联丰路182号(集中办公区)          |
-| 其他信息                         | otherinfo         | string   | \n                                                 |
-| 企业信用信息公示系统网址         | puburl            | string   | \n                                                 |
-| 二维码                           | qrcode            | string   | \n                                                 |
-| 隶属企业主体身份代码             | lv_pripid         | string   | \n                                                 |
-| 行业代码                         | indv_code         | string   |                                                    |
-| 行业名称                         | indv_nm           | sring    |                                                    |
+## dw_zj_scjdgl_scztxx - 市场主体信息（含个体)
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主体身份代码 | `main_identi_id` | string | 3302140000185548 |
+| 登记机关 | `reg_org` | string | 宁波市海曙区市场监督管理局 |
+| 企业类型大类（中文） | `comp_type` | string | 有限责任公司(自然人投资或控股) |
+| 登记状态（中文） | `reg_state` | string | 开业 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330203674737244W |
+| 企业名称（字号名称） | `comp_nm` | string | 宁波海曙引钲机电设备有限公司 |
+| 住所（登记、个体户经营场所） | `addr` | string | 浙江省宁波市海曙区联丰路182号(集中办公区) |
+| 法定代表人(经营者姓名) | `legal_repre` | string | 林英雄 |
+| 行业代码（中文） | `indv_id` | string | 其他机械设备及电子产品批发 |
+| 注册资本(资金数额) | `reg_capt` | float | 50 |
+| 币种 | `capt_kind` | string | 人民币元 |
+| 经营范围 | `opt_scop` | string | 气动元器件、机电设备、缝纫设备、建筑材料、五金交电、化工原料及产品(危险品除外)、办公设备、文具用品的批发、零售;自营和代理货物和技术的进出口,但国家限定经营或禁止进出口的货物和技术除外以及其他按法律、法规、国务院决定等规定未禁止或无需经营许可的项目和未列入地方产业发展负面清单的项目。(依法须经批准的项目,经相关部门批准后方可开展经营活动) |
+| 注册号 | `reg_no` | string | 330203000030639 |
+| 核准日期（登记、吊销、注销日期） | `appr_dt` | datetime | 2020-06-18 00:00:00 |
+| 成立日期 | `est_dt` | datetime | 2008-06-16 00:00:00 |
+| 经营(营业)起始日期 | `opt_from` | datetime | 2008-06-16 00:00:00 |
+| 经营(营业)截止日期 | `opt_to` | datetime | 9999-09-09 00:00:00 |
+| 住所所在行政区划 | `domdi_strict` | string | 330203001 |
+| 生产经营地 | `pro_loc` | string | 浙江省宁波市海曙区联丰路182号(集中办公区) |
+| 生产经营地所在行政区划 | `opt_strict` | string | 330203001 |
+| 邮政编码 | `postal_code` | string | 315010 |
+| 是否个转企 | `sfgzq` | string | \N |
+| 是否个转企二次转型 | `sfgzqzx` | string | \N |
+| 组成形式 | `compform` | string | \N |
+| 经营场所 | `opt_loc` | string | 浙江省宁波市海曙区联丰路182号(集中办公区) |
+| 其他信息 | `otherinfo` | string | \N |
+| 企业信用信息公示系统网址 | `puburl` | string | \N |
+| 二维码 | `qrcode` | string | \N |
+| 隶属企业主体身份代码 | `lv_pripid` | string | \N |
+| 行业代码 | `indv_code` | string |  |
+| 行业名称 | `indv_nm` | Sring |  |
 
 ## dw_zj_scjdgl_fddbrxx - 法定代表人信息
 
-| 中文字段名           | 标准化字段名      | 数据类型 | 样例数据                                     |
-| -------------------- | ----------------- | -------- | -------------------------------------------- |
-| 主体身份代码         | identi_no         | string   | 3302130000020166                             |
-| 人员id               | personid          | smallint | 1                                            |
-| 法定代表人标志       | lerep_sign        | smallint | 1                                            |
-| 姓名                 | nm                | string   | 孙秀英                                       |
-| 职务                 | position          | string   | 431a                                         |
-| 证件类型             | certype           | string   | 10                                           |
-| 国籍                 | country           | string   | 156                                          |
-| 职务（中文名称）     | position_cn       | string   | 董事长                                       |
-| 证件类型（中文）     | certype_cn        | string   | 中华人民共和国居民身份证                     |
-| 国籍（中文）         | country_cn        | string   | 中国                                         |
-| 身份证件号码         | cer_no            | string   | 120110681231276                              |
-| 固定电话             | tel_num           | string   | 13306450809                                  |
-| 移动电话             | mobtel            | string   | \***\*\*\*\*\*\***                           |
-| 电子邮箱             | email             | string   | 13567409300@139.com                          |
-| 时间戳签名值         | tnsvalue          | string   | miihzzavageambamdk9wzxjhdglvbibpa            |
-| 签名摘要             | signhashcode      | string   | a9lfwbwrve2wia8eqyb4x4ls4sc2gjbjvui8/25vfse= |
-| 签名名证书公钥       | signkey           | string   | 04f7d65c9babb5b0d32bf7497f68d65ef3767        |
-| 统一社会信用代码     | uni_social_crd_cd | string   |                                              |
-| 企业名称（字号名称） | comp_nm           | string   |                                              |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主体身份代码 | `identi_no` | string | 3302130000020166 |
+| 人员ID | `personid` | smallint | 1 |
+| 1 法定代表人标志/首席代表标志/负责人标识 2 董事 | `lerep_sign` | smallint | 1 |
+| 姓名 | `nm` | string | 孙秀英 |
+| 职务 | `position` | string | 431A |
+| 证件类型 | `certype` | string | 10 |
+| 国籍 | `country` | string | 156 |
+| 职务（中文名称） | `position_cn` | string | 董事长 |
+| 证件类型（中文） | `certype_cn` | string | 中华人民共和国居民身份证 |
+| 国籍（中文） | `country_cn` | string | 中国 |
+| 身份证件号码 | `cer_no` | string | 120110681231276 |
+| 固定电话 | `tel_num` | string | 13306450809 |
+| 移动电话 | `mobtel` | string | *********** |
+| 电子邮箱 | `email` | string | 13567409300@139.com |
+| 时间戳签名值 | `tnsvalue` | string | MIIHzzAVAgEAMBAMDk9wZXJhdGlvbiBPa2F5MIIHtAYJKoZIhvcNAQcCoIIHpTCCB6ECAQMxDjAMBggqgRzPVQGDEQUAMIIBIAYLKoZIhvcNAQkQAQSgggEPBIIBCzCCAQcCAQEGAikAMDAwDAYIKoEcz1UBgxEFAAQgeK095t0yLzMqlQSzlYMBYNR67UTURL5g7NCkIXUFefQCCAZ0BGUNAAAAGBMyMDIxMTIwMTA3MDAwOC40NzdaAgQAjWWZoIGmpIGjMIGgMQswCQYDVQQGEwJDTjESMBAGA1UECAwJ5rWZ5rGf55yBMUgwRgYDVQQKDD/lm73lrrbnlLXlrZDmlL/liqHlpJbnvZHmtZnmsZ/nnIHnlLXlrZDorqTor4Hms6jlhozmnI3liqHkuK3lv4MxMzAxBgNVBAMMKua1meaxn+ecgeeUteWtkOaUv+WKoeWklue9keaXtumXtOaIs+acjeWKoaCCBB4wggQaMIIDvqADAgECAgg99QCBAADBjjAMBggqgRzPVQGDdQUAMGkxCzAJBgNVBAYTAkNOMTwwOgYDVQQKDDNOYXRpb25hbCBFLUdvdmVybm1lbnQgTmV0d29yayBBZG1pbmlzdHJhdGlvbiBDZW50ZXIxHDAaBgNVBAMME0NFR04gU00yIENsYXNzIDIgQ0EwHhcNMTcwOTE4MDEwNDU1WhcNMjIwOTE3MDEwNDU1WjCBoDELMAkGA1UEBhMCQ04xEjAQBgNVBAgMCea1meaxn+ecgTFIMEYGA1UECgw/5Zu95a6255S15a2Q5pS/5Yqh5aSW572R5rWZ5rGf55yB55S15a2Q6K6k6K+B5rOo5YaM5pyN5Yqh5Lit5b+DMTMwMQYDVQQDDCrmtZnmsZ/nnIHnlLXlrZDmlL/liqHlpJbnvZHml7bpl7TmiLPmnI3liqEwWTATBgcqhkjOPQIBBggqgRzPVQGCLQNCAARiYVvPi0UUK87SA5OrkCgTgRbTm+lDY/B3of5mhwPwHvf/w6RI2jW3+WY7PY2JTgJ0wdMbN+sRIgS9PrLnga2io4ICFDCCAhAwDAYDVR0TBAUwAwEBADAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCDALBgNVHQ8EBAMCAMAwEQYJYIZIAYb4QgEBBAQDAgBAMB8GA1UdIwQYMBaAFLnAjDOBnrD6oXsjcj9DlO6p1n59MIHFBgNVHR8Egb0wgbowgbeggbSggbGGga5sZGFwOi8vbGRhcC5zdGF0ZWNhLmNlZ24uY246Mzg5L0NOPUNFR04gU00yIENsYXNzIDIgQ0EsQ049Q0VHTiBTTTIgQ2xhc3MgMiBDQSwgT1U9Q1JMRGlzdHJpYnV0ZVBvaW50cywgbz1zaWNjYT9jZXJ0aWZpY2F0ZVJldm9jYXRpb25MaXN0P2Jhc2U/b2JqZWN0Y2xhc3M9Y1JMRGlzdHJpYnV0aW9uUG9pbnQwgb8GCCsGAQUFBwEBBIGyMIGvMIGsBggrBgEFBQcwAoaBn2xkYXA6Ly9sZGFwLnN0YXRlY2EuY2Vnbi5jbjozODkvQ049Q0VHTiBTTTIgQ2xhc3MgMiBDQSxDTj1DRUdOIFNNMiBDbGFzcyAyIENBLCBPVT1jQUNlcnRpZmljYXRlcywgbz1zaWNjYT9jQUNlcnRpZmljYXRlP2Jhc2U/b2JqZWN0Q2xhc3M9Y2VydGlmaWNhdGlvbkF1dGhvcml0eTAdBgNVHQ4EFgQUOIOUnCPZhzFHD1wz4u2+6+SQrAkwDAYIKoEcz1UBg3UFAANIADBFAiEAt7PGsjEu4l3lb5ZgdAOPCfE+3hNOfmNzWXruyKYNSyUCIGoAN8kOCbiI4owY0I5ht62aXnwYEAHJteuMDRUgXMhYMYICRDCCAkACAQEwdTBpMQswCQYDVQQGEwJDTjE8MDoGA1UECgwzTmF0aW9uYWwgRS1Hb3Zlcm5tZW50IE5ldHdvcmsgQWRtaW5pc3RyYXRpb24gQ2VudGVyMRwwGgYDVQQDDBNDRUdOIFNNMiBDbGFzcyAyIENBAgg99QCBAADBjjAMBggqgRzPVQGDEQUAoIIBXTAaBgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQwHAYJKoZIhvcNAQkFMQ8XDTIxMTIwMTA3MDAwOFowKwYJKoZIhvcNAQk0MR4wHDAMBggqgRzPVQGDEQUAoQwGCCqBHM9VAYN1BQAwLwYJKoZIhvcNAQkEMSIEINlTkXB3dfMfMcaO3+QJ7bQD3uP2ar67JUrKs7HRCXjtMIHCBgsqhkiG9w0BCRACLzGBsjCBrzCBrDCBqTAKBggqgRzPVQGDEQQgmFAiYD1tdX0tmdzvidq1Dt+1AHiJc4Y4djzFN/5xDB4weTBtpGswaTELMAkGA1UEBhMCQ04xPDA6BgNVBAoMM05hdGlvbmFsIEUtR292ZXJubWVudCBOZXR3b3JrIEFkbWluaXN0cmF0aW9uIENlbnRlcjEcMBoGA1UEAwwTQ0VHTiBTTTIgQ2xhc3MgMiBDQQIIPfUAgQAAwY4wDAYIKoEcz1UBg3UFAARHMEUCIQD0ZIkMivUGxxY4tim4ixeUOfD9MptDrohCG2QzXlxEaAIgcBaIe3vhxHvnuZGbcwfE4znn1HqEv4j00TXUe0ZIBh0= |
+| 签名摘要 | `signhashcode` | string | a9lFWBwrvE2WiA8EqYB4x4lS4SC2GjbJvuI8/25vFsE= |
+| 签名名证书公钥 | `signkey` | string | 04F7D65C9BABB5B0D32BF7497F68D65EF376743491AFA3C8806D0B665DA58DB9B5D5ABFF5BDA9ACD32679401E5EDC56E91428BE893122424690352C55C2F30938C |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 企业名称（字号名称） | `comp_nm` | string |  |
 
 ## dw_zj_scjdgl_jyycmlxx - 经营异常名录信息
 
-| 中文字段名           | 标准化字段名      | 数据类型 | 样例数据                             |
-| -------------------- | ----------------- | -------- | ------------------------------------ |
-| 列入日期             | inclu_dt          | datetime | 2017-7-7                             |
-| 经营异常名录id       | busexclist        | string   | 848775                               |
-| 列入经营异常名录原因 | inclu_reason      | string   | 通过登记的住所或者经营场所无法联系的 |
-| 统一社会信用代码     | uni_social_crd_cd | string   | 91330203674737244w                   |
-| 营业执照注册号       | reg_no            | string   | 33021200019832                       |
-| 作出决定机关(移出)   | redecorg_cn       | string   | 象山局县                             |
-| 内部序号             | pripid            | string   | 3302040040500336                     |
-| 移出经营异常名录原因 | remexcpres_cn     | string   | 企业注销，自动移出                   |
-| 移出日期             | remove_dt         | datetime | 2017-7-7                             |
-| 作出决定机关(列入)   | decorg_cn         | string   | 江东区局                             |
-| 企业名称             | comp_nm           | string   | 宁波市江东东风胚布拉绒厂             |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 列入日期 | `inclu_dt` | datetime | 2017-07-07 00:00:00 |
+| 经营异常名录ID | `busexclist` | string | 848775 |
+| 列入经营异常名录原因 | `inclu_reason` | string | 通过登记的住所或者经营场所无法联系的 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330203674737244W |
+| 营业执照注册号 | `reg_no` | string | 33021200019832 |
+| 作出决定机关(移出) | `redecorg_cn` | string | 象山局县 |
+| 内部序号 | `pripid` | string | 3302040040500336 |
+| 移出经营异常名录原因 | `remexcpres_cn` | string | 企业注销，自动移出 |
+| 移出日期 | `remove_dt` | datetime | 2017-07-07 00:00:00 |
+| 作出决定机关(列入) | `decorg_cn` | string | 江东区局 |
+| 企业名称 | `comp_nm` | string | 宁波市江东东风胚布拉绒厂 |
 
 ## dw_zj_scjdgl_yzwfsx - 严重违法失信企业名单信息
 
-| 中文字段名                   | 标准化字段名      | 数据类型 | 样例数据                                |
-| ---------------------------- | ----------------- | -------- | --------------------------------------- |
-| 严重违法失信企业名单id       | ill_comp_id       | string   | 0036c6df051246aaaa352f625d7a9a0c        |
-| 列入日期                     | abn_tm            | string   | 2019-9-4                                |
-| 列入严重违法失信企业名单原因 | serill_rea        | string   | 被列入异常名录届满3年仍未履行相关义务的 |
-| 移出日期                     | rem_dt            | string   | 2019-9-4                                |
-| 作出决定机关(移出)           | recorg_ogr        | string   | 海曙区局                                |
-| 统一社会信用代码             | uni_social_crd_cd | string   | 91330282l07196379d                      |
-| 移出严重违法失信企业名单原因 | rem_excpres_rea   | string   | 企业注销，自动移出                      |
-| 企业名称                     | comp_name         | string   | 慈溪市浒欣谊渔具配件厂                  |
-| 营业执照注册号               | reg_no            | string   | 330200400070010                         |
-| 作出决定机关(列入)           | decorg_org        | string   | 浙江省市场监督管理局                    |
-| 主体身份代码                 | pripid            | string   | 3302270000915991                        |
-| 所属地市                     | dsc_city          | string   | 宁波市                                  |
-| 所属区/县                    | dsc_adm_region    | string   | 江东区                                  |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 严重违法失信企业名单ID | `ill_comp_id` | string | 0036C6DF051246AAAA352F625D7A9A0C |
+| 列入日期 | `abn_tm` | string | 2019-09-04 00:00:00 |
+| 列入严重违法失信企业名单原因 | `serill_rea` | string | 被列入异常名录届满3年仍未履行相关义务的 |
+| 移出日期 | `rem_dt` | string | 2019-09-04 00:00:00 |
+| 作出决定机关(移出) | `recorg_ogr` | string | 海曙区局 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 移出严重违法失信企业名单原因 | `rem_excpres_rea` | string | 企业注销，自动移出 |
+| 企业名称 | `comp_name` | string | 慈溪市浒欣谊渔具配件厂 |
+| 营业执照注册号 | `reg_no` | string | 330200400070010 |
+| 作出决定机关(列入) | `decorg_org` | string | 浙江省市场监督管理局 |
+| 主体身份代码 | `pripid` | string | 3302270000915991 |
+| 所属地市 | `dsc_city` | string | 宁波市 |
+| 所属区/县 | `dsc_adm_region` | string | 江东区 |
 
 ## dw_nb_scjdgl_qynbwzhwdxx - 宁波市市场监督领域企业年报网站或网店信息
 
-| 中文字段名           | 标准化字段名      | 数据类型 | 样例数据               |
-| -------------------- | ----------------- | -------- | ---------------------- |
-| 网站标识             | web_id            | string   | 101298                 |
-| 年报id               | annual_id         | string   | 33062400000894232015   |
-| 网站网店类型         | web_store_type    | string   | 1                      |
-| 网站（网店）名称     | web_store_nm      | string   | 找煤网                 |
-| 网站（网店）网址     | web_store_url     | string   | http://www.zhaomei.com |
-| 网站类型             | web_type          | string   | 1                      |
-| 网络交易平台运营类型 | web_plat_type     | string   | 第三方网络交易平台     |
-| 网络交易产品类型     | web_product_type  | string   | 商品交易类平台         |
-| 电商类型             | ecom_type         | string   | b2b                    |
-| icp证号/备案号       | icp_no            | string   | 1155478                |
-| 微信公众服务号       | wechat_public     | string   | dbs2017                |
-| app软件名称          | app_nm            | string   | 三易物流科技           |
-| 所属平台名称         | plat_nm           | string   | 1号店                  |
-| 发货地址             | deli_addr         | string   | 余姚市                 |
-| 退货地址             | return_addr       | string   | 余姚市                 |
-| 数据汇总单位         |                   |          | 330206                 |
-| 更新时间             |                   |          | 2017-5-31 11:34:43     |
-| 交换开关             |                   |          | 0                      |
-| 数据记录的增删改标志 |                   |          | 1                      |
-| 主体身份代码         | pripid            |          | 3302820000175108       |
-| 统一社会信用代码     | uni_social_crd_cd | string   | 91330282l07196379d     |
-| 企业名称（字号名称） | comp_nm           | string   | 慈溪市浒欣谊渔具配件厂 |
-| 年报年度             | annual_year       | string   |                        |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 网站标识 | `web_id` | string | 101298 |
+| 年报ID | `annual_id` | string | 33062400000894232015 |
+| 网站网店类型 | `web_store_type` | string | 1 |
+| 网站（网店）名称 | `web_store_nm` | string | 找煤网 |
+| 网站（网店）网址 | `web_store_url` | string | http://www.zhaomei.com |
+| 网站类型 | `web_type` | string | 1 |
+| 网络交易平台运营类型 | `web_plat_type` | string | 第三方网络交易平台 |
+| 网络交易产品类型 | `web_product_type` | string | 商品交易类平台 |
+| 电商类型 | `ecom_type` | string | B2B |
+| ICP证号/备案号 | `icp_no` | string | 1155478 |
+| 微信公众服务号 | `wechat_public` | string | DBS2017 |
+| APP软件名称 | `app_nm` | string | 三易物流科技 |
+| 所属平台名称 | `plat_nm` | string | 1号店 |
+| 发货地址 | `deli_addr` | string | 余姚市 |
+| 退货地址 | `return_addr` | string | 余姚市 |
+| 主体身份代码 | `pripid` |  | 3302820000175108 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 企业名称（字号名称） | `comp_nm` | string | 慈溪市浒欣谊渔具配件厂 |
+| 年报年度 | `annual_year` | string |  |
 
 ## dw_nb_scjdgl_xzcfgsxx - 行政处罚公示信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据                                   |
-| ---------------- | ----------------- | -------- | ------------------------------------------ |
-| 业务主键         | lic_id            | string   |                                            |
-| 主体身份代码     | pripid            | string   |                                            |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 91330282l07196379d                         |
-| 纳税人名称       | taxer_nm          | string   | 慈溪市浒欣谊渔具配件厂                     |
-| 行政处罚文号     | admin_punish_doc  | string   | 慈税罚（2018）40号                         |
-| 处罚原因         | punish_rea        | string   | 《中华人民共和国税收征收管理法》第六十二条 |
-| 处罚时间         | punish_dt         | datetime | 2018-7-27                                  |
-| 处罚结果         | punish_result     | string   | 罚款2000元                                 |
-| 法人姓名         | legal_per         | string   | 毛宋斌                                     |
-| 法人身份证号     | legal_per_ident   | string   | 330222\***\*\*\*\*\*\*\***                 |
-| 数据来源表       |                   |          | ods_nb_swj_t_swj_m_xzcfjl_df               |
-| etl入库时间      |                   |          | 2022-3-22 23:13:05                         |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 业务主键 | `lic_id` | string |  |
+| 主体身份代码 | `pripid` | string |  |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 纳税人名称 | `taxer_nm` | string | 慈溪市浒欣谊渔具配件厂 |
+| 行政处罚文号 | `admin_punish_doc` | string | 慈税罚（2018）40号 |
+| 处罚原因 | `punish_rea` | string | 《中华人民共和国税收征收管理法》第六十二条 |
+| 处罚时间 | `punish_dt` | datetime | 2018-07-27 00:00:00 |
+| 处罚结果 | `punish_result` | string | 罚款2000元 |
+| 法人姓名 | `legal_per` | string | 毛宋斌 |
+| 法人身份证号 | `legal_per_ident` | string | 330222************ |
 
 ## dw_nb_scjdgl_gqbg - 股权变更公示信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据           |
-| ---------------- | ----------------- | -------- | ------------------ |
-| 业务主键         | lic_id            | string   |                    |
-| 主体身份代码     | pripid            | string   | 3302250000130077   |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 91330282l07196379d |
-| 股东             | inv               | string   | 朱传树             |
-| 股权变更日期     | alt_dt            | datetime | 2017-7-7 0:00:00   |
-| 公示日期         | public_dt         | datetime | 2017-7-14 0:00:00  |
-| 变更前股权比例   | transampr_bf      | float    | 40                 |
-| 变更后股权比例   | transampr_af      | float    | 0                  |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 业务主键 | `lic_id` | string |  |
+| 主体身份代码 | `pripid` | string | 3302250000130077 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 股东 | `inv` | string | 朱传树 |
+| 股权变更日期 | `alt_dt` | datetime | 2017-07-07 00:00:00 |
+| 公示日期 | `public_dt` | datetime | 2017-07-14 00:00:00 |
+| 变更前股权比例 | `transampr_bf` | float | 40 |
+| 变更后股权比例 | `transampr_af` | float | 0 |
 
 ## dw_nb_scjdgl_xwqymljbxx - 宁波市市场监督领域小微企业名录基本信息
 
-| 中文字段名           | 标准化字段名      | 数据类型 | 样例数据             |
-| -------------------- | ----------------- | -------- | -------------------- |
-| 主体身份代码         |                   |          | 3302250000130077     |
-| 统一社会信用代码     | uni_social_crd_cd | string   | 91330282l07196379d   |
-| 注册号               | reg_no            | string   | 330200600002522      |
-| 名称                 | nm                | string   | 万邦资产评估有限公司 |
-| 类型                 | type              | string   | 9500                 |
-| 成立日期             | estab_dt          | datetime | 2006-5-8 0:00:00     |
-| 注册资本             | reg_capt          | float    | 5,000000             |
-| 登记机关             | reg_org           | string   | 330200               |
-| 所属门类             | indv              | string   | f                    |
-| 行业代码             | indv_cd           | string   | 5132                 |
-| 数据汇总单位         |                   |          | 330200               |
-| 更新时间             |                   |          | 2021-2-2 22:04:46    |
-| 交换开关             |                   |          | 0                    |
-| 数据记录的增删改标志 |                   |          | 1                    |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 注册号 | `reg_no` | string | 330200600002522 |
+| 名称 | `nm` | string | 万邦资产评估有限公司 |
+| 类型 | `type` | string | 9500 |
+| 成立日期 | `estab_dt` | datetime | 2006-05-08 00:00:00 |
+| 注册资本 | `reg_capt` | float | 5,000000 |
+| 登记机关 | `reg_org` | string | 330200 |
+| 所属门类 | `indv` | string | F |
+| 行业代码 | `indv_cd` | string | 5132 |
 
 ## dw_nb_scjdgl_xzxk - 行政许可公示信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据                |
-| ---------------- | ----------------- | -------- | ----------------------- |
-| 业务主键         | lic_id            | string   | 000201**\*\***257000001 |
-| 主体身份代码     | pripid            | string   | 3302120000204959        |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 91330282l07196379d      |
-| 许可文件编号     | lic_no            | string   | sl2019108595            |
-| 许可文件名称     | lic_nm            | string   | 不定时工作制审批        |
-| 许可机关         | lic_anth          | string   | 浙江省财政厅            |
-| 许可内容         | lic_item          | string   | 不定时工作制审批        |
-| 状态             | type              | string   | 1                       |
-| 有效期自         | val_from          | datetime | 2019-6-25 0:00:00       |
-| 有效期至         | val_to            | datetime | 2099-12-31 00:00:00     |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 业务主键 | `lic_id` | string | 000201******257000001 |
+| 主体身份代码 | `pripid` | string | 3302120000204959 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 许可文件编号 | `lic_no` | string | SL2019108595 |
+| 许可文件名称 | `lic_nm` | string | 不定时工作制审批 |
+| 许可机关 | `lic_anth` | string | 浙江省财政厅 |
+| 许可内容 | `lic_item` | string | 不定时工作制审批 |
+| 状态 | `type` | string | 1 |
+| 有效期自 | `val_from` | datetime | 2019-06-25 00:00:00 |
+| 有效期至 | `val_to` | datetime | 2099-12-31 00:00;00 |
 
 ## dw_nb_scjdgl_cyjyxkzxx - 餐饮经营许可证信息
 
-| 中文字段名               | 标准化字段名 | 数据类型 | 样例数据            |
-| ------------------------ | ------------ | -------- | ------------------- |
-| 主键                     | key          |          | zlsj667             |
-| 企业名称                 | comp_nm      | string   | 慈溪市太芝餐饮店    |
-| 主体业态                 | subject_stat | string   | 2                   |
-| 数据记录的增删改标志     |              |          | d                   |
-| 该数据记录写入前置库时间 |              |          | 2019-12-11 11:03:51 |
-| 主体身份代码             |              |          | 3302043000107248    |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键 | `key` |  | zlsj667 |
+| 企业名称 | `comp_nm` | string | 慈溪市太芝餐饮店 |
+| 主体业态 | `subject_stat` | string | 2 |
 
 ## dw_nb_scjdgl_qynbzcxx - 企业年报资产信息
 
-| 中文字段名               | 标准化字段名        | 数据类型 | 样例数据                         |
-| ------------------------ | ------------------- | -------- | -------------------------------- |
-| 年报id                   | annual_id           | string   | 9155d6f86dd948afa478978d7eedc6ba |
-| 年报年度                 | annual_year         | string   | 2019                             |
-| 资产总额                 | asset_zmt           | float    | 34                               |
-| 负债总额                 | debt_amt            | float    | 39                               |
-| 所有者权益合计           | owner_equity_toatal | float    | -6                               |
-| 营业总收入               | opt_income_total    | float    | 28                               |
-| 利润总额                 | profit_total        | float    | -6                               |
-| 净利润                   | net_profit          | float    | -6                               |
-| 纳税总额                 | tax_total           | float    | 0                                |
-| 数据记录的增删改标志     |                     |          | 1                                |
-| 该数据记录写入前置库时间 |                     |          | 2020-4-27 22:59:34               |
-| 主体身份代码             | pripid              |          | 3302120000204959                 |
-| 统一社会信用代码         | uni_social_crd_cd   | string   | 91330282l07196379d               |
-| 企业名称（字号名称）     | comp_nm             | string   | 慈溪市太芝餐饮店                 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 年报ID | `annual_id` | string | 9155d6f86dd948afa478978d7eedc6ba |
+| 年报年度 | `annual_year` | string | 2019 |
+| 资产总额 | `asset_zmt` | float | 34 |
+| 负债总额 | `debt_amt` | float | 39 |
+| 所有者权益合计 | `owner_equity_toatal` | float | -6 |
+| 营业总收入 | `opt_income_total` | float | 28 |
+| 利润总额 | `profit_total` | float | -6 |
+| 净利润 | `net_profit` | float | -6 |
+| 纳税总额 | `tax_total` | float | 0 |
+| 主体身份代码 | `pripid` |  | 3302120000204959 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 企业名称（字号名称） | `comp_nm` | string | 慈溪市太芝餐饮店 |
 
 ## dw_nb_scjdgl_zscqczdj - 知识产权出质登记公示信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据                     |
-| ---------------- | ----------------- | -------- | ---------------------------- |
-| 业务主键         | lic_id            | string   | 2095                         |
-| 主体身份代码     | pripid            | string   | 3302120000204959             |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 91330282l07196379d           |
-| 知识产权登记号   | tmreg_no          | string   | 10205176                     |
-| 名称             | tm_nm             | string   | 树图形                       |
-| 种类             | kinds             | string   | 1                            |
-| 出质人名称       | pledgor_nm        | string   | 三生（中国）健康产业有限公司 |
-| 质权人名称       | imporg_nm         | string   | 三生（中国）健康产业有限公司 |
-| 状态             | state             | string   | 1                            |
-| 公示日期         | public_dt         | datetime | 2017-2-4 0:00:00             |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 业务主键 | `lic_id` | string | 2095 |
+| 主体身份代码 | `pripid` | string | 3302120000204959 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 知识产权登记号 | `tmreg_no` | string | 10205176 |
+| 名称 | `tm_nm` | string | 树图形 |
+| 种类 | `kinds` | string | 1 |
+| 出质人名称 | `pledgor_nm` | string | 三生（中国）健康产业有限公司 |
+| 质权人名称 | `imporg_nm` | string | 三生（中国）健康产业有限公司 |
+| 状态 | `state` | string | 1 |
+| 公示日期 | `public_dt` | datetime | 2017-02-04 00:00:00 |
 
 ## dw_nb_scjdgl_dwtgbzdbxx - 宁波市市场监督领域企业年报对外提供保证担保信息
 
-| 中文字段名           | 标准化字段名      | 数据类型 | 样例数据             |
-| -------------------- | ----------------- | -------- | -------------------- |
-| 对外担保标识id       | external_gua      | string   | 101609               |
-| 年报id               | annual_id         | string   | 33020500005551962015 |
-| 债权人               | creditor          | string   | 工行镇海支行         |
-| 债务人               | debtor            | string   | 戴强华               |
-| 主债权种类           | major_credit_type | string   | 1                    |
-| 主债权数额           | major_credit_amt  | float    | 1900                 |
-| 履行债务的期限自     | period_from       | datetime | 2015-12-31 0:00:00   |
-| 履行债务的期限至     | period_to         | datetime | 2015-12-31 0:00:00   |
-| 保证的期间           | promis_dur        | string   | 2                    |
-| 对外担保是否公示     | is_public         | string   | 2                    |
-| 保证的方式           | promis_way        | string   | 3                    |
-| 数据汇总单位         |                   |          | 332205               |
-| 更新时间             |                   |          | 2017-5-31 11:31:40   |
-| 交换开关             |                   |          | 0                    |
-| 数据记录的增删改标志 |                   |          | 1                    |
-| 主体身份代码         | pripid            | string   | 3302250000130077     |
-| 统一社会信用代码     | uni_social_crd_cd | string   | 91330282l07196379d   |
-| 企业名称（字号名）   | comp_nm           | string   | 万邦资产评估有限公司 |
-| 年报年度             | annual_year       | string   |                      |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 对外担保标识ID | `external_gua` | string | 101609 |
+| 年报ID | `annual_id` | string | 33020500005551962015 |
+| 债权人 | `creditor` | string | 工行镇海支行 |
+| 债务人 | `debtor` | string | 戴强华 |
+| 主债权种类 | `major_credit_type` | string | 1 |
+| 主债权数额 | `major_credit_amt` | float | 1900 |
+| 履行债务的期限自 | `period_from` | datetime | 2015-12-31 00:00:00 |
+| 履行债务的期限至 | `period_to` | datetime | 2015-12-31 00:00:00 |
+| 保证的期间 | `promis_dur` | string | 2 |
+| 对外担保是否公示 | `is_public` | string | 2 |
+| 保证的方式 | `promis_way` | string | 3 |
+| 主体身份代码 | `pripid` | string | 3302250000130077 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 企业名称（字号名） | `comp_nm` | string | 万邦资产评估有限公司 |
+| 年报年度 | `annual_year` | string |  |
 
 ## dw_nb_scjdgl_qynbgdjczxx - 宁波市市场监督领域企业年报股东及出资信息
 
-| 中文字段名           | 标准化字段名        | 数据类型 | 样例数据                         |
-| -------------------- | ------------------- | -------- | -------------------------------- |
-| 投资人id             | investor            | string   | 0000bd063a094441b152c3f5301d9b47 |
-| 年报id               | annual_id           | string   | 677d4aabe3d947d284b86d6ebed756af |
-| 股东/发起人名称      | stocker_nm          | string   | 陈宝泰                           |
-| 累计认缴额           | cumula_sub_amt      | float    | 40                               |
-| 认缴出资日期         | subscrip_amt_dt     | datetime | 2011-8-23 0:00:00                |
-| 认缴出资方式         | subscrip_amt_way    | string   | 1                                |
-| 认缴出资方式中文名称 | subscrip_amt_way_cn | string   | 货币                             |
-| 累计实缴额           | cumula_paid_amt     | float    | 40                               |
-| 实缴出资日期         | paid_amt_dt         | datetime | 2011-8-23 0:00:00                |
-| 实缴出资方式         | paid_amt_way        | string   | 1                                |
-| 实缴出资方式中文名称 | paid_amt_way_cn     | string   | 货币                             |
-| 数据汇总单位         |                     |          | 330211                           |
-| 更新时间             |                     |          | 2021-5-25 23:09:46               |
-| 交换开关             |                     |          | 0                                |
-| 数据记录的增删改标志 |                     |          | u                                |
-| 主体身份代码         | pripid              | string   | 3302250000130077                 |
-| 统一社会信用代码     | uni_social_crd_cd   | string   | 91330282l07196379d               |
-| 企业名称（字号名称） | comp_nm             | string   | 万邦资产评估有限公司             |
-| 年报年度             | annual_year         | string   |                                  |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 投资人ID | `investor` | string | 0000bd063a094441b152c3f5301d9b47 |
+| 年报ID | `annual_id` | string | 677d4aabe3d947d284b86d6ebed756af |
+| 股东/发起人名称 | `stocker_nm` | string | 陈宝泰 |
+| 累计认缴额 | `cumula_sub_amt` | float | 40 |
+| 认缴出资日期 | `subscrip_amt_dt` | datetime | 2011-08-23 00:00:00 |
+| 认缴出资方式 | `subscrip_amt_way` | string | 1 |
+| 认缴出资方式中文名称 | `subscrip_amt_way_cn` | string | 货币 |
+| 累计实缴额 | `cumula_paid_amt` | float | 40 |
+| 实缴出资日期 | `paid_amt_dt` | datetime | 2011-08-23 00:00:00 |
+| 实缴出资方式 | `paid_amt_way` | string | 1 |
+| 实缴出资方式中文名称 | `paid_amt_way_cn` | string | 货币 |
+| 主体身份代码 | `pripid` | string | 3302250000130077 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 企业名称（字号名称） | `comp_nm` | string | 万邦资产评估有限公司 |
+| 年报年度 | `annual_year` | string |  |
+
+## dw_nb_scjdgl_spjyxkz - 食品经营许可证
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 经营者名称 | `opt_nm` | string | 万邦资产评估有限公司 |
+| 统一社会信用代码（身份证号码） | `uni_social_crd_cd` | string | 91330212066604667N |
+| 法定代表人（负责人） | `legal_repre` | string | 金荣华 |
+| 住所 | `addr` | string | 浙江省宁波市慈溪市周巷镇兴业北路448-450号 |
+| 经营地址 | `opt_addr` | string | 浙江省宁波市慈溪市周巷镇兴业北路448-450号 |
+| 主体业态 | `main_type` | string | 食品销售经营者 |
+| 经营项目 | `opt_pro` | string | 保健食品销售 |
+| 许可证编号 | `licensing_no` | string | JY13302820290302 |
+| 发证日期 | `issue_dt` | datetime | 2020-11-27 00:00:00 |
+| 发证机关 | `issue_dept` | string | 慈溪市市场监督管理局 |
+| 有效期起 | `valid_from` | datetime | 2020-11-27 00:00:00 |
+| 有效期止 | `valid_to` | datetime | 2025-11-26 00:00:00 |
+| 类型 | `type` | string | 统一社会信用代码 |
+| 证书状态 | `licensing_state` | string | 正常 |
+| 所属区划编码 | `area_no` | string | 330282 |
+| 许可证名称 | `licensing_nm` | string | 食品经营许可证 |
 
 ## dw_nb_scjdgl_gtjyycbjxx - 个体经营异常标记信息
 
-| 中文字段名               | 标准化字段名      | 数据类型 | 样例数据             |
-| ------------------------ | ----------------- | -------- | -------------------- |
-| 经营异常标记id           | opt_unnor_markid  | string   | 1000028              |
-| 标记日期                 | mark_dt           | datetime | 2016-7-1 0:01:30     |
-| 是否恢复                 | is_recov          | string   | 1                    |
-| 恢复日期                 | recov_dt          | datetime | 2017-4-22 2:00:31    |
-| 数据记录的增删改标志     |                   |          | i                    |
-| 该数据记录写入前置库时间 |                   |          | 2017-5-31 11:30:56   |
-| 主体身份代码             | pripid            | string   | 3302263000089193     |
-| 统一社会信用代码         | uni_social_crd_cd | string   | 91330212066604667n   |
-| 企业名称（字号名称）     | comp_nm           | string   | 万邦资产评估有限公司 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 经营异常标记ID | `opt_unnor_markid` | string | 1000028 |
+| 标记日期 | `mark_dt` | datetime | 2016-07-01 00:01:30 |
+| 是否恢复 | `is_recov` | string | 1 |
+| 恢复日期 | `recov_dt` | datetime | 2017-04-22 02:00:31 |
+| 主体身份代码 | `pripid` | string | 3302263000089193 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330212066604667N |
+| 企业名称（字号名称） | `comp_nm` | string | 万邦资产评估有限公司 |
 
-## dw*nb_scjdgl_czrrjmxxx - 宁波市市场监督领域企业公示*出资人认缴明细信息
+## dw_nb_scjdgl_czrrjmxxx - 宁波市市场监督领域企业公示_出资人认缴明细信息
 
-| 中文字段名           | 标准化字段名      | 数据类型 | 样例数据             |
-| -------------------- | ----------------- | -------- | -------------------- |
-| 认缴id               | subscrip_id       | string   | 3737639789358        |
-| 出资人id             | investor          | string   | 789358               |
-| 股东/发起人名称      | stocker_nm        | string   | 张建文               |
-| 认缴出资额           | subscrip_amt      | float    | 70                   |
-| 认缴出资方式ca22     | subscrip_way      | string   | 1                    |
-| 认缴出资方式中文名称 | subscrip_way_cn   | string   | 货币                 |
-| 认缴出资日期         | subscrip_dt       | datetime | 2024-3-24 0:00:00    |
-| 公示日期             | public_dt         | datetime | 2014-10-1 0:00:00    |
-| 数据汇总单位         |                   |          | 330215               |
-| 更新时间             |                   |          | 2017-5-31 11:32:21   |
-| 交换开关             |                   |          | 0                    |
-| 数据记录的增删改标志 |                   |          | 1                    |
-| 主体身份代码         | pripid            | string   | 3302263000089193     |
-| 统一社会信用代码     | uni_social_crd_cd | string   | 91330212066604667n   |
-| 企业名称（字号名称） | comp_nm           | string   | 万邦资产评估有限公司 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 认缴ID | `subscrip_id` | string | 3737639789358 |
+| 出资人ID | `investor` | string | 789358 |
+| 股东/发起人名称 | `stocker_nm` | string | 张建文 |
+| 认缴出资额 | `subscrip_amt` | float | 70 |
+| 认缴出资方式CA22 | `subscrip_way` | string | 1 |
+| 认缴出资方式中文名称 | `subscrip_way_cn` | string | 货币 |
+| 认缴出资日期 | `subscrip_dt` | datetime | 2024-03-24 00:00:00 |
+| 公示日期 | `public_dt` | datetime | 2014-10-01 00:00:00 |
+| 主体身份代码 | `pripid` | string | 3302263000089193 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330212066604667N |
+| 企业名称（字号名称） | `comp_nm` | string | 万邦资产评估有限公司 |
 
-## dw*nb_scjdgl_czrsjmxxx - 宁波市市场监督领域企业公示*出资人实缴明细信息
+## dw_nb_scjdgl_czrsjmxxx - 宁波市市场监督领域企业公示_出资人实缴明细信息
 
-| 中文字段名           | 标准化字段名      | 数据类型 | 样例数据             |
-| -------------------- | ----------------- | -------- | -------------------- |
-| 实缴id               | paid_id           | string   | 38879191743847       |
-| 出资人id             | investor_id       | string   | 1743847              |
-| 股东/发起人名称      | stocker_nm        | string   | 黄斌                 |
-| 实缴出资额           | paid_amt          | float    | 0                    |
-| 实缴出资方式ca22     | paid_way          | string   | 1                    |
-| 实缴出资方式中文名称 | paid_way_cn       | string   | 货币                 |
-| 实缴出资日期         | paid_dt           | datetime | 1998-12-30 0:00:00   |
-| 公示日期             | public_dt         | datetime | 2016-9-18 0:00:00    |
-| 数据汇总单位         |                   |          | 330282               |
-| 更新时间             |                   |          | 2019-3-21 20:27:45   |
-| 交换开关             |                   |          | 0                    |
-| 数据记录的增删改标志 |                   |          | u                    |
-| 主体身份代码         | pripid            | string   | 3302263000089193     |
-| 统一社会信用代码     | uni_social_crd_cd | string   | 91330212066604667n   |
-| 企业名称（字号名称） | comp_nm           | string   | 万邦资产评估有限公司 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 实缴ID | `paid_id` | string | 38879191743847 |
+| 出资人ID | `investor_id` | string | 1743847 |
+| 股东/发起人名称 | `stocker_nm` | string | 黄斌 |
+| 实缴出资额 | `paid_amt` | float | 0 |
+| 实缴出资方式CA22 | `paid_way` | string | 1 |
+| 实缴出资方式中文名称 | `paid_way_cn` | string | 货币 |
+| 实缴出资日期 | `paid_dt` | datetime | 1998-12-30 00:00:00 |
+| 公示日期 | `public_dt` | datetime | 2016-09-18 00:00:00 |
+| 主体身份代码 | `pripid` | string | 3302263000089193 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330212066604667N |
+| 企业名称（字号名称） | `comp_nm` | string | 万邦资产评估有限公司 |
+
+## dw_nb_scjdgl_scjdlyllyxx - 宁波市市场监督领域联络员信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 联络员ID | `liai_id` | string | 00000a3aad774eebcf24ea96de77ba5 |
+| 主体身份代码 | `sub_identi_cd` | string | 3302263000089193 |
+| 姓名 | `nm` | string | 王晓洁 |
+| 证件类型 | `cert_type` | string | 10 |
+| 证件号码 | `cert_num` | string | 330226************ |
+| 联络人员手机号码 | `liai_tel` | string | 130****8666 |
+| 备案类型 | `record_type` | string | \N |
+| 备案日期 | `record_dt` | datetime | 2019-06-27 00:00:00 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330212066604667N |
+| 企业名称（字号名称） | `comp_nm` | string | 万邦资产评估有限公司 |
 
 ## dw_nb_sgzw_nbxx - 宁波市年报信息
 
-| 中文字段名               | 标准化字段名            | 数据类型 | 样例数据                         |
-| ------------------------ | ----------------------- | -------- | -------------------------------- |
-| 营业执照注册号           | reg_no                  | string   | 110000000343473                  |
-| 统一社会信用代码         | uni_social_crd_cd       | string   | 91330282l07196379d               |
-| 企业名称                 | comp_nm                 | string   | 慈溪市太芝餐饮店                 |
-| 主体身份代码             | pripid                  | string   | 3302120000204959                 |
-| 企业类型                 | comp_type               | string   | 1130                             |
-| 营运状况                 | opt_stat                | string   | 正常开业                         |
-| 年度报告日期             | annual_date             | string   | 2017-8-7 9:51:52                 |
-| 年报id                   | annual_id               | string   | 11ed870739944076b310a7e79157314c |
-| 年报年度                 | annual_year             | string   | 2022                             |
-| 资产总额                 | asset_zmt               | double   | 0                                |
-| 资产总额是否公示         | pub_asset_zmt           | string   | 2                                |
-| 负债总额                 | debt_amt                | double   | 0                                |
-| 负债总额是否公示         | pub_debt_amt            | string   | 2                                |
-| 利润总额                 | profit_total            | double   | 48.754824                        |
-| 利润总额是否公示         | pub_profit_total        | string   | 2                                |
-| 净利润                   | net_profit              | double   | -95.31218                        |
-| 净利润是否公示           | pub_net_profit          | string   | 2                                |
-| 所有者权益合计           | owner_equity_toatal     | double   | -0.00001                         |
-| 所有者权益合计是否公示   | pub_owner_equity_toatal | string   | 2                                |
-| 销售(营业)收入           | opt_income_total        | double   | -0.79477                         |
-| 销售(营业)收入是否公示   | pub_opt_income_total    | string   | 1                                |
-| 其中主营业务收入         | main_busi_income        | double   | 2                                |
-| 其中主营业务收入是否公示 | pub\_                   | string   | 2                                |
-| 纳税总额                 | tax_total               | double   | 3.437791                         |
-| 纳税总额是否公示         | pub_tax_total           | string   | 2                                |
-| 从业人数                 | employee_num            | int      | 12                               |
-| 从业人数是否公示         | pub_employee_num        | string   | 2                                |
-| 所属地市                 | city                    | string   | 宁波市                           |
-| 所属区/县                | region                  | string   | 江东区                           |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 营业执照注册号 | `reg_no` | string | 110000000343473 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 企业名称 | `comp_nm` | string | 慈溪市太芝餐饮店 |
+| 主体身份代码 | `pripid` | string | 3302120000204959 |
+| 企业类型 | `comp_type` | string | 1130 |
+| 营运状况 | `opt_stat` | string | 正常开业 |
+| 年度报告日期 | `annual_date` | string | 2017-08-07 09:51:52 |
+| 年报ID | `annual_id` | string | 11ed870739944076b310a7e79157314c |
+| 年报年度 | `annual_year` | string | 2022 |
+| 资产总额 | `asset_zmt` | double | 0 |
+| 资产总额是否公示 | `pub_asset_zmt` | string | 2 |
+| 负债总额 | `debt_amt` | double | 0 |
+| 负债总额是否公示 | `pub_debt_amt` | string | 2 |
+| 利润总额 | `profit_total` | double | 48.754824 |
+| 利润总额是否公示 | `pub_profit_total` | string | 2 |
+| 净利润 | `net_profit` | double | -95.31218 |
+| 净利润是否公示 | `pub_net_profit` | string | 2 |
+| 所有者权益合计 | `owner_equity_toatal` | double | -1e-05 |
+| 所有者权益合计是否公示 | `pub_owner_equity_toatal` | string | 2 |
+| 销售(营业)收入 | `opt_income_total` | double | -0.79477 |
+| 销售(营业)收入是否公示 | `pub_opt_income_total` | string | 1 |
+| 其中主营业务收入 | `main_busi_income` | double | 2 |
+| 其中主营业务收入是否公示 | `pub_` | string | 2 |
+| 纳税总额 | `tax_total` | double | 3.437791 |
+| 纳税总额是否公示 | `pub_tax_total` | string | 2 |
+| 从业人数 | `employee_num` | int | 12 |
+| 从业人数是否公示 | `pub_employee_num` | string | 2 |
+| 所属地市 | `city` | string | 宁波市 |
+| 所属区/县 | `region` | string | 江东区 |
 
 ## dw_nb_ybj_jrxkxx - 宁波市财税金融领域金融许可证信息
 
-| 中文字段名     | 标准化字段名  | 数据类型 | 样例数据                             |
-| -------------- | ------------- | -------- | ------------------------------------ |
-| 机构名称       | org_nm        | string   | 中国建设银行股份有限公司宁波霞浦支行 |
-| 机构编码       | org_cd        | string   | b0004s233020034                      |
-| 批准成立日期   | pub_dt        | datetime | 1994-9-1                             |
-| 批准终止日期   | stop_dt       | datetime | 2018-7-23                            |
-| 营业地址       | opt_addr      | string   | 宁波市北仑区霞浦街道霞浦路142号      |
-| 金融许可证编号 | fina_lic_no   | string   | 167203                               |
-| 发证日期       | issue_lic_dt  | datetime | 2007-6-11 0:00:00                    |
-| 发证机关       | issue_lic_org | string   | 宁波银监局                           |
-| 批准文号       | appr_doc_no   | string   | []号                                 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 机构名称 | `org_nm` | string | 中国建设银行股份有限公司宁波霞浦支行 |
+| 机构编码 | `org_cd` | string | B0004S233020034 |
+| 批准成立日期 | `pub_dt` | datetime | 1994-09-01 00:00:00 |
+| 批准终止日期 | `stop_dt` | datetime | 2018-07-23 00:00:00 |
+| 营业地址 | `opt_addr` | string | 宁波市北仑区霞浦街道霞浦路142号 |
+| 金融许可证编号 | `fina_lic_no` | string | 167203 |
+| 发证日期 | `issue_lic_dt` | datetime | 2007-06-11 00:00:00 |
+| 发证机关 | `issue_lic_org` | string | 宁波银监局 |
+| 批准文号 | `appr_doc_no` | string | []号 |
 
 ## dw_nb_sw_sbjnxx - 社保缴纳信息
 
-| 中文字段名   | 标准化字段名 | 数据类型 | 样例数据                          |
-| ------------ | ------------ | -------- | --------------------------------- |
-| 序列号       | uuid         |          | 0043c10dd3ecd2134d1472ce6b3483e6  |
-| 征收项目     | coll_item    | string   | 10201、10202、10203、10204、10205 |
-| 税款所属期起 | period_from  | datetime | 2022-1-1                          |
-| 税款所属期止 | period_to    | datetime | 2022-1-31                         |
-| 纳税人识别号 | tax_no       | string   | 330183**\*\***052356              |
-| 企业名称     | comp_nm      | string   | 宁波能源集团股份有限公司          |
-| 税款种类     | tax_type     | string   | 10                                |
-| 实缴金额     | paid_amt     | float    | 1007.28                           |
-| 入库日期     | rkrq         |          | 2022-2-15                         |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 序列号 | `uuid` |  | 0043C10DD3ECD2134D1472CE6B3483E6 |
+| 征收项目 | `coll_item` | string | 10201、10202、10203、10204、10205 |
+| 税款所属期起 | `period_from` | datetime | 2022-01-01 00:00:00 |
+| 税款所属期止 | `period_to` | datetime | 2022-01-31 00:00:00 |
+| 纳税人识别号 | `tax_no` | string | 330183******052356 |
+| 企业名称 | `comp_nm` | string | 宁波能源集团股份有限公司 |
+| 税款种类 | `tax_type` | string | 10 |
+| 实缴金额 | `paid_amt` | float | 1007.28 |
+| 入库日期 | `rkrq` |  | 2022-02-15 00:00:00 |
 
 ## dw_zj_js_qygjjndjcxx - 企业公积金年度缴存信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据             |
-| ---------------- | ----------------- | -------- | -------------------- |
-| 缴存总金额       | pay_amt           | double   | 3243916.02           |
-| 缴存年度         | pay_year          | string   | 2017                 |
-| 企业名称         | comp_nm           | string   | 象山县贤庠镇人民政府 |
-| 机构号           | org_no            | string   | 14                   |
-| 单位账号         | unit_acco         | string   | 33022530019          |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 1133022500296433xt   |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 缴存总金额 | `pay_amt` | double | 3243916.02 |
+| 缴存年度 | `pay_year` | string | 2017 |
+| 企业名称 | `comp_nm` | string | 象山县贤庠镇人民政府 |
+| 机构号 | `org_no` | string | 14 |
+| 单位账号 | `unit_acco` | string | 33022530019 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 1133022500296433XT |
 
 ## dw_zj_js_qygjjydjcxx - 企业公积金月度缴存信息
 
-| 中文字段名         | 标准化字段名   | 数据类型 | 样例数据               |
-| ------------------ | -------------- | -------- | ---------------------- |
-| 单位名称           | comp_nm        | string   | 宁波可意家用品有限公司 |
-| 本期缴存金额（元） | pay_amt        | double   | 12320.00               |
-| 公积金单位帐号     | prov_fund_acco | string   | 10100001776            |
-| 缴存日期           | pay_dt         | datetime | 2017-12-21 0:00        |
-| 组织机构代码       | org_id         | string   | 74218321-3             |
-| 单位缴存人数       | pay_pers_num   | smallint | 40                     |
-| 公积金中心机构号   | jgh            | string   | 11                     |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 单位名称 | `comp_nm` | string | 宁波可意家用品有限公司 |
+| 本期缴存金额（元） | `pay_amt` | double | 12320 |
+| 公积金单位帐号 | `prov_fund_acco` | string | 10100001776 |
+| 缴存日期 | `pay_dt` | datetime | 2017-12-21 00:00:00 |
+| 组织机构代码 | `org_id` | string | 74218321-3 |
+| 单位缴存人数 | `pay_pers_num` | smallint | 40 |
+| 公积金中心机构号 | `jgh` | string | 11 |
 
 ## dw_nb_kj_gxjsqyxx - 高新技术企业信息（新）
 
-| 中文字段名           | 标准化字段名     | 数据类型 | 样例数据                              |
-| -------------------- | ---------------- | -------- | ------------------------------------- |
-| 唯一标识             | uniqueid         |          | 8be058cb-5c8e-47dc-9466-f1bb721c178b3 |
-| bid                  | bid              |          | 8be058cb-5c8e-47dc-9466-f1bb721c178b3 |
-| 企业名               | comp_nm          | string   | 浙江瓦力新能源科技有限公司            |
-| 高企证书号           | high_tech_doc    | string   | gr201733100657                        |
-| 发证日期             | issue_dt         | string   | 2017-11-29                            |
-| 持证单位代码         | hold_cert_cd     | string   | 91330200561262545u                    |
-| 颁证单位组织机构代码 | bjdwdm           | string   | 113300**\*\***82090q                  |
-| 颁证单位             | award_cert       | string   | 浙江省科学技术厅                      |
-| 行政区划代码         | area_nm          | string   | 3**\*\***                             |
-| 持证主体代码类型     | hold_sub_cd_type | string   | 001                                   |
-| 守信信息名称         | trust_info_nm    | string   | 获准高新技术企业认证                  |
-| 认定依据             | cogn_basis       | string   | 国科火字[2017]201号                   |
-| 列入事由             | cogn_matter      | string   | 国科火字[2017]201号                   |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 唯一标识 | `uniqueid` |  | 8BE058CB-5C8E-47DC-9466-F1BB721C178B3 |
+| bid | `bid` |  | 8BE058CB-5C8E-47DC-9466-F1BB721C178B3 |
+| 企业名 | `comp_nm` | string | 浙江瓦力新能源科技有限公司 |
+| 高企证书号 | `high_tech_doc` | string | GR201733100657 |
+| 发证日期 | `issue_dt` | string | 2017-11-29 00:00:00 |
+| 持证单位代码 | `hold_cert_cd` | string | 91330200561262545U |
+| 颁证单位组织机构代码 | `bjdwdm` | string | 113300******82090Q |
+| 颁证单位 | `award_cert` | string | 浙江省科学技术厅 |
+| 行政区划代码 | `area_nm` | string | 3****** |
+| 持证主体代码类型 | `hold_sub_cd_type` | string | 001 |
+| 守信信息名称 | `trust_info_nm` | string | 获准高新技术企业认证 |
+| 认定依据 | `cogn_basis` | string | 国科火字[2017]201号 |
+| 列入事由 | `cogn_matter` | string | 国科火字[2017]201号 |
 
 ## dw_nb_kj_sjkjxzxqyxx - 省级科技型中小企业信息（数改）
 
-| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据             |
-| ---------- | ------------ | -------- | -------------------- |
-| 主键       | id           |          | 1                    |
-| 认定年份   | year_id      | string   | 2020                 |
-| 企业名称   | name         | string   | 宁波托普电器有限公司 |
-| 区县市     | area_name    | string   | 北仑区               |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键 | `id` |  | 1 |
+| 认定年份 | `year_id` | string | 2020 |
+| 企业名称 | `name` | string | 宁波托普电器有限公司 |
+| 区县市 | `area_name` | string | 北仑区 |
 
 ## dw_nb_kj_nbskjxxwqyxx - 宁波市科技型小微企业信息
 
-| 中文字段名   | 标准化字段名 | 数据类型 | 样例数据                 |
-| ------------ | ------------ | -------- | ------------------------ |
-| 序号         | serialid     |          | 10                       |
-| 组织机构代码 | creditcode   |          | 058252771                |
-| 认定年份     | cogn_year    | smallint | 2013                     |
-| 认定机构     | cogn_unit    | string   | 宁波市科学技术局         |
-| 企业名称     | comp_nm      | string   | 宁波千云塑业科技有限公司 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 序号 | `serialid` |  | 10 |
+| 组织机构代码 | `creditcode` |  | 058252771 |
+| 认定年份 | `cogn_year` | smallint | 2013 |
+| 认定机构 | `cogn_unit` | string | 宁波市科学技术局 |
+| 企业名称 | `comp_nm` | string | 宁波千云塑业科技有限公司 |
 
 ## dw_nb_kj_sgczkjxzxqy - 省高成长科技型中小企业信息
 
-| 中文字段名   | 标准化字段名 | 数据类型 | 样例数据                 |
-| ------------ | ------------ | -------- | ------------------------ |
-| 企业名称     | comp_nm      | string   | 浙江首游网络科技有限公司 |
-| 序号         | no           | string   | 1                        |
-| 认定年份     | congniz_tear | string   | 2016                     |
-| 认定机构     | congniz_org  | string   | 浙江省科学技术厅         |
-| 组织机构代码 | org_id       | string   | 913302**\*\***307724     |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 企业名称 | `comp_nm` | string | 浙江首游网络科技有限公司 |
+| 序号 | `no` | string | 1 |
+| 认定年份 | `congniz_tear` | string | 2016 |
+| 认定机构 | `congniz_org` | string | 浙江省科学技术厅 |
+| 组织机构代码 | `org_id` | string | 913302******307724 |
 
 ## dw_zj_fzgg_cfjbxx - 处罚基本信息
 
-| 中文字段名                                         | 标准化字段名                | 数据类型 | 样例数据                                                          |
-| -------------------------------------------------- | --------------------------- | -------- | ----------------------------------------------------------------- |
-| 主键id                                             | cd_id                       | string   | 22cab6ac6946434ebe91e6f32f9f36b0                                  |
-| 唯一标志符                                         | record_unique_identity      | string   | 22cab6ac6946434ebe91e6f32f9f36b0                                  |
-| 案件编号                                           | punish_case_code            | string   | 113308**\*\***31567220212000089                                   |
-| 处罚行为名称                                       | punish_action_name          | string   | 对具备使用有毒物品\粉尘超标等易导致职业病因素的作业场所的行政检查 |
-| 执法主体名称                                       | implement_institution       | string   | 宁波国家高新技术产业开发区社会事务管理局                          |
-| 执法主体统一社会信用码                             | implement_institution_code  | string   | 123305**\*\***093287                                              |
-| 是否委托其他部门实施                               | is_entrust                  | string   | 0                                                                 |
-| 受委托组织名称                                     | entrust_dept_name           | string   | 临海市卫生监督所                                                  |
-| 受委托组织编码                                     | entrust_dept_code           | string   | 12331082472660525j                                                |
-| 案件程序类别                                       | case_process_type           | string   | 01                                                                |
-| 案件来源                                           | case_source_type            | string   | 01                                                                |
-| 案件来源日期                                       | case_source_date            | datetime | 2021-8-2 0:00:00                                                  |
-| 检查案件编号                                       | check_case_code             | string   | 095a51d128d1496cb7482d9ce8b2a2b9                                  |
-| 移送部门名称                                       | deportation_dept_name       | string   | 余姚市人民法院                                                    |
-| 移送部门统一社会信用码                             | deportation_dept_code       | string   | 12330227419611791h                                                |
-| 当事人类型                                         | administrative_cp_type      | string   | 02                                                                |
-| 当事人名称                                         | administrative_cp_name      | string   | 秦敏                                                              |
-| 当事人身份证件类型                                 | administrative_cp_cert_type | string   | 001                                                               |
-| 当事人证件号码                                     | administrative_cp_cert_code | string   | 123302**\*\***11791h                                              |
-| 当事人联系电话                                     | administrative_cp_tel       | string   | 15397249229                                                       |
-| 法定代表人姓名                                     | legal_representative        | string   | 张国定                                                            |
-| 法定代表人身份证号码                               | legal_representative_idcard | string   | 330227\***\*\*\*\*\*\*\***                                        |
-| 住所（住址）行政区划代码(国家标准，不含经济开发区) | area_code_live              | string   | 130821106                                                         |
-| 住所（住址）行政区划名称                           | area_name_live              | string   | 丽水市                                                            |
-| 住所（住址）                                       | address_live                | string   | 万卷路397号                                                       |
-| 注册地址行政区划编码                               | area_code_registerd         | string   | 330000                                                            |
-| 注册地址行政区划名称                               | area_name_registerd         | string   | 万象街道                                                          |
-| 注册地址                                           | address_registerd           | string   | 693号                                                             |
-| 经营地址行政区划编码                               | area_code_operating         | string   | 330000                                                            |
-| 经营地址行政区划名称                               | area_name_operating         | string   | 万象街道                                                          |
-| 经营地址                                           | address_operating           | string   | 693号                                                             |
-| 执法人员姓名                                       | punish_personnel_name       | string   | 王亚军,杜晓颖                                                     |
-| 执法人员证件编号                                   | punish_personnel_code       | string   | ,0205262020040290                                                 |
-| 案情介绍                                           | case_desc                   | string   |                                                                   |
-| 是否移送司法机关                                   | is_deported                 | smallint | 1                                                                 |
-| 移送、 抄送司法机关时间                            | deport_time                 | datetime | 2017-8-24 0:00:00                                                 |
-| 0:否， 1： 是（如果没有立案，立案相关信息不传）    | is_filing                   | smallint | 1                                                                 |
-| 创建时间                                           | create_time                 | string   | 2022-3-4 19:00:06                                                 |
-| 更新类型                                           | opt_type                    | string   | i                                                                 |
-| 测试数据标识                                       | env_flag                    | bigint   | 0                                                                 |
-| 来源厅局编码                                       | source_dept_code            | string   | 6                                                                 |
-| 插入时间                                           | cd_time                     | datetime | 2022-3-24 10:08:28                                                |
-| 行政区划编码                                       | admini_division_code        | string   | 330281                                                            |
-| 组织编码                                           | org_code                    | string   | 1008002007023                                                     |
-| 法定代表人证件类型                                 | legal_representative_type   | string   | 111                                                               |
-| flag                                               | flag                        | bigint   | 1                                                                 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键ID | `cd_id` | string | 22cab6ac6946434ebe91e6f32f9f36b0 |
+| 唯一标志符 | `record_unique_identity` | string | 22cab6ac6946434ebe91e6f32f9f36b0 |
+| 案件编号 | `punish_case_code` | string | 113308******31567220212000089 |
+| 处罚行为名称 | `punish_action_name` | string | 对具备使用有毒物品\粉尘超标等易导致职业病因素的作业场所的行政检查 |
+| 执法主体名称 | `implement_institution` | string | 宁波国家高新技术产业开发区社会事务管理局 |
+| 执法主体统一社会信用码 | `implement_institution_code` | string | 123305******093287 |
+| 是否委托其他部门实施 | `is_entrust` | string | 0 |
+| 受委托组织名称 | `entrust_dept_name` | string | 临海市卫生监督所 |
+| 受委托组织编码 | `entrust_dept_code` | string | 12331082472660525j |
+| 案件程序类别 | `case_process_type` | string | 01 |
+| 案件来源 | `case_source_type` | string | 01 |
+| 案件来源日期 | `case_source_date` | datetime | 2021-08-02 00:00:00 |
+| 检查案件编号 | `check_case_code` | string | 095A51D128D1496CB7482D9CE8B2A2B9 |
+| 移送部门名称 | `deportation_dept_name` | string | 余姚市人民法院 |
+| 移送部门统一社会信用码 | `deportation_dept_code` | string | 12330227419611791H |
+| 当事人类型 | `administrative_cp_type` | string | 02 |
+| 当事人名称 | `administrative_cp_name` | string | 秦敏 |
+| 当事人身份证件类型 | `administrative_cp_cert_type` | string | 001 |
+| 当事人证件号码 | `administrative_cp_cert_code` | string | 123302******11791H |
+| 当事人联系电话 | `administrative_cp_tel` | string | 15397249229 |
+| 法定代表人姓名 | `legal_representative` | string | 张国定 |
+| 法定代表人身份证号码 | `legal_representative_idcard` | string | 330227************ |
+| 住所（住址）行政区划代码(国家标准，不含经济开发区) | `area_code_live` | string | 130821106 |
+| 住所（住址）行政区划名称 | `area_name_live` | string | 丽水市 |
+| 住所（住址） | `address_live` | string | 万卷路397号 |
+| 注册地址行政区划编码 | `area_code_registerd` | string | 330000 |
+| 注册地址行政区划名称 | `area_name_registerd` | string | 万象街道 |
+| 注册地址 | `address_registerd` | string | 693号 |
+| 经营地址行政区划编码 | `area_code_operating` | string | 330000 |
+| 经营地址行政区划名称 | `area_name_operating` | string | 万象街道 |
+| 经营地址 | `address_operating` | string | 693号 |
+| 执法人员姓名 | `punish_personnel_name` | string | 王亚军,杜晓颖 |
+| 执法人员证件编号 | `punish_personnel_code` | string | ,0205262020040290 |
+| 案情介绍 | `case_desc` | string |  |
+| 是否移送司法机关 | `is_deported` | smallint | 1 |
+| 移送、 抄送司法机关时间 | `deport_time` | datetime | 2017-08-24 00:00:00 |
+| 0:否， 1： 是（如果没有立案，立案相关信息不传） | `is_filing` | smallint | 1 |
+| 创建时间 | `create_time` | string | 2022-03-04 19:00:06 |
+| 更新类型 | `opt_type` | string | I |
+| 测试数据标识 | `env_flag` | bigint | 0 |
+| 来源厅局编码 | `source_dept_code` | string | 6 |
+| 插入时间 | `cd_time` | datetime | 2022-03-24 10:08:28 |
+| 行政区划编码 | `admini_division_code` | string | 330281 |
+| 组织编码 | `org_code` | string | 1008002007023 |
+| 法定代表人证件类型 | `legal_representative_type` | string | 111 |
+| FLAG | `flag` | bigint | 1 |
 
 ## dw_zj_fzgg_xzcfjdxx - 行政处罚决定信息
 
-| 中文字段名                                     | 标准化字段名     | 数据类型 | 样例数据             |
-| ---------------------------------------------- | ---------------- | -------- | -------------------- |
-| 主键                                           | id               | string   | 1/2000               |
-| 案件名称                                       | case_name        | string   | 暂无                 |
-| 违法行为类型                                   | extend_1         | string   | 暂无                 |
-| 处罚类别                                       | punish_type      | string   | 通报批评             |
-| 行政处罚决定书文号                             | admin_punish_doc | string   | 3                    |
-| 对外公开的处罚决定书全文或摘要                 | punish_content   | text     |                      |
-| 处罚依据                                       | law_basis        | text     | 暂无                 |
-| 罚款                                           | punish_money     | string   | 10000                |
-| 没收违法所得                                   | illegality_money | string   | 暂无                 |
-| 暂扣或吊销证照名称                             | revoke_license   | string   | 暂无                 |
-| 暂扣或吊销证照编号                             | revoke_code      | string   | 暂无                 |
-| 处罚决定日期                                   | punish_decide_tm | string   | 2019-5-22 0:00:00    |
-| 处罚有效期                                     | punish_valid_dt  | string   | 无处罚期限           |
-| 公示截止期                                     | public_deadline  | string   | 1900-1-1 0:00:00     |
-| 参与该业务办理第一环节的部门名称               | casedeptname     | string   | 暂无                 |
-| 参与该业务办理第一环节的部门的统一社会信用代码 | extend_2         | string   | 暂无                 |
-| 数据来源单位                                   | cf_sjly          | string   | 浙江省司法厅         |
-| 数据来源单位统一社会信用代码                   | cf_sjlydm        | string   | 113300**\*\***82154n |
-| 案件撤销原因                                   | cancel_reason    | text     | 暂无                 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键 | `id` | string | 1/2000 |
+| 案件名称 | `case_name` | string | 暂无 |
+| 违法行为类型 | `extend_1` | string | 暂无 |
+| 处罚类别 | `punish_type` | string | 通报批评 |
+| 行政处罚决定书文号 | `admin_punish_doc` | string | 3 |
+| 对外公开的处罚决定书全文或摘要 | `punish_content` | text |  |
+| 处罚依据 | `law_basis` | text | 暂无 |
+| 罚款 | `punish_money` | string | 10000 |
+| 没收违法所得 | `illegality_money` | string | 暂无 |
+| 暂扣或吊销证照名称 | `revoke_license` | string | 暂无 |
+| 暂扣或吊销证照编号 | `revoke_code` | string | 暂无 |
+| 处罚决定日期 | `punish_decide_tm` | string | 2019-05-22 00:00:00 |
+| 处罚有效期 | `punish_valid_dt` | string | 无处罚期限 |
+| 公示截止期 | `public_deadline` | string | 1900-01-01 00:00:00 |
+| 参与该业务办理第一环节的部门名称 | `casedeptname` | string | 暂无 |
+| 参与该业务办理第一环节的部门的统一社会信用代码 | `extend_2` | string | 暂无 |
+| 数据来源单位 | `cf_sjly` | string | 浙江省司法厅 |
+| 数据来源单位统一社会信用代码 | `cf_sjlydm` | string | 113300******82154N |
+| 案件撤销原因 | `cancel_reason` | text | 暂无 |
 
 ## dw_zj_fzgg_sxbzxrxx - 失信被执行人信息
 
-| 中文字段名               | 标准化字段名       | 数据类型 | 样例数据                   |
-| ------------------------ | ------------------ | -------- | -------------------------- |
-| 法院代码                 | fydm               | string   | 675                        |
-| 被执行人姓名/名称        | executed_nm        | string   | 周玉六                     |
-| 身份证号码               | identi_id          | string   | 410724\***\*\*\*\*\*\*\*** |
-| 组织机构代码             | uni_social_crd_cd  | string   | 1616173                    |
-| 法定代表人或者负责人姓名 | legal_repre        | string   | 郭赞楼                     |
-| 执行法院                 | executed_court     | string   | 获嘉县人民法院             |
-| 执行依据文号             | enforce_basis      | string   | (2016)豫0724民初2559号     |
-| 立案时间                 | fil_dt             | datetime | 2022-1-24                  |
-| 案号                     | case_no            | string   | (2022)豫0724执恢54号       |
-| 做出执行依据单位         | deci_executed_unit | string   | 获嘉县人民法院             |
-| 生效法律文书确定的义务   | effect_doc_obli    | string   | 无                         |
-| 被执行人的履行情况       | executed_perfor    | string   | 全部未履行                 |
-| 发布时间                 | publish_dt         | datetime | 2022-1-27                  |
-| 搜案年号                 | search_case_year   | string   | 2022                       |
-| 搜案编号                 | search_case_no     | string   | 715431643                  |
-| 被执行人序号             | bzxrxh             | string   | 1                          |
-| 已履行部分               | performed_part     | string   | 暂无                       |
-| 未履行部分               | un_performed_part  | string   | 暂无                       |
-| 失信id                   | dishonest_id       | string   | 715431643                  |
-| 性别                     | gen                | string   | 男性                       |
-| 被执行人性质             | executed_nature    | string   | 自然人                     |
-| 出生日期                 | birth_dt           | datetime | 1969-12-29                 |
-| 失信被执行人行为情况     | dishonest_behav    | string   | 其他规避执行               |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 法院代码 | `fydm` | string | 675 |
+| 被执行人姓名/名称 | `executed_nm` | string | 周玉六 |
+| 身份证号码 | `identi_id` | string | 410724************ |
+| 组织机构代码 | `uni_social_crd_cd` | string | 1616173 |
+| 法定代表人或者负责人姓名 | `legal_repre` | string | 郭赞楼 |
+| 执行法院 | `executed_court` | string | 获嘉县人民法院 |
+| 执行依据文号 | `enforce_basis` | string | (2016)豫0724民初2559号 |
+| 立案时间 | `fil_dt` | datetime | 2022-01-24 00:00:00 |
+| 案号 | `case_no` | string | (2022)豫0724执恢54号 |
+| 做出执行依据单位 | `deci_executed_unit` | string | 获嘉县人民法院 |
+| 生效法律文书确定的义务 | `effect_doc_obli` | string | 无 |
+| 被执行人的履行情况 | `executed_perfor` | string | 全部未履行 |
+| 发布时间 | `publish_dt` | datetime | 2022-01-27 00:00:00 |
+| 搜案年号 | `search_case_year` | string | 2022 |
+| 搜案编号 | `search_case_no` | string | 715431643 |
+| 被执行人序号 | `bzxrxh` | string | 1 |
+| 已履行部分 | `performed_part` | string | 暂无 |
+| 未履行部分 | `un_performed_part` | string | 暂无 |
+| 失信ID | `dishonest_id` | string | 715431643 |
+| 性别 | `gen` | string | 男性 |
+| 被执行人性质 | `executed_nature` | string | 自然人 |
+| 出生日期 | `birth_dt` | datetime | 1969-12-29 00:00:00 |
+| 失信被执行人行为情况 | `dishonest_behav` | string | 其他规避执行 |
+
+## dw_nb_sl_slswlyqypjxx - 宁波市水利水务领域企业评价信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 企业ID | `comp_id` | string | 88310049-9525-481D-B128-CEA436F70146 |
+| 企业名称 | `comp_name` | string | 浙江省围海建设集团股份有限公司 |
+| 评价时间 | `eval_time` | string | 2016-01-05 16:53:39 |
+| 评价等级 | `rank_level` | string | A |
+| 评价版本 | `eval_rank_number` | bigint | 1 |
+| 单位类型 | `company_type` | string | 施工单位 |
 
 ## dw_nb_sl_qjsfqyxx - 欠缴水费的企业信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据                 |
-| ---------------- | ----------------- | -------- | ------------------------ |
-| 统计年月         | count_ym          | datetime | 202011                   |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 913302**\*\***531452     |
-| 用户号           | user_id           | string   | nbfs_172319              |
-| 用户性质         | user_nature       | string   | 居民用水                 |
-| 法人机构名称     | legal_org_nm      | string   | 浙江捷达物业服务有限公司 |
-| 用水地址         | use_addr          | string   | 奉化区方桥宁桂苑消防水池 |
-| 账单流水号       | bill_no           | string   | 172319202012             |
-| 欠费期数         | arrear_tms        | int      | 1                        |
-| 金额             | amt               | float    | 137.25                   |
-| 行政区域代码     | area_cd           | string   | 330213000000             |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 统计年月 | `count_ym` | datetime | 202011 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 913302******531452 |
+| 用户号 | `user_id` | string | nbfs_172319 |
+| 用户性质 | `user_nature` | string | 居民用水 |
+| 法人机构名称 | `legal_org_nm` | string | 浙江捷达物业服务有限公司 |
+| 用水地址 | `use_addr` | string | 奉化区方桥宁桂苑消防水池 |
+| 账单流水号 | `bill_no` | string | 172319202012 |
+| 欠费期数 | `arrear_tms` | int | 1 |
+| 金额 | `amt` | float | 137.25 |
+| 行政区域代码 | `area_cd` | string | 330213000000 |
 
 ## dw_nb_zhzf_fryssjxx - 宁波市用户每月用水量信息（法人）
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据             |
-| ---------------- | ----------------- | -------- | -------------------- |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 913101**\*\***61427b |
-| 用户号           | yhh               | string   | 3433500              |
-| 用户性质         | user_nature       | string   | 工业                 |
-| 抄表日期         | meter_read_dt     | datetime | 2021-10-3 0:00:00    |
-| 本期抄见         | period_copy       | string   | 38121                |
-| 本期水量         | water_consum      | float    | 1166                 |
-| 滞纳金额         | overdue_amt       | float    | 0.00                 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 913101******61427B |
+| 用户号 | `yhh` | string | 3433500 |
+| 用户性质 | `user_nature` | string | 工业 |
+| 抄表日期 | `meter_read_dt` | datetime | 2021-10-03 00:00:00 |
+| 本期抄见 | `period_copy` | string | 38121 |
+| 本期水量 | `water_consum` | float | 1166 |
+| 滞纳金额 | `overdue_amt` | float | 0 |
 
 ## dw_nb_zhzf_fryqsjxx - 宁波市用户每月用气量信息（法人）
 
-| 中文字段名       | 标准化字段名 | 数据类型 |
-| ---------------- | ------------ | -------- |
-| 统一社会信用代码 | tyshxydm     | varchar  |
-| 用户号           | yhh          | varchar  |
-| 法人机构名称     | frjgmc       | varchar  |
-| 用户性质         | yhxz         | varchar  |
-| 用户地址         | yhdz         | varchar  |
-| 行政区域代码     | xzqydm       | varchar  |
-| 账单流水号       | zdlsh        | varchar  |
-| 用气证号         | yqzh         | varchar  |
-| 表计号           | bsh          | varchar  |
-| 抄表日期         | cbrq         | datetime |
-| 上次抄表日期     | sccbrq       | datetime |
-| 本期抄见         | bqcj         | varchar  |
-| 上期抄见         | sqcx         | varchar  |
-| 本期用气量       | bqyql        | varchar  |
-| 滞纳金额         | znje         | decimal  |
-| 数据来源         | sjly         | varchar  |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 统一社会信用代码 | `tyshxydm` |  | VARCHAR/字符串型C |
+| 账单流水号 | `zdlsh` |  | VARCHAR/字符串型C |
+| 用气证号 | `yqzh` |  | VARCHAR/字符串型C |
+| 表计号 | `bsh` |  | VARCHAR/字符串型C |
+| 滞纳金额 | `znje` |  | DECIMAL/数值型N |
+| 本期用气量 | `bqyql` |  | VARCHAR/字符串型C |
+| 本期抄见 | `bqcj` |  | VARCHAR/字符串型C |
+| 数据来源 | `sjly` |  | VARCHAR/字符串型C |
+| 上次抄表日期 | `sccbrq` |  | DATETIME/日期时间型T |
+| 上期抄见 | `sqcx` |  | VARCHAR/字符串型C |
+| 抄表日期 | `cbrq` |  | DATETIME/日期时间型T |
+| 法人机构名称 | `frjgmc` |  | VARCHAR/字符串型C |
+| 用户性质 | `yhxz` |  | VARCHAR/字符串型C |
+| 用户地址 | `yhdz` |  | VARCHAR/字符串型C |
+| 用户号 | `yhh` |  | VARCHAR/字符串型C |
+| 行政区域代码 | `xzqydm` |  | VARCHAR/字符串型C |
+
+## dw_nb_sthj_wxfwjyxk - 危险废物经营许可证
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 证件状态 | `use_state` | string | 有效 |
+| 发证日期 | `auth_date` | datetime | 2016-12-07 00:00:00 |
+| 数据唯一编码 | `data_id` | string | 689 |
+| 统一社会信用代码 | `ent_code` | string | 913302******82264P |
+| 发证机关 | `auth_depart` | string | 浙江省生态环境厅 |
+| 有效期限起 | `ava_start` | datetime | 2016-12-07 00:00:00 |
+| 证照号 | `lic_no` | string | 3302000225 |
+| 签名值 | `signvalue` | string |  |
+| 注册地址 | `reg_address` | string | 奉化东江路11号 |
+| 有效期限止 | `ava_end` | datetime | 2021-12-06 00:00:00 |
+| 签名公钥证书 | `signcert` | string |  |
+| 时间戳 | `tnsvalue` | string |  |
+| 单位名称 | `ent_name` | string | 宁波金土地固体废物回收有限公司 |
+| 经营地址 | `bus_address` | string | 奉化东江路11号 |
+| 经营范围 | `bus_area` | string | 其他废物 |
+| 法定代表人 | `main_leader` | string | 王云 |
+| 签名hash值 | `signhashcode` | string |  |
+| 证照颁发机构代码 | `issuecode` | string |  |
+| 持证主体代码类型 | `holdertype` | string |  |
+| 行政区划代码 | `arecode` | string | 3***** |
 
 ## dw_nb_dsj_xypjxx - 信用评价信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据             |
-| ---------------- | ----------------- | -------- | -------------------- |
-| 主体名称         | comp_nm           | string   | 绍兴华泽装饰有限公司 |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 913306**\*\***ud4p7h |
-| 信用分           | cred_scard        | string   | 815.00               |
-| 评价时间         | evalu_dt          | datetime | 2022-3-25 0:00:00    |
-| 所属地市         | local_city        | string   | \n                   |
-| 所属区/县        | local_district    | string   | \n                   |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主体名称 | `comp_nm` | string | 绍兴华泽装饰有限公司 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 913306******UD4P7H |
+| 信用分 | `cred_scard` | string | 815 |
+| 评价时间 | `evalu_dt` | datetime | 2022-03-25 00:00:00 |
+| 所属地市 | `local_city` | string | \N |
+| 所属区/县 | `local_district` | string | \N |
 
 ## dw_nb_jt_qyzhzsxx - 企业资质证书信息
 
-| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据          |
-| ---------- | ------------ | -------- | ----------------- |
-| 主键id     | key_id       | string   | 10000             |
-| 证书编号   | cert_no      | string   | d233061246        |
-| 发证机关   | issure_org   | string   | 浙江省交通运输厅  |
-| 起始日期   | start_dt     | datetime | 2016-7-5 0:00:00  |
-| 终止日期   | end_dt       | datetime | 2021-4-26 0:00:00 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键ID | `key_id` | string | 10000 |
+| 证书编号 | `cert_no` | string | D233061246 |
+| 发证机关 | `issure_org` | string | 浙江省交通运输厅 |
+| 起始日期 | `start_dt` | datetime | 2016-07-05 00:00:00 |
+| 终止日期 | `end_dt` | datetime | 2021-04-26 00:00:00 |
 
 ## dw_nb_sw_nsrjcxx - 宁波市财税金融领域纳税人基础信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据 |
-| ---------------- | ----------------- | -------- | -------- |
-| 统一社会信用代码 | uni_social_crd_cd | string   |          |
-| 纳税人识别号     | tax_payer_no      | string   |          |
-| 税务登记日期     | tax_reg_dt        | datetime |          |
-| 纳税人状态       | tax_payer_state   | string   |          |
-| 企业名称         | comp_nm           | string   |          |
-| 主管税务所代码   | tax_office_no     | string   |          |
-| 主管税务所名称   | tax_office_nm     | string   |          |
-| 主管税务机关代码 | tax_dept_no       | string   |          |
-| 主管税务机关名称 | tax_dept_nm       | string   |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 纳税人识别号 | `tax_payer_no` | string |  |
+| 税务登记日期 | `tax_reg_dt` | datetime |  |
+| 纳税人状态 | `tax_payer_state` | string |  |
+| 企业名称 | `comp_nm` | string |  |
+| 主管税务所代码 | `tax_office_no` | string |  |
+| 主管税务所名称 | `tax_office_nm` | string |  |
+| 主管税务机关代码 | `tax_dept_no` | string |  |
+| 主管税务机关名称 | `tax_dept_nm` | string |  |
 
 ## dw_nb_sw_fzchrd - 宁波市财税金融领域公共信用纳税非正常户认定信息
 
-| 中文字段名         | 标准化字段名      | 数据类型 | 样例数据 |
-| ------------------ | ----------------- | -------- | -------- |
-| 统一社会信用代码   | uni_social_crd_cd | string   |          |
-| 企业名称           | comp_nm           | string   |          |
-| 非正常户认定日期   | unnor_cogni_dt    | datetime |          |
-| 法定代表人身份证号 | legal_repre_id    | string   |          |
-| 法定代表人         | legal_repre       | string   |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 企业名称 | `comp_nm` | string |  |
+| 非正常户认定日期 | `unnor_cogni_dt` | datetime |  |
+| 法定代表人身份证号 | `legal_repre_id` | string |  |
+| 法定代表人 | `legal_repre` | string |  |
 
 ## dw_nb_sw_qyskzsxx - 宁波市财税金融领域企业税款征收信息
 
-| 中文字段名             | 标准化字段名      | 数据类型 | 样例数据                                 |
-| ---------------------- | ----------------- | -------- | ---------------------------------------- |
-| 主管税务所（科、分局） | major_tax_unit    | string   | 国家税务总局宁波市鄞州区税务局姜山税务所 |
-| 企业名称               | comp_nm           | string   | 宁波农之园菜篮子配送有限公司             |
-| 入库日期               | rkrq              | datetime | 2019-9-18 0:00                           |
-| 实缴金额               | paid_amt          | float    | 9460                                     |
-| 序列号                 | yzpzxh            | string   | 10013319000020648922                     |
-| 征收项目               | coll_item         | string   | 车辆购置税                               |
-| 税款所属期止           | period_to         | datetime | 2019-8-30 0:00                           |
-| 税款所属期起           | period_from       | datetime | 2019-8-30 0:00                           |
-| 税款种类               | tax_type          | string   | 正税                                     |
-|                        | tax_no            | string   | 91330212066604667n                       |
-| 纳税人识别号           | uni_social_crd_cd | string   | 91330212066604667n                       |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主管税务所（科、分局） | `major_tax_unit` | string | 国家税务总局宁波市鄞州区税务局姜山税务所 |
+| 企业名称 | `comp_nm` | string | 宁波农之园菜篮子配送有限公司 |
+| 入库日期 | `rkrq` | datetime | 2019-09-18 00:00:00 |
+| 实缴金额 | `paid_amt` | float | 9460 |
+| 序列号 | `yzpzxh` | string | 10013319000020648922 |
+| 征收项目 | `coll_item` | string | 车辆购置税 |
+| 税款所属期止 | `period_to` | datetime | 2019-08-30 00:00:00 |
+| 税款所属期起 | `period_from` | datetime | 2019-08-30 00:00:00 |
+| 税款种类 | `tax_type` | string | 正税 |
+|  | `tax_no` | string | 91330212066604667N |
+| 纳税人识别号 | `uni_social_crd_cd` | string | 91330212066604667N |
 
 ## dw_nb_sw_zdsswfhmd - 宁波市财税金融领域税务重大税收违法黑名单信息
 
-| 中文字段名         | 标准化字段名       | 数据类型 | 样例数据 |
-| ------------------ | ------------------ | -------- | -------- |
-| 纳税人识别号       | tax_no             | string   |          |
-| 纳税人名称         | tax_nm             | string   |          |
-| 法定代表人身份证号 | legal_repre_id     | string   |          |
-| 法定代表人性别     | legal_repre_gender | string   |          |
-| 法定代表人姓名     | legal_repre        | string   |          |
-| 注册地址           | reg_addr           | string   |          |
-| 组织机构代码       | org_no             | string   |          |
-| 处罚依据           | punish_basis       | string   |          |
-| 主要违法事实       | main_illg_fact     | string   |          |
-| 案件性质           | case_nature        | string   |          |
-| 税务处理处罚情况   | tax_punnish_state  | string   |          |
-| 录入时间           | entry_tm           | datetime |          |
-| 移出时间           | remove_tm          | datetime |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 纳税人识别号 | `tax_no` | string |  |
+| 纳税人名称 | `tax_nm` | string |  |
+| 法定代表人身份证号 | `legal_repre_id` | string |  |
+| 法定代表人性别 | `legal_repre_gender` | string |  |
+| 法定代表人姓名 | `legal_repre` | string |  |
+| 注册地址 | `reg_addr` | string |  |
+| 组织机构代码 | `org_no` | string |  |
+| 处罚依据 | `punish_basis` | string |  |
+| 主要违法事实 | `main_illg_fact` | string |  |
+| 案件性质 | `case_nature` | string |  |
+| 税务处理处罚情况 | `tax_punnish_state` | string |  |
+| 录入时间 | `entry_tm` | datetime |  |
+| 移出时间 | `remove_tm` | datetime |  |
 
 ## dw_nb_sw_qsxx - 宁波市公共信用欠税信息
 
-| 中文字段名   | 标准化字段名   | 数据类型 | 样例数据 |
-| ------------ | -------------- | -------- | -------- |
-| 纳税人识别号 | tax_no         | string   |          |
-| 纳税人名称   | tax nm         | string   |          |
-| 生产经营地址 | opr_addr       | string   |          |
-| 欠税税种     | own_tax_type   | string   |          |
-| 累计欠税余额 | cumu_own_amt   | float    |          |
-| 企业个体标志 | comp_indi_mark | string   |          |
-| 发布部门     | pub_dept       | string   |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 纳税人识别号 | `tax_no` | string |  |
+| 纳税人名称 | `tax_nm` | string |  |
+| 生产经营地址 | `opr_addr` | string |  |
+| 欠税税种 | `own_tax_type` | string |  |
+| 累计欠税余额 | `cumu_own_amt` | float |  |
+| 企业个体标志 | `comp_indi_mark` | string |  |
+| 发布部门 | `pub_dept` | string |  |
 
 ## dw_nb_sw_nsxydjxx - 宁波市财税金融领域公共信用纳税信用等级信息
 
-| 中文字段名       | 标准化字段名        | 数据类型 | 样例数据 |
-| ---------------- | ------------------- | -------- | -------- |
-| 统一社会信用代码 | uni_social_crd_cd   | string   |          |
-| 纳税人名称       | tax_nm              | string   |          |
-| 评价年度         | evalua_year         | string   |          |
-| 信用等级         | tax_credit_level    | string   |          |
-| 评价单位         | evalua_dept         | string   |          |
-| 评定时间         | evalua_dt           | datetime |          |
-| 信用评价名称     | credit_evalua_nm    | string   |          |
-| 企业个体名称     | comp_singl_nm       | string   |          |
-| 评价结果有效期始 | evalua_result_start | datetime |          |
-| 评价结果有效期止 | evalua_result_end   | datetime |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 纳税人名称 | `tax_nm` | string |  |
+| 评价年度 | `evalua_year` | string |  |
+| 信用等级 | `tax_credit_level` | string |  |
+| 评价单位 | `evalua_dept` | string |  |
+| 评定时间 | `evalua_dt` | datetime |  |
+| 信用评价名称 | `credit_evalua_nm` | string |  |
+| 企业个体名称 | `comp_singl_nm` | string |  |
+| 评价结果有效期始 | `evalua_result_start` | datetime |  |
+| 评价结果有效期止 | `evalua_result_end` | datetime |  |
 
 ## dw_nb_sw_csjrxzcfxx - 宁波市财税金融领域新行政处罚信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据                                                                                               |
-| ---------------- | ----------------- | -------- | ------------------------------------------------------------------------------------------------------ |
-| 纳税人名称       | taxer_nm          | string   | 宁波市筑仁教育信息咨询有限公司                                                                         |
-| 唯一编码         | uuid              | string   |                                                                                                        |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 913302**\*\***1j283l                                                                                   |
-| 处罚日期         | punish_dt         | datetime | 20200316                                                                                               |
-| 罚款金额         | punish_amt        | string   | 100                                                                                                    |
-| 纳税人识别号     | taxer_no          | string   | 913302**\*\***1j283l                                                                                   |
-| 行政处罚文号     | admin_punish_doc  | string   | 海税简罚(2020)211号                                                                                    |
-| 登记序号         | reg_no            | string   | 101192**\*\***52751496                                                                                 |
-| 处罚依据         | punish_rea        | string   | 2019-06-01至2019-06-30个人所得税(个人薪资所得)未按期进行申报<<中华人民共和国税务征收管理法>>第六十二条 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 纳税人名称 | `taxer_nm` | string | 宁波市筑仁教育信息咨询有限公司 |
+| 唯一编码 | `uuid` | string | \N |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 913302******1J283L |
+| 处罚日期 | `punish_dt` | datetime | 20200316 |
+| 罚款金额 | `punish_amt` | string | 100 |
+| 纳税人识别号 | `taxer_no` | string | 913302******1J283L |
+| 行政处罚文号 | `admin_punish_doc` | string | 海税简罚(2020)211号 |
+| 登记序号 | `reg_no` | string | 101192******52751496 |
+| 处罚依据 | `punish_rea` | string | 2019-06-01至2019-06-30个人所得税(个人薪资所得)未按期进行申报<<中华人民共和国税务征收管理法>>第六十二条 |
 
 ## dw_nb_sw_csjrswjcxx - 宁波市财税金融领域新税务稽查信息
 
-| 中文字段名       | 标准化字段名       | 数据类型 | 样例数据 |
-| ---------------- | ------------------ | -------- | -------- |
-| 企业名称         | comp_nm            | string   |          |
-| 统一社会信用代码 | uni_social_crd_cd  | string   |          |
-| 组织机构代码     | organi_code        | string   |          |
-| 检查所属日期起   | check_date_start   | string   |          |
-| 检查所属日期止   | check_date_end     | string   |          |
-| 主要违法事实     | main_illegal_facts | string   |          |
-| 查补金额         | mend_amt           | string   |          |
-| 处罚决定书文号   | punish_doc         | string   |          |
-| 处罚日期         | punish_date        | string   |          |
-| 处罚金额         | punish_amt         | string   |          |
-| 税务登记证号     | tax_reg_no         | string   |          |
-| 移送司法标志     | transf_justi_sign  | string   |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 企业名称 | `comp_nm` | string |  |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 组织机构代码 | `organi_code` | string |  |
+| 检查所属日期起 | `check_date_start` | string |  |
+| 检查所属日期止 | `check_date_end` | string |  |
+| 主要违法事实 | `main_illegal_facts` | string |  |
+| 查补金额 | `mend_amt` | string |  |
+| 处罚决定书文号 | `punish_doc` | string |  |
+| 处罚日期 | `punish_date` | string |  |
+| 处罚金额 | `punish_amt` | string |  |
+| 税务登记证号 | `tax_reg_no` | string |  |
+| 移送司法标志 | `transf_justi_sign` | string |  |
 
 ## dw_nb_scjdgl_qyzxxx - 宁波市企业注销信息
 
-（没有对应表）
+（Excel 未提供字段清单）
 
 ## dw_nb_scjdgl_qybggs - 宁波市企业变更公示信息
 
-（没有对应表）
+（Excel 未提供字段清单）
+
+## dw_zj_ga_ldrkjbxx - 流动人口基本信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 姓名 | `nm` | string | 王瑞英 |
+| 公民身份号码 | `identi_id` | string | 522426************ |
+| 居住证号 | `zzzh` | string | 330282******375373 |
+| 性别（1男；2女） | `gen` | string | 2 |
+| 民族 | `nation` | string | 01 |
+| 县（市、区） | `county` | string | 330282 |
+| 派出所 | `police_station` | string | 330282022 |
+| 街路巷 | `street` | string | \N |
+| 居住地址 | `addr` | string | 周巷村镇东新村后界塘51号东101室 |
+| 出租人姓名 | `lessor_nm` | string | 吴浩忠 |
+| 出租人公民身份号码 | `lessor_id` | string | 330222196502058257 |
+| 登记日期 | `reg_dt` | datetime | 20190404 |
+| 注销日期 | `can_dt` | datetime | 20190404 |
+| 出租房屋档案号 | `rental_file_num` | string | 330282******034228 |
+| 户籍县（市、区） | `hou_reg_country` | string | 520524 |
+| 户籍地址 | `hou_reg_addr` | string | 阿弓镇狗场村兰杆组 |
+| 联系电话 | `tel` | string | 18267429736 |
+| 性别代码 | `gen_cd` | string | 男 |
+| 民族代码 | `nation_id` | string | 汉族 |
+| 县（市、区）代码 | `qxdm` | string | 浙江省慈溪市 |
+| 派出所代码· | `pcsdm` | string | 附海派出所 |
+| 户籍县（市、区）代码 | `hjqxdm` | string | 贵州省织金县 |
+| 登记状态名称 | `reg_stat_nm` | string | 失效 |
+
+## dw_zj_ga_czrkhk - 中华人民共和国常住人口户口簿
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 人口ID | `czrkrkid` | string | 63121805 |
+| 出生地省市县（区） | `birth_pcc` | string | 浙江省宁波市 |
+| 所属省市县区 | `belo_pcc` | string | 3***** |
+| 公民身份号码 | `identi_id` | string | 330203************ |
+| 姓名 | `nm` | string | 包卿雯 |
+| 曾用名 | `used_nm` | string | 邵家庭 |
+| 性别 | `gen` | string | 男 |
+| 民族 | `nation` | string | 汉族 |
+| 出生日期 | `birth_dt` | string | 20180806 |
+| 出生地国家（地区） | `birth_country` | string | 中国 |
+| 籍贯国家（地区） | `czrkjggj` | string | \N |
+| 籍贯省市县（区） | `native_pcc` | string | 浙江省宁波市 |
+| 文化程度 | `edu_degree` | string | 高中 |
+| 婚姻状况 | `marital_status` | string | 已婚 |
+| 兵役状况 | `mili_ser_status` | string | 未服兵役 |
+| 住址 | `addr` | string | 浙江省宁波市海曙区舒沁苑2幢5号906室 |
+| 照片URL | `xpurl` | string | \N |
+| 户号ID | `czrkhhid` | string | 330000001020834643 |
+| 户号 | `account_num` | string | 28039907 |
+| 户类型 | `account_type` | string | 家庭户 |
+| 与户主关系 | `household_rela` | string | 户主 |
+| 死亡日期 | `dead_dt` | datetime | \N |
+| 死亡注销类别 | `dead_can_type` | string | \N |
+| 迁出日期 | `moveout_dt` | datetime | \N |
+| 迁出注销类别 | `moveout_can_type` | string | \N |
+| 注销日期 | `can_dt` | datetime | \N |
+| 注销标识 | `can_id` | string | \N |
+| 所属派出所名称 | `police_station_nm` | string | 海曙分局望春派出所 |
+| 所属派出所机构代码 | `czrkpcsjgdm` | string |  |
+| 所属街路巷名称 | `street_nm` | string | 33********00 |
+| 所属居民委会名称 | `resi_commit_nm` | string | 舒沁苑 |
+| 街路巷代码 | `czrkjlx` | string | 33********26 |
+| 居委会代码 | `czrkjwh` | string | 330203028018000 |
+| 乡镇街道代码 | `czrkxzjd` | string | 330203028 |
+| 数据项更新时间 | `czrksjxgxsj` | string | 20211028154247 |
+
+## dw_zj_js_gjjgrjcxx - 公积金个人缴存信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 个人缴存基数 | `per_pay_basis` | float(16,2) | 10500 |
+| 个人缴存比例 | `per_pay_rio` | float | 10 |
+| 个人账户 | `per_acco` | string | 236808606 |
+| 个人账户余额（个人缴存余额） | `per_acco_balance` | float | 24724.95 |
+| 个人账户状态 | `per_acco_stat` | smallint | 3 |
+| 单位名称 | `unit_nm` | string | 宁波诺士敦机电有限公司 |
+| 姓名 | `nm` | string | 许新江 |
+| 开户日期 | `acco_dt` | datetime | 2009-09-29 12:00:00 |
+| 月缴存额 | `mon_pay_amt` | float | 1050 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 913302******960857 |
+| 职工账户销户日期 | `grxhrq` | datetime | 1899-12-31 12:00:00 |
+| 证件类型 | `card_type` | string | 1 |
+| 最近交易日期时间 | `last_trans_dt` | string | \N |
+| 证件号码 | `identi_id` | string | 330106************ |
+| 机构号 | `jgh` |  | 13 |
+| 销户日期 | `acco_can_dt` | datetime |  |
+
+## dw_zj_js_gjjgrdkxx - 公积金个人贷款信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 姓名 | `nm` | string | 林远龙 |
+| 证件号码 | `identi_id` | string | 330921************ |
+| 证件类型 | `card_type` | string | 1 |
+| 贷款发放日期 | `load_grant_dt` | datetime | 2013-01-09 12:00:00 |
+| 贷款期数 | `load_periods` | int | 180 |
+| 贷款结清日期 | `load_settle_dt` | datetime | 1899-12-31 12:00:00 |
+| 借款合同编号 | `load_contract_num` | string | 2013政字第00025 |
+| 机构号 | `jgh` |  | 11 |
+| 个人账号 | `per_acco` | string | 82742714 |
+| 逾期本金 | `overdue_principle` | float | 0 |
+| 最新交易日期 | `last_trans_dt` | datetime | \N |
+| 累计逾期期数 | `overdue_periods` | int | 0 |
+| 逾期次数 | `overdue_tms` | int | 0 |
+
+## dw_nb_yb_cxjmjbylbxcbdj - 宁波市医疗卫生领域城乡居民基本医疗保险参保登记信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 社会保障号 | `soci_care_id` | string | 330212************ |
+| 姓名 | `nm` | string | 金蕊 |
+| 年度参保类别 | `year_issu_type` | string | 06 |
+| 申报时间 | `declare_dt` | datetime | 20190926 |
+| 身份证号 | `id_no` | string | 330212************ |
+| 联系方式 | `tel` | string | 13248712802 |
+| 参保状态 | `issu_state` | string | 1 |
+
+## dw_nb_yb_cxjmjbylbxjfxx - 宁波市医疗卫生领域城乡居民基本医疗保险参保人员缴费信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 人员缴费明细ID | `per_pay_id` | string | 2017111210058021 |
+| 个人编码 | `per_no` | string | 75036623 |
+| 单位ID | `unit_id` | string | 00003205 |
+| 社会保障号(身份证号) | `soci_no` | string | 330203 |
+| 姓名 | `nm` | string | 孙捷 |
+| 单位名称 | `unit_nm` | string | 宁波市海曙区人民政府望春街道办事处 |
+| 年度参保类别 | `year_issu_type` | string | \N |
+| 参保年度 | `issu_year` | string | 2008 |
+| 缴费总金额 | `pay_amt` | string | 100 |
+| 个人应缴金额 | `per_pay_amt` | float | 50 |
+| 财政应缴金额 | `fina_pay_amt` | float | 50 |
+| 个人到账标志 | `per_arrival_flag` | string | \N |
+| 个人到账年月 | `per_arrival_ym` | string | \N |
+| 财政到账标志 | `fina_arrival_flag` | string | \N |
+| 财政到账年月 | `fina_arrival_ym` | string | \N |
+
+## dw_nb_rlsb_gryjjbylbxhdxx - 宁波市社会保险管理个人参保月缴费明细信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 人员征缴明细ID | `per_collec_dtail_id` | string | 3020002171620983 |
+| 个人编码 | `per_id` | string | 3020000011627698 |
+| 单位编码 | `corp_id` | string | 3029000011429825 |
+| 单位名称 | `corp_nm` | string | 异地转入 |
+| 社会保障号 | `soci_secu_no` | string | 370502************ |
+| 姓名 | `nm` | string | 李广健 |
+| 险种类型 | `insur_type` | string | 11 |
+| 费款所属期 | `pay_period` | string | 201211 |
+| 对应费款所属期 | `corre_period` | string | 201211 |
+| 应缴类型 | `pay_type` | string | 0 |
+| 缴费月数 | `pay_mons` | string | 1 |
+| 人员缴费基数 | `per_pay_base` | float | 4496 |
+| 缴费总金额 | `pay_amt` | float | 0 |
+| 单位应缴金额 | `corp_pay_amt` | float | 0 |
+| 个人应缴金额 | `per_pay_amt` | float | 0 |
+| 其他来源一补贴金额 | `other_sub_amt` | float | 0 |
+| 其他来源一划账户金额 | `other_trans_acc_amt` | float | 359.67 |
+| 其他来源二应缴金额 | `other_sec_payamt` | float | 0 |
+| 其他来源三应缴金额 | `other_tri_payamt` | float | 0 |
+| 足额到账标志 | `full_rece_flag` | string | 1 |
+| 足额到账年月 | `full_rece_ym` | string | 201601 |
+| 账目状态 | `acco_nature` | string | 0 |
+| 变更年月 | `chan_ym` | string | 201211 |
+| 低保标志 | `minilive_sign` | string |  |
+| 分区字段(费款所属期年份) | `partition_period` | string |  |
 
 ## dw_nb_swbgxx - 宁波市财税金融领域税务变更信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据 |
-| ---------------- | ----------------- | -------- | -------- |
-| 主键             | key               | string   |          |
-| 统一社会信用代码 | uni_social_crd_cd | string   |          |
-| 变更项目         | chan_project      | string   |          |
-| 变更前内容       | chan_bef_text     | string   |          |
-| 变更后内容       | chan_aft_text     | string   |          |
-| 变更日期         | chan_dt           | datetime |          |
-| 录入日期         | ent_dt            | datetime |          |
-| 状态             | state             | string   |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键 | `key` | string |  |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 变更项目 | `chan_project` | string |  |
+| 变更前内容 | `chan_bef_text` | string |  |
+| 变更后内容 | `chan_aft_text` | string |  |
+| 变更日期 | `chan_dt` | datetime |  |
+| 录入日期 | `ent_dt` | datetime |  |
+| 状态 | `state` | string |  |
 
 ## dw_nb_hywlqyxydjxx - 宁波市信用服务领域航运物流企业信用等级信息
 
-| 中文字段名       | 标准化字段名           | 数据类型 | 样例数据 |
-| ---------------- | ---------------------- | -------- | -------- |
-| 唯一标识         | only_flg               | string   |          |
-| 企业名称         | com_nm                 | string   |          |
-| 统一社会信用代码 | uni_social_crd_cd      | string   |          |
-| 组织机构代码     | org_no                 | string   |          |
-| 营业执照注册号   | biz_licn_reg_no        | string   |          |
-| 信用评价名称     | credit_cmnt_nm         | string   |          |
-| 评价结果         | cmnt_result            | string   |          |
-| 评定日期         | assess_dt              | datetime |          |
-| 评价机构         | cmnt_org               | string   |          |
-| 评价结果有效期始 | cmnt_result_vlid_dt_bg | datetime |          |
-| 评价结果有效期止 | cmnt_result_exp_dt     | datetime |          |
-| 记录状态         | record_state           | int      |          |
-| 入库日期         | input_dt               | datetime |          |
-| 处理状态         | deal_state             | int      |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 唯一标识 | `only_flg` | string |  |
+| 企业名称 | `com_nm` | string |  |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 组织机构代码 | `org_no` | string |  |
+| 营业执照注册号 | `biz_licn_reg_no` | string |  |
+| 信用评价名称 | `credit_cmnt_nm` | string |  |
+| 评价结果 | `cmnt_result` | string |  |
+| 评定日期 | `assess_dt` | datetime |  |
+| 评价机构 | `cmnt_org` | string |  |
+| 评价结果有效期始 | `cmnt_result_vlid_dt_bg` | datetime |  |
+| 评价结果有效期止 | `cmnt_result_exp_dt` | datetime |  |
+| 记录状态 | `record_state` | int |  |
+| 入库日期 | `input_dt` | datetime |  |
+| 处理状态 | `deal_state` | int |  |
 
 ## dw_shl_gjzyjszwrzzgzsxx - 省回流-宁波市高级专业技术职务任职资格证书信息
 
-| 中文字段名               | 标准化字段名      | 数据类型 | 样例数据 |
-| ------------------------ | ----------------- | -------- | -------- |
-| 证书编号                 | cert_id           | string   |          |
-| 证件类别                 | cert_type         | string   |          |
-| 证件号码                 | id_num            | string   |          |
-| 姓名                     | nm                | string   |          |
-| 性别                     | gender            | string   |          |
-| 工作单位                 | working_unit      | string   |          |
-| 单位性质                 | unit_propr        | string   |          |
-| 在职状态                 | bojob_state       | string   |          |
-| 最高学历                 | highest_educ_back | string   |          |
-| 最高学位                 | highest_degree    | string   |          |
-| 毕业学校                 | gradute_school    | string   |          |
-| 所学专业                 | hdstu_major       | string   |          |
-| 专业名称                 | major_nm          | string   |          |
-| 资格名称                 | qual_nm           | string   |          |
-| 级别名称                 | grade_nm          | string   |          |
-| 所属系列                 | undr_set          | string   |          |
-| 取得方式                 | gain_way          | string   |          |
-| 取得资格时间             | gain_qual_tm      | string   |          |
-| 发证时间                 | certi_tm          | string   |          |
-| 评委会名称               | judg_nm           | string   |          |
-| 发证单位                 | certi_unit        | string   |          |
-| 联系电话                 | contct_tel        | string   |          |
-| 通信地址                 | mailing_adds      | string   |          |
-| 邮政编码                 | post_id           | string   |          |
-| 所在地市、省级主管部门   | undr_city         | string   |          |
-| 所在县（市、区）、市本级 | undr_county       | string   |          |
-| 录入单位                 | ent_unit          | string   |          |
-| 公布文号                 | announs_doc_no    | string   |          |
-| 备注                     | remarks           | string   |          |
-| 出生年月                 | born_y_m          | string   |          |
-| 证书查询                 | cert_query        | string   |          |
-| 在线验证码               | onlin_prov_cd     | string   |          |
-| 照片路径                 | photo_path        | string   |          |
-| 状态                     | state             | string   |          |
-| 签名值                   | sign_val          | string   |          |
-| 签名公钥值               | sign_pki_val      | string   |          |
-| 时间戳签名值             | time_sign_val     | string   |          |
-| 签名hash值               | sign_hash_val     | string   |          |
-| 证照颁发机构代码         | licn_issue_org_cd | string   |          |
-| 持证主体代码类型         | crd_main_cd_type  | string   |          |
-| 行政区划代码             | area_numb         | string   |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 证书编号 | `cert_id` | string |  |
+| 证件类别 | `cert_type` | string |  |
+| 证件号码 | `id_num` | string |  |
+| 姓名 | `nm` | string |  |
+| 性别 | `gender` | string |  |
+| 工作单位 | `working_unit` | string |  |
+| 单位性质 | `unit_propr` | string |  |
+| 在职状态 | `bojob_state` | string |  |
+| 最高学历 | `highest_educ_back` | string |  |
+| 最高学位 | `highest_degree` | string |  |
+| 毕业学校 | `gradute_school` | string |  |
+| 所学专业 | `hdstu_major` | string |  |
+| 专业名称 | `major_nm` | string |  |
+| 资格名称 | `qual_nm` | string |  |
+| 级别名称 | `grade_nm` | string |  |
+| 所属系列 | `undr_set` | string |  |
+| 取得方式 | `gain_way` | string |  |
+| 取得资格时间 | `gain_qual_tm` | string |  |
+| 发证时间 | `certi_tm` | string |  |
+| 评委会名称 | `judg_nm` | string |  |
+| 发证单位 | `certi_unit` | string |  |
+| 联系电话 | `contct_tel` | string |  |
+| 通信地址 | `mailing_adds` | string |  |
+| 邮政编码 | `post_id` | string |  |
+| 所在地市、省级主管部门 | `undr_city` | string |  |
+| 所在县（市、区）、市本级 | `undr_county` | string |  |
+| 录入单位 | `ent_unit` | string |  |
+| 公布文号 | `announs_doc_no` | string |  |
+| 备注 | `remarks` | string |  |
+| 出生年月 | `born_y_m` | string |  |
+| 证书查询 | `cert_query` | string |  |
+| 在线验证码 | `onlin_prov_cd` | string |  |
+| 照片路径 | `photo_path` | string |  |
+| 状态 | `state` | string |  |
+| 签名值 | `sign_val` | string |  |
+| 签名公钥值 | `sign_pki_val` | string |  |
+| 时间戳签名值 | `time_sign_val` | string |  |
+| 签名hash值 | `sign_hash_val` | string |  |
+| 证照颁发机构代码 | `licn_issue_org_cd` | string |  |
+| 持证主体代码类型 | `crd_main_cd_type` | string |  |
+| 行政区划代码 | `area_numb` | string |  |
 
 ## dw_shl_grwlxsxcpxx - 省回流-宁波市个人未履行生效裁判信息
 
-| 中文字段名   | 标准化字段名       | 数据类型 | 样例数据 |
-| ------------ | ------------------ | -------- | -------- |
-| 姓名         | nm                 | string   |          |
-| 身份证号     | identi_no          | string   |          |
-| 地址         | adds               | string   |          |
-| 法定代表人   | legal_repre        | string   |          |
-| 案号         | case_no            | string   |          |
-| 执行法院     | execute_court      | string   |          |
-| 立案日期     | filing_dt          | datetime |          |
-| 执行依据     | execute_basis      | string   |          |
-| 执行案由     | execute_causes     | string   |          |
-| 执行金额     | execute_amt        | decimal  |          |
-| 执行行为     | execute_behave     | string   |          |
-| 执行物品     | execute_goods      | string   |          |
-| 未执行金额   | not_execute_amt    | decimal  |          |
-| 未执行行为   | not_execute_behave | string   |          |
-| 未执行物品   | not_execute_goods  | string   |          |
-| 举报电话     | tip_tel            | string   |          |
-| 举报联系人   | tip_contct_prson   | string   |          |
-| 曝光日期     | expo_dt            | datetime |          |
-| 共同被执行人 | comm_executed      | string   |          |
-| 法院代码     | court_cd           | string   |          |
-| 搜案编号     | stc_id             | string   |          |
-| 当事人编号   | party_id           | string   |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 姓名 | `nm` | string |  |
+| 身份证号 | `identi_no` | string |  |
+| 地址 | `adds` | string |  |
+| 法定代表人 | `legal_repre` | string |  |
+| 案号 | `case_no` | string |  |
+| 执行法院 | `execute_court` | string |  |
+| 立案日期 | `filing_dt` | datetime |  |
+| 执行依据 | `execute_basis` | string |  |
+| 执行案由 | `execute_causes` | string |  |
+| 执行金额 | `execute_amt` | decimal |  |
+| 执行行为 | `execute_behave` | string |  |
+| 执行物品 | `execute_goods` | string |  |
+| 未执行金额 | `not_execute_amt` | decimal |  |
+| 未执行行为 | `not_execute_behave` | string |  |
+| 未执行物品 | `not_execute_goods` | string |  |
+| 举报电话 | `tip_tel` | string |  |
+| 举报联系人 | `tip_contct_prson` | string |  |
+| 曝光日期 | `expo_dt` | datetime |  |
+| 共同被执行人 | `comm_executed` | string |  |
+| 法院代码 | `court_cd` | string |  |
+| 搜案编号 | `stc_id` | string |  |
+| 当事人编号 | `party_id` | string |  |
+
+## dw_shl_hjyxbgbspyjxx - 省回流-宁波市建设项目环境影响报告表审批意见信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 项目ID | `project_id` | string |  |
+| 环评审批时间 | `eia_appr_tm` | string |  |
+| 签名公钥证书 | `sign_pki_cert` | string |  |
+| 时间戳 | `time` | string |  |
+| 签名值 | `sign_val` | string |  |
+| 交换时间 | `exche_tm` | datetime |  |
+| 填表时间 | `form_tm` | datetime |  |
+| 入库时间 | `input_tm` | datetime |  |
+| 受理时间 | `accept_tm` | datetime |  |
+| 环评批复文号 | `eia_gao_doc_no` | string |  |
+| 环评审批机关 | `eia_appr_dept` | string |  |
+| 环保总投资 | `envir_prot_tol_inves` | string |  |
+| 项目总投资 | `project_tol_inves` | string |  |
+| 建设地点 | `constru_place` | string |  |
+| 行业名称 | `inds_nm` | string |  |
+| 行业类型 | `inds_type` | string |  |
+| 环评文件类别 | `eia_doc_type` | string |  |
+| 项目名称 | `project_nm` | string |  |
+| 签名hash值 | `sign_hash_val` | string |  |
 
 ## dw_shl_qywlxsxcpxx - 省回流-宁波市企业未履行生效裁判信息
 
-| 中文字段名       | 标准化字段名       | 数据类型 | 样例数据 |
-| ---------------- | ------------------ | -------- | -------- |
-| 企业名称         | com_nm             | string   |          |
-| 统一社会信用代码 | uni_social_crd_cd  | string   |          |
-| 组织机构代码     | org_no             | string   |          |
-| 法定代表人       | legal_repre        | string   |          |
-| 单位地址         | unit_adds          | string   |          |
-| 执行法院         | execute_court      | string   |          |
-| 案号             | case_no            | string   |          |
-| 执行依据         | execute_basis      | string   |          |
-| 执行案由         | execute_causes     | string   |          |
-| 履行时间         | fulfil_tm          | datetime |          |
-| 执行金额（元）   | execute_amt        | decimal  |          |
-| 执行行为         | execute_behave     | string   |          |
-| 执行物品         | execute_goods      | string   |          |
-| 未执行金额（元） | not_execute_amt    | decimal  |          |
-| 未执行行为       | not_execute_behave | string   |          |
-| 未执行物品       | not_execute_goods  | string   |          |
-| 共同被执行人     | comm_executed      | string   |          |
-| 曝光日期         | expo_dt            | datetime |          |
-| 举报电话         | tip_tel            | string   |          |
-| 举报联系人       | tip_contct_prson   | string   |          |
-| 搜案编号         | stc_id             | string   |          |
-| 当事人编号       | party_id           | string   |          |
-| 法院代码         | court_cd           | string   |          |
-| 立案日期         | filing_dt          | datetime |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 企业名称 | `com_nm` | string |  |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 组织机构代码 | `org_no` | string |  |
+| 法定代表人 | `legal_repre` | string |  |
+| 单位地址 | `unit_adds` | string |  |
+| 执行法院 | `execute_court` | string |  |
+| 案号 | `case_no` | string |  |
+| 执行依据 | `execute_basis` | string |  |
+| 执行案由 | `execute_causes` | string |  |
+| 履行时间 | `fulfil_tm` | datetime |  |
+| 执行金额（元） | `execute_amt` | decimal |  |
+| 执行行为 | `execute_behave` | string |  |
+| 执行物品 | `execute_goods` | string |  |
+| 未执行金额（元） | `not_execute_amt` | decimal |  |
+| 未执行行为 | `not_execute_behave` | string |  |
+| 未执行物品 | `not_execute_goods` | string |  |
+| 共同被执行人 | `comm_executed` | string |  |
+| 曝光日期 | `expo_dt` | datetime |  |
+| 举报电话 | `tip_tel` | string |  |
+| 举报联系人 | `tip_contct_prson` | string |  |
+| 搜案编号 | `stc_id` | string |  |
+| 当事人编号 | `party_id` | string |  |
+| 法院代码 | `court_cd` | string |  |
+| 立案日期 | `filing_dt` | datetime |  |
+
+## dw_shl_rskswjxx - 省回流-宁波市人事考试违纪信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 处理意见 | `deal_sugg` | string |  |
+| 有效期始 | `vlid_dt_bg` | datetime |  |
+| 文号 | `doc_no` | string |  |
+| 准考证号 | `zkh` | string |  |
+| 考试名称 | `exam_nm` | string |  |
+| 决定时间 | `decise_tm` | datetime |  |
+| 工作单位 | `working_unit` | string |  |
+| 姓名 | `nm` | string |  |
+| 身份证号 | `identi_no` | string |  |
+| 违纪行为 | `breach_behave` | string |  |
+| 有效期至 | `vlid_dt_to` | datetime |  |
 
 ## dw_shl_tyshxydmxxgjxf - 省回流-宁波市统一社会信用代码信息（国家下发数据）
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据 |
-| ---------------- | ----------------- | -------- | -------- |
-| 企业名称         | com_nm            | string   |          |
-| 统一社会信用代码 | uni_social_crd_cd | string   |          |
-| 工商登记码       | ic_reg_cd         | string   |          |
-| 组织机构代码     | org_no            | string   |          |
-| 税务登记号       | taxation_reg_no   | string   |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 企业名称 | `com_nm` | string |  |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 工商登记码 | `ic_reg_cd` | string |  |
+| 组织机构代码 | `org_no` | string |  |
+| 税务登记号 | `taxation_reg_no` | string |  |
+
+## dw_shl_scjrxxgjxf - 省回流-宁波市证监领域市场禁入信息（国家下发数据）
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 处罚处理名称 | `penalty_deal_nm` | string |  |
+| 处罚处理内容 | `penalty_deal_text` | string |  |
+| 处罚处理日期 | `penalty_deal_dt` | string |  |
+| 处罚处理种类 | `penalty_deal_kind` | string |  |
+| 处罚对象类型 | `penalty_object_type` | int |  |
+| 处罚对象名称 | `penalty_object_nm` | string |  |
+| 处罚ID | `penalty_id` | datetime |  |
+| 处罚决定书ID | `penalty_decision_id` | string |  |
+| 处罚机关 | `penalty_dept` | string |  |
+| 加密证件号码 | `encry_id_num` | string |  |
+| 实际处罚部门 | `real_penalty_dept` | string |  |
+| 信息类型 | `info_type` | string |  |
+| 有效截止日期 | `vlid_deadline` | datetime |  |
+| 证件类型 | `cert_type` | string |  |
+| 真实证件号码 | `real_id_num` | string |  |
 
 ## dw_shl_sgsxzcf - 省回流-宁波市全省双公示行政处罚归集信息
 
-（没有对应表）
+（Excel 未提供字段清单）
 
 ## dw_shl_sgsxzxk - 省回流-宁波市全省双公示行政许可归集信息
 
-| 中文字段名                           | 标准化字段名             | 数据类型 | 样例数据 |
-| ------------------------------------ | ------------------------ | -------- | -------- |
-| 处罚基本信息主键id                   | punish_base_info_code    | string   |          |
-| 处罚案件编号                         | punish_case_code         | string   |          |
-| 案件程序类别 01 简易程序 02 一般程序 | case_process_type        | string   |          |
-| 处罚行为名称                         | punish_action_name       | string   |          |
-| 违法事实                             | illegal_fact             | string   |          |
-| 违法依据                             | illegal_basis            | string   |          |
-| 处罚决定种类                         | punish_type              | string   |          |
-| 处罚决定文书号                       | punish_document_code     | string   |          |
-| 行政相对人类型                       | admin_cp_type            | string   |          |
-| 当事人名称                           | admin_cp_name            | string   |          |
-| 当事人证件类型                       | admin_cp_cert_type       | string   |          |
-| 当事人证件号码                       | uni_social_crd_cd        | string   |          |
-| 法定代表人证件类型                   | legal_represent_type     | string   |          |
-| 法定代表人姓名                       | legal_represent          | string   |          |
-| 法定代表人证件号码                   | legal_represent_idcard   | string   |          |
-| 处罚内容                             | punish_content           | string   |          |
-| 处罚依据                             | punish_basis             | string   |          |
-| 罚款金额                             | fine                     | float    |          |
-| 没收违法所得金额                     | confiscate_illegal_incom | float    |          |
-| 没收非法财物金额                     | confiscate_illegal_asset | float    |          |
-| 决定日期                             | set_time                 | datetime |          |
-| 公示日期                             | public_date              | datetime |          |
-| 公示截止日期                         | public_end_date          | datetime |          |
-| 公示状态                             | publicstatus             | string   |          |
-| 撤销处罚的原因说明                   | cutreason                | string   |          |
-| 1:撤销立案                           | iscancelcase             | string   |          |
+**宁波市全省双公示行政处罚归集信息**
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 处罚基本信息主键ID | `punish_base_info_code` | string |  |
+| 处罚案件编号 | `punish_case_code` | string |  |
+| 案件程序类别 01 简易程序 02 一般程序 | `case_process_type` | string |  |
+| 处罚行为名称 | `punish_action_name` | string |  |
+| 违法事实 | `illegal_fact` | string |  |
+| 违法依据 | `illegal_basis` | string |  |
+| 处罚决定种类 | `punish_type` | string |  |
+| 处罚决定文书号 | `punish_document_code` | string |  |
+| 行政相对人类型 | `admin_cp_type` | string |  |
+| 当事人名称 | `admin_cp_name` | string |  |
+| 当事人证件类型 | `admin_cp_cert_type` | string |  |
+| 当事人证件号码 | `uni_social_crd_cd` | string |  |
+| 法定代表人证件类型 | `legal_represent_type` | string |  |
+| 法定代表人姓名 | `legal_represent` | string |  |
+| 法定代表人证件号码 | `legal_represent_idcard` | string |  |
+| 处罚内容 | `punish_content` | string |  |
+| 处罚依据 | `punish_basis` | string |  |
+| 罚款金额 | `fine` | float |  |
+| 没收违法所得金额 | `confiscate_illegal_incom` | float |  |
+| 没收非法财物金额 | `confiscate_illegal_asset` | float |  |
+| 决定日期 | `set_time` | datetime |  |
+| 公示日期 | `public_date` | datetime |  |
+| 公示截止日期 | `public_end_date` | datetime |  |
+| 公示状态 | `publicstatus` | string |  |
+| 撤销处罚的原因说明 | `cutreason` | string |  |
+| 1:撤销立案 | `iscancelcase` | string |  |
+
+**宁波市全省双公示行政许可归集信息**
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 行政相对人名称 | `xk_xdr_mc` | string |  |
+| 行政相对人代码_1(统一社会信用代码) | `uni_social_crd_cd` | string |  |
+| 行政相对人代码_2 (工商注册号) | `xk_xdr_gszc` | string |  |
+| 法定代表人 | `xk_frdb` | string |  |
+| 法定代表人身份证号 | `xk_fr_sfzh` | string |  |
+| 证件类型 | `xk_xdr_zjlx` | string |  |
+| 证件号码 | `xk_xdr_zjhm` | string |  |
+| 行政许可决定文书名称 | `xk_xkws` | string |  |
+| 行政许可决定文书号 | `xk_wsh` | string |  |
+| 许可类别 | `xk_xklb` | string |  |
+| 许可证书名称 | `xk_xkzs` | string |  |
+| 许可编号 | `xk_xkbh` | string |  |
+| 许可内容 | `xk_nr` | string |  |
+| 许可决定日期 | `xk_jdrq` | datetime |  |
+| 有效期自 | `xk_yxqz` | datetime |  |
+| 有效期至 | `xk_yxqzi` | datetime |  |
+| 许可机关 | `xk_xkjg` | string |  |
+| 许可机关统一社会信用代码 | `xk_xkjgdm` | string |  |
+| 当前状态 | `xk_zt` | string |  |
+| 数据来源单位 | `xk_lydw` | string |  |
+| 数据来源单位统一社会信用代码 | `xk_lydwdm` | string |  |
+| 备注 | `bz` | string |  |
+| 主键 | `xk_id` | string |  |
+
+## dw_shl_gjjgrdkxx - 省回流-公积金个人贷款信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 姓名 | `nm` | string | 林远龙 |
+| 证件号码 | `identi_id` | string | 330921************ |
+| 证件类型 | `card_type` | string | 1 |
+| 贷款发放日期 | `load_grant_dt` | datetime | 2013-01-09 12:00:00 |
+| 贷款期数 | `load_periods` | int | 180 |
+| 贷款结清日期 | `load_settle_dt` | datetime | 1899-12-31 12:00:00 |
+| 借款合同编号 | `load_contract_num` | string | 2013政字第00025 |
+| 机构号 | `jgh` |  | 11 |
+| 个人账号 | `per_acco` | string | 82742714 |
+| 逾期本金 | `overdue_principle` | float | 0 |
+| 最新交易日期 | `last_trans_dt` | datetime | \N |
+| 累计逾期期数 | `overdue_periods` | int | 0 |
+| 逾期次数 | `overdue_tms` | int | 0 |
+
+## dw_nb_shfwlyxfjxx - 宁波市生活服务领域12345信访件信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键ID | `zjid` | string |  |
+| 来电编号 | `ldbh` | string |  |
+| 来电形式 | `ldxs` | string |  |
+| 工号 | `gh` | string |  |
+| 登记人姓名 | `djrxm` | string |  |
+| 登记单位 | `djdw` | string |  |
+| 呼入时间 | `hrsj` | string |  |
+| 姓名 | `xm` | string |  |
+| 问题属地 | `wtsd` | string |  |
+| 常住地址 | `czdz` | string |  |
+| 来电目的 | `ldmd` | string |  |
+| 内容分类 | `nrfl` | string |  |
+| 反映内容 | `fynr` | string |  |
+| 联系电话 | `lxdh` | string |  |
+| 是否匿名 | `sflm` | string |  |
+| 紧急程度 | `jjcd` | string |  |
+| 来电号码 | `ldhm` | string |  |
+| 是否保密 | `sfbm` | string |  |
+
+## dw_shl_smdxfblbdxx - 省回流-宁波市省矛调信访办理表单信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键 | `zj` | string |  |
+| 办理方式 | `blfs` | string |  |
+| 办理机构 | `bljg` | string |  |
+| 办理部门 | `blbm` | string |  |
+| 办理人 | `blr` | string |  |
+| 办理时间 | `blsj` | string |  |
+| 去向单位 | `qxdw` | string |  |
+| 去向人 | `xqxmc` | string |  |
+| 办理说明 | `blsm` | string |  |
+| 附件信息 | `fjxx` | string |  |
+| 是否延期 | `sfyq` | string |  |
+| 延期时间 | `yqsj` | string |  |
+
+## dw_shl_smdxfslbdxx - 省回流-宁波市省矛调信访受理表单信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键 | `zj` | string |  |
+| 信访形式 | `xfxs` | string |  |
+| 信访日期 | `xfrq` | string |  |
+| 登记时间 | `djsj` | string |  |
+| 涉及人数 | `sjrs` | string |  |
+| 登记部门 | `djbm` | string |  |
+| 登记人姓名 | `djrxm` | string |  |
+| 信访人诉求 | `xfrsq` | string |  |
+| 办理状态 | `blzt` | string |  |
+| 内容分类 | `nrfl` | string |  |
+| 信访目的 | `xfmd` | string |  |
+| 信访原因 | `xfyy` | string |  |
+| 是否联名 | `lmbz` | string |  |
+| 是否匿名 | `nmbz` | string |  |
+| 是否公开 | `gkbz` | string |  |
+| 热点问题 | `rdwt` | string |  |
+| 是否扬言 | `yybz` | string |  |
+| 受信人 | `sxr` | string |  |
+| 附件 | `fj` | string |  |
+| 信访问题属地 | `xfwtsd` | string |  |
+| 登记单位 | `djdm` | string |  |
+
+## dw_shl_xfrzdryxx - 省回流-宁波市信访人重点人员信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 信访重点人员id | `xfzdryid` | string |  |
+| 重点人员标志 | `zdrybz` | string |  |
+| 所属地市 | `ssds` | string |  |
+| 所属区县 | `ssqx` | string |  |
+
+## dw_shl_xfjblgkxx - 省回流-信访件办理公开信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键 | `zj` |  |  |
+| 事项编号 | `xfjbh` |  |  |
+| 标题 | `bt` |  |  |
+| 姓名 | `xm` |  |  |
+| 手机号 | `sjh` |  |  |
+| 投诉内容 | `tsnr` |  |  |
+| 登记时间 | `djsj` |  |  |
+| 办理时间 | `blsj` |  |  |
+| 办理说明 | `blsm` |  |  |
+| 办理机构 | `bljg` |  |  |
+| 登记机构名称 | `djjgmc` |  |  |
+| 问题属地代码 | `wtsddm` |  |  |
+| 问题属地 | `wtsd` |  |  |
+| 信访目的 | `xfmd` |  |  |
+| 信访形式 | `xfxs` |  |  |
+| 信访件状态 | `xfjzt` |  |  |
+| 原件来源 | `yjly` |  |  |
+| 所属地市 | `ssds` |  |  |
+| 所属区/县 | `ssqx` |  |  |
+
+## dw_shl_xfjxfsxxx - 省回流-信访件信访事项信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 事项ID | `sxid` |  |  |
+| 事项编号 | `sxbh` |  |  |
+| 事项类型 | `sxlx` |  |  |
+| 事项办理状态 | `sxblzt` |  |  |
+| 数据来源 | `sjly` |  |  |
+| 事项办结类型 | `sxbjlx` |  |  |
+| 原件来源 | `yjly` |  |  |
+| 初重件类型 | `ccjlx` |  |  |
+| 关联件编号 | `gljbh` |  |  |
+| 信访来源 | `xflydm` |  |  |
+| 信访形式代码 | `xfxsdm` |  |  |
+| 信访目的代码 | `xfmddm` |  |  |
+| 信访原因代码 | `xfyydm` |  |  |
+| 信访状态 | `xfjzt` |  |  |
+| 信访人数 | `xfrs` |  |  |
+| 涉及人数 | `sjrs` |  |  |
+| 信访日期 | `xfrq` |  |  |
+| 限办截止时间 | `xbjzsj` |  |  |
+| 流转截止时间 | `lzjzsj` |  |  |
+| 办理程序 | `blcx` |  |  |
+| 问题属地代码 | `wtsddm` |  |  |
+| 内容分类 | `nrfl` |  |  |
+| 内容分类代码 | `nrfldm` |  |  |
+| 登记机构级别 | `djjgjb` |  |  |
+| 登记机构代码 | `djjgdm` |  |  |
+| 登记机构名称 | `djjgmc` |  |  |
+| 登记机构类别 | `djjglb` |  |  |
+| 流转标记 | `lzbj` |  |  |
+| 查询码状态 | `cxmzt` |  |  |
+| 查询码 | `cxm` |  |  |
+| 事项标题 | `bt` |  |  |
+| 投诉内容 | `tsnr` |  |  |
+| 概况 | `gkxx` |  |  |
+| 热点问题 | `rdwt` |  |  |
+| 是否扬言 | `yybz` |  |  |
+| 扬言内容 | `yynr` |  |  |
+| 扬言人 | `yyr` |  |  |
+| 是否保密 | `isbm` |  |  |
+| 是否公开 | `gkbz` |  |  |
+| 是否匿名 | `nmbz` |  |  |
+| 是否涉企 | `issq` |  |  |
+| 是否联名 | `lmbz` |  |  |
+| 涉企机构名称 | `sqjgmc` |  |  |
+| 是否交通 | `isjt` |  |  |
+| 重大紧急标志 | `zdjjbz` |  |  |
+| 交通车牌号码 | `jtcphm` |  |  |
+| 是否民生诉求 | `ismssq` |  |  |
+| 民生诉求 | `mssqdm` |  |  |
+| 积案标志 | `jabz` |  |  |
+| 办结标志 | `bjbz` |  |  |
+| 办结时间 | `bjsj` |  |  |
+| 实际来访人数 | `sjlfrs` |  |  |
+| 受信人 | `sxr` |  |  |
+| 邮戳日期 | `ycrq` |  |  |
+| 附件数量 | `fjsl` |  |  |
+| 涉法涉诉标志 | `sfssbz` |  |  |
+| 标签 | `bq` |  |  |
+| 姓名 | `xm` |  |  |
+| 联系号码 | `sjh` |  |  |
+| 事项内容 | `sxnr` |  |  |
+| 问题属地 | `wtsd` |  |  |
+| 问题属地地址 | `wtsddz` |  |  |
+| 来访人数 | `lfrs` |  |  |
+| 是否纳入诚信管理企业 | `sfnrcxglqy` |  |  |
+| 投诉对象类型 | `tsdxlx` |  |  |
+| 投诉对象 | `tsdx` |  |  |
+| 是否生成答复意见书标记 | `sfscdfyjsbj` |  |  |
+| 抽查标志 | `ccbz` |  |  |
+| 回访标志 | `hfbz` |  |  |
+| 行业内容分类 | `hynrfl` |  |  |
+| 限期答复 | `xqdf` |  |  |
+| 事项件办结人 | `sxjbjr` |  |  |
+| 直接回复内容 | `zjhfnr` |  |  |
+| 初次信访日期 | `ccxfrq` |  |  |
+| 事项标识 | `sxbs` |  |  |
+| 事项标志 | `sxbz` |  |  |
+| 初重件类型名称 | `ccjlxmc` |  |  |
+| 信访来源代码名称 | `xflydmmc` |  |  |
+| 信访形式名称 | `xfxsmc` |  |  |
+| 信访目的名称 | `xfmdmc` |  |  |
+| 扬言标志名称 | `yybzmc` |  |  |
+| 是否匿名名称1 | `isbmmc` |  |  |
+| 是否公开名称 | `gkbzmc` |  |  |
+| 是否匿名名称2 | `nmbzmc` |  |  |
+| 是否涉企名称 | `issqmc` |  |  |
+| 联名标志名称 | `lmbzmc` |  |  |
+| 重大紧急标志名称 | `zdjjbzmc` |  |  |
+| 积案标志名称 | `jabzmc` |  |  |
+| 办结标志名称 | `bjbzmc` |  |  |
+| 信访件状态名称 | `xfjztmc` |  |  |
+| 事项类型名称 | `sxlxmc` |  |  |
+| 事项办理状态名称 | `sxblztmc` |  |  |
+| 事项办结类型名称 | `sxbjlxmc` |  |  |
+| 原件来源名称 | `yjlymc` |  |  |
+| 信访原因名称 | `xfyymc` |  |  |
+| 办理程序名称 | `blcxmc` |  |  |
+| 办理程序名称 | `djjgjbmc` |  |  |
+| 登记机构类别名称 | `djjglbmc` |  |  |
+| 查询码状态名称 | `cxmztmc` |  |  |
+| 投诉对象类型名称 | `tsdxlxmc` |  |  |
+| 数据来源名称 | `sjlymc` |  |  |
+| 所属地市 | `ssds` |  |  |
+| 所属区/县 | `ssqx` |  |  |
+
+## dw_shl_xfjxfsxbljlxx - 省回流-信访件信访事项办理记录信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+|  | `zj` |  |  |
+|  | `xfjbh` |  |  |
+|  | `sjjbrhm` |  |  |
+|  | `shgdid` |  |  |
+|  | `bldxdwmc` |  |  |
+|  | `bldxlxhm` |  |  |
+|  | `bldxxm` |  |  |
+|  | `blfs` |  |  |
+|  | `bljg` |  |  |
+|  | `bljgdm` |  |  |
+|  | `bljglb` |  |  |
+|  | `bllb` |  |  |
+|  | `blsj` |  |  |
+|  | `blyy` |  |  |
+|  | `byslyy` |  |  |
+|  | `cjsj` |  |  |
+|  | `blbmid` |  |  |
+|  | `blbmmc` |  |  |
+|  | `dfnr` |  |  |
+|  | `dlm` |  |  |
+|  | `fdbjqx` |  |  |
+|  | `fjsl` |  |  |
+|  | `flyj` |  |  |
+|  | `gznr` |  |  |
+|  | `gzr` |  |  |
+|  | `gzrlxdh` |  |  |
+|  | `isxycszfpt` |  |  |
+|  | `json_str` |  |  |
+|  | `next_dept_id` |  |  |
+|  | `next_dept_name` |  |  |
+|  | `next_user_id` |  |  |
+|  | `next_user_name` |  |  |
+|  | `order_id` |  |  |
+|  | `org_real_id` |  |  |
+|  | `qsbj` |  |  |
+|  | `qxjg` |  |  |
+|  | `qxjgdm` |  |  |
+|  | `qxjglb` |  |  |
+|  | `sdfs` |  |  |
+|  | `sdr` |  |  |
+|  | `sdsj` |  |  |
+|  | `update_time` |  |  |
+|  | `user_id` |  |  |
+|  | `user_name` |  |  |
+|  | `wzhshzt` |  |  |
+|  | `xfryj` |  |  |
+|  | `xqhbsj` |  |  |
+|  | `xqxmc` |  |  |
+|  | `zsdx` |  |  |
+|  | `ssds` |  |  |
+|  | `ssqx` |  |  |
 
 ## dw_nb_sw_nsxx - 纳税信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据                 |
-| ---------------- | ----------------- | -------- | ------------------------ |
-| 免税销售收入额   | msxssr            | float    | \n                       |
-| 单位经营地址     | unit_opt_loc      | string   | 慈溪市白沙路街道八字桥村 |
-| 文化事业建设费   | whsyjsf           | float    | 0.00                     |
-| 税额总额         | tax_amt           | float    | 921.26                   |
-| 销售收入         | sale_inco         | float    | 310152.70                |
-| 企业名称         | comp_nm           | string   | 慈溪市浒欣谊渔具配件厂   |
-| 税务登记证号     | tax_reg_no        | string   | 91330282l07196379d       |
-| 组织机构代码     | org_no            | string   | l07196379                |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 91330282l07196379d       |
-| 统计时间         | count_dt          | string   | 20190930                 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 免税销售收入额 | `msxssr` | float | \N |
+| 单位经营地址 | `unit_opt_loc` | string | 慈溪市白沙路街道八字桥村 |
+| 文化事业建设费 | `whsyjsf` | float | 0 |
+| 税额总额 | `tax_amt` | float | 921.26 |
+| 销售收入 | `sale_inco` | float | 310152.7 |
+| 企业名称 | `comp_nm` | string | 慈溪市浒欣谊渔具配件厂 |
+| 税务登记证号 | `tax_reg_no` | string | 91330282L07196379D |
+| 组织机构代码 | `org_no` | string | L07196379 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330282L07196379D |
+| 统计时间 | `count_dt` | string | 20190930 |
 
-## dw_nb_sw_xypjxxa - 信用评价信息（a级纳税人）
+## dw_nb_sw_xypjxxa - 信用评价信息（A级纳税人）
 
-| 中文字段名           | 标准化字段名      | 数据类型 | 样例数据                                 |
-| -------------------- | ----------------- | -------- | ---------------------------------------- |
-| 信用分               | credi_scard       | smallint | 90                                       |
-| 统一社会信用代码     | uni_social_crd_cd | string   | 91330203674737244w                       |
-| 交易流水号           | sjid              |          | b79f3cb4cb7f8c6ce0535b4c1b50786a         |
-| 所属年度             | be_year           | string   | 2019                                     |
-| 法定代表人           | legal_repre       | string   | 乐骏定                                   |
-| 生产经营地址         | opt_loc           | string   | 开发区商品经营基地                       |
-| 纳税人识别号         | tax_no            | string   | 91330203674737244w                       |
-| 组织机构代码         | org_no            | string   | 144137903                                |
-| 评价机构             | eval_org          | string   | 国家税务总局宁波市北仑区税务局小港税务所 |
-| 纳税人名称           | taxer_nm          | string   | 宁波经济技术开发区双和高科技有限公司     |
-| 纳税信用等级         | tax_credi_level   | string   | a                                        |
-| 纳税信用等级评定年度 | eval_year         | string   | 2019                                     |
-| 纳税信用等级评定日期 | eval_dt           | datetime | 2020-3-17                                |
-| 主管税务机关         | major_tax_org     | string   | 国家税务总局宁波市北仑区税务局小港税务所 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 信用分 | `credi_scard` | smallint | 90 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 91330203674737244W |
+| 交易流水号 | `sjid` |  | B79F3CB4CB7F8C6CE0535B4C1B50786A |
+| 所属年度 | `be_year` | string | 2019 |
+| 法定代表人 | `legal_repre` | string | 乐骏定 |
+| 生产经营地址 | `opt_loc` | string | 开发区商品经营基地 |
+| 纳税人识别号 | `tax_no` | string | 91330203674737244W |
+| 组织机构代码 | `org_no` | string | 144137903 |
+| 评价机构 | `eval_org` | string | 国家税务总局宁波市北仑区税务局小港税务所 |
+| 纳税人名称 | `taxer_nm` | string | 宁波经济技术开发区双和高科技有限公司 |
+| 纳税信用等级 | `tax_credi_level` | string | A |
+| 纳税信用等级评定年度 | `eval_year` | string | 2019 |
+| 纳税信用等级评定日期 | `eval_dt` | datetime | 2020-03-17 00:00:00 |
+| 主管税务机关 | `major_tax_org` | string | 国家税务总局宁波市北仑区税务局小港税务所 |
 
 ## dw_nb_rlsb_qysbcbrsxx - 企业社保参保人数信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据                     |
-| ---------------- | ----------------- | -------- | ---------------------------- |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 911101**\*\***92690j         |
-| 单位id           | corp_id           | string   |                              |
-| 应收年月         | rece_ym           | string   | 201811                       |
-| 单位名称         | corp_nm           | string   | 宁波华力鑫业投资管理有限公司 |
-| 月参保总人数     | mon_insurd_prsons | int      | 1                            |
-| 单位性质         | corp_nature       | string   | 企业                         |
-| 行业分类         | indv_class        | string   | 资本市场服务                 |
-| 经济性质         | econ_nature       | string   | 其他有限责任(公司)           |
-| 单位所处街道     | corp_local_street | string   | 梅山街道                     |
-| 行政区           | admin_region      | string   | 北仑区                       |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 911101******92690J |
+| 单位ID | `corp_id` | string |  |
+| 应收年月 | `rece_ym` | string | 201811 |
+| 单位名称 | `corp_nm` | string | 宁波华力鑫业投资管理有限公司 |
+| 月参保总人数 | `mon_insurd_prsons` | int | 1 |
+| 单位性质 | `corp_nature` | string | 企业 |
+| 行业分类 | `indv_class` | string | 资本市场服务 |
+| 经济性质 | `econ_nature` | string | 其他有限责任(公司) |
+| 单位所处街道 | `corp_local_street` | string | 梅山街道 |
+| 行政区 | `admin_region` | string | 北仑区 |
 
 ## dw_nb_rlsb_sbjylyshbxjbxx - 宁波市社保就业领域社会保险基本信息
 
-| 中文字段名       | 标准化字段名      | 数据类型 | 样例数据               |
-| ---------------- | ----------------- | -------- | ---------------------- |
-| 唯一标识         |                   |          | 330201**\*\***080510   |
-| 单位名称         | comp_nm           | string   | 宁波花岗石板材有限公司 |
-| 统一社会信用代码 | uni_social_crd_cd | string   | 9133021272513935x8     |
-| 组织机构代码     | org_cd            | string   | 72513935x              |
-| 营业执照注册号   | opt_reg_no        | string   | 330200400065251        |
-| 单位编码         | unit_cd           | string   | 10006697               |
-| 投保起始日期     | issue_start_dt    | datetime | 200109                 |
-| 养老保险人数     | pens_num          | int      | 68                     |
-| 医疗保险人数     | medic_num         | int      | 68                     |
-| 失业保险人数     | unemploy_num      | int      | 68                     |
-| 工伤保险人数     | injury_num        | int      | 68                     |
-| 生育保险人数     | materni_num       | int      | 68                     |
-| 养老保险缴费年月 | pens_pay_ym       | datetime | 202008                 |
-| 医疗保险缴费年月 | medic_pay_ym      | datetime | 202008                 |
-| 失业保险缴费年月 | unemploy_pay_ym   | datetime | 202008                 |
-| 工伤保险缴费年月 | injury_pay_ym     | datetime | 202008                 |
-| 生育保险缴费年月 | materni_pay_ym    | datetime | 202008                 |
-| 当前状态         | stat              | string   | 1                      |
-| 记录状态         |                   |          | 1                      |
-| 入库日期         |                   |          | 2020-8-5               |
-| 处理状态         |                   |          | 0                      |
-| 单位id           |                   |          | 300079                 |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 单位名称 | `comp_nm` | string | 宁波花岗石板材有限公司 |
+| 统一社会信用代码 | `uni_social_crd_cd` | string | 9133021272513935X8 |
+| 组织机构代码 | `org_cd` | string | 72513935X |
+| 营业执照注册号 | `opt_reg_no` | string | 330200400065251 |
+| 单位编码 | `unit_cd` | string | 10006697 |
+| 投保起始日期 | `issue_start_dt` | datetime | 200109 |
+| 养老保险人数 | `pens_num` | int | 68 |
+| 医疗保险人数 | `medic_num` | int | 68 |
+| 失业保险人数 | `unemploy_num` | int | 68 |
+| 工伤保险人数 | `injury_num` | int | 68 |
+| 生育保险人数 | `materni_num` | int | 68 |
+| 养老保险缴费年月 | `pens_pay_ym` | datetime | 202008 |
+| 医疗保险缴费年月 | `medic_pay_ym` | datetime | 202008 |
+| 失业保险缴费年月 | `unemploy_pay_ym` | datetime | 202008 |
+| 工伤保险缴费年月 | `injury_pay_ym` | datetime | 202008 |
+| 生育保险缴费年月 | `materni_pay_ym` | datetime | 202008 |
+| 当前状态 | `stat` | string | 1 |
 
 ## dw_nb_rlsb_gtldzcbdjxx - 宁波市社保就业领域个体劳动者（灵活就业人员）参保登记信息
 
-| 中文字段名     | 标准化字段名   | 数据类型 | 样例数据                   |
-| -------------- | -------------- | -------- | -------------------------- |
-| 人员参保关系id | per_issu_rela  | string   | 3020001405340693           |
-| 社会保障号     | soci_secu_no   | string   | 330224\***\*\*\*\*\*\*\*** |
-| 姓名           | nm             | string   | 沈水珠                     |
-| 个人编码       | per_cd         | string   | 3200000012529000           |
-| 人员参保状态   | issu_stat      | string   | 1                          |
-| 开始年月       | start_ym       | datetime | 201305                     |
-| 终止年月       | end_ym         | datetime | 201901                     |
-| 首次参保年月   | first_issu_ym  | datetime | 201305                     |
-| 险种类型       | issu_tpe       | string   | 11                         |
-| 人员类型       | per_type       | string   | 1                          |
-| 当前有效标志   | cur_valid_flag | string   | 1                          |
-| 账户建立年月   | acco_estab_ym  | datetime | 201305                     |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 人员参保关系ID | `per_issu_rela` | string | 3020001405340693 |
+| 社会保障号 | `soci_secu_no` | string | 330224************ |
+| 姓名 | `nm` | string | 沈水珠 |
+| 个人编码 | `per_cd` | string | 3200000012529000 |
+| 人员参保状态 | `issu_stat` | string | 1 |
+| 开始年月 | `start_ym` | datetime | 201305 |
+| 终止年月 | `end_ym` | datetime | 201901 |
+| 首次参保年月 | `first_issu_ym` | datetime | 201305 |
+| 险种类型 | `issu_tpe` | string | 11 |
+| 人员类型 | `per_type` | string | 1 |
+| 当前有效标志 | `cur_valid_flag` | string | 1 |
+| 账户建立年月 | `acco_estab_ym` | datetime | 201305 |
 
 ## dw_nb_rlsb_cbgryjsybxfhdxx - 宁波市社保就业领域参保个人应缴失业保险费核定信息
 
-| 中文字段名               | 标准化字段名     | 数据类型 | 样例数据                   |
-| ------------------------ | ---------------- | -------- | -------------------------- |
-| 人员缴费基数             | per_pay_basis    | float    | 2878                       |
-| 缴费总金额               | pay_amt          | float    | 28.8                       |
-| 单位应缴金额             | unit_pay_amt     | float    | 28.8                       |
-| 个人应缴金额             | per_pay_amt      | float    | 0                          |
-| 单位划入金额             | unit_inclu_amt   | float    | 0                          |
-| 个人划入金额             | per_inclu_amt    | float    | 0                          |
-| 其他来源一补贴金额       |                  |          | 0                          |
-| 其他来源一划账户金额     |                  |          | 0                          |
-| 其他来源二应缴金额       |                  |          | 0                          |
-| 其他来源二划入金额       |                  |          | 0                          |
-| 其他来源三应缴金额       |                  |          | 0                          |
-| 其他来源三划入金额       |                  |          | 0                          |
-| 足额到账标志             | full_rece_flag   | string   | 1                          |
-| 足额到账年月             | full_rece_ym     | string   | 201612                     |
-| 账目状态                 | bill_stat        | string   | 0                          |
-| 变更年月                 | chan_ym          | string   | 201612                     |
-| 低保标志                 | sub_allow_flag   | string   | 0                          |
-| 人员征缴明细id           | per_levy_detail  | string   | 3020002341463910           |
-| 个人编码                 | per_cd           | string   | 3020000009723014           |
-| 单位编码                 | unit_cd          | string   | 302000009647333            |
-| 单位名称                 | unit_nm          | string   | 浙江千佳广告有限公司       |
-| 社会保障号               | soci_secu_no     | string   | 330329\***\*\*\*\*\*\*\*** |
-| 姓名                     | nm               | string   | 曹成标                     |
-| 险种类型                 | issu_type        | string   | 21                         |
-| 费款所属期               | fee_period       | string   | 201612                     |
-| 对应费款所属期           | cor_fee_period   | string   | 201612                     |
-| 应缴类型                 | pay_type         | string   | 0                          |
-| 缴费月数                 | pay_months       | int      | 1                          |
-| 分区字段(费款所属期年份) | partition_period | string   |                            |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 人员缴费基数 | `per_pay_basis` | float | 2878 |
+| 缴费总金额 | `pay_amt` | float | 28.8 |
+| 单位应缴金额 | `unit_pay_amt` | float | 28.8 |
+| 个人应缴金额 | `per_pay_amt` | float | 0 |
+| 单位划入金额 | `unit_inclu_amt` | float | 0 |
+| 个人划入金额 | `per_inclu_amt` | float | 0 |
+| 足额到账标志 | `full_rece_flag` | string | 1 |
+| 足额到账年月 | `full_rece_ym` | string | 201612 |
+| 账目状态 | `bill_stat` | string | 0 |
+| 变更年月 | `chan_ym` | string | 201612 |
+| 低保标志 | `sub_allow_flag` | string | 0 |
+| 人员征缴明细ID | `per_levy_detail` | string | 3020002341463910 |
+| 个人编码 | `per_cd` | string | 3020000009723014 |
+| 单位编码 | `unit_cd` | string | 302000009647333 |
+| 单位名称 | `unit_nm` | string | 浙江千佳广告有限公司 |
+| 社会保障号 | `soci_secu_no` | string | 330329************ |
+| 姓名 | `nm` | string | 曹成标 |
+| 险种类型 | `issu_type` | string | 21 |
+| 费款所属期 | `fee_period` | string | 201612 |
+| 对应费款所属期 | `cor_fee_period` | string | 201612 |
+| 应缴类型 | `pay_type` | string | 0 |
+| 缴费月数 | `pay_months` | int | 1 |
+| 分区字段(费款所属期年份) | `partition_period` | string |  |
 
 ## dw_nb_rlsb_sbjylyrycbxx - 宁波市社保就业领域人员参保信息
 
-| 中文字段名     | 标准化字段名     | 数据类型 | 样例数据                   |
-| -------------- | ---------------- | -------- | -------------------------- |
-| 参保状态       | issue_stat       | string   | 1(aac008??)                |
-| 流水号         | serial_num       | string   | 3020000107199890           |
-| 对应费款所属期 | corre_fee_period | string   | 201406                     |
-| 单位名称       | comp_nm          | string   | 宁波群志光电邮箱公司       |
-| 税务登记证号码 | tax_reg_no       | string   | 330227\***\*\*\*\*\*\*\*** |
-| 证件号码       | cert_no          | string   | 330227\***\*\*\*\*\*\*\*** |
-| 姓名           | nm               | string   | 李培元                     |
-| 险种           | issue_type       | string   | 41                         |
-| 单位编号       | unit_id          | string   | 3029000005105970           |
-| 行政区划       | admin_area       | string   | 330212                     |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 参保状态 | `issue_stat` | string | 1(aac008??) |
+| 流水号 | `serial_num` | string | 3020000107199890 |
+| 对应费款所属期 | `corre_fee_period` | string | 201406 |
+| 单位名称 | `comp_nm` | string | 宁波群志光电邮箱公司 |
+| 税务登记证号码 | `tax_reg_no` | string | 330227************ |
+| 证件号码 | `cert_no` | string | 330227************ |
+| 姓名 | `nm` | string | 李培元 |
+| 险种 | `issue_type` | string | 41 |
+| 单位编号 | `unit_id` | string | 3029000005105970 |
+| 行政区划 | `admin_area` | string | 330212 |
 
-## dw_shl_ajnsrxx - 省回流-宁波市a级纳税人信息（国家下发数据）
+## dw_shl_ajnsrxx - 省回流-宁波市A级纳税人信息（国家下发数据）
 
-(没有内容)
+（Excel 未提供字段清单）
 
 ## dw_shl_qyzxdjxx - 省回流-宁波市企业注销登记信息
 
-(没有内容)
+（Excel 未提供字段清单）
 
 ## dw_shl_qyhjxwxypjxx - 省回流-宁波市企业环境行为信用评价信息
 
-| 中文字段名               | 标准化字段名               | 数据类型 | 样例数据 |
-| ------------------------ | -------------------------- | -------- | -------- |
-| 地区名称                 | regn_nm                    | string   |          |
-| 主体名称                 | main_nm                    | string   |          |
-| 统一社会信用代码         | uni_social_crd_cd          | string   |          |
-| 评价等级                 | cmnt_lvel                  | string   |          |
-| 发布时间                 | pub_tm                     | string   |          |
-| 主键                     | key                        | string   |          |
-| 评价批次                 | cmnt_batch                 | string   |          |
-| 评价机构                 | cmnt_org                   | string   |          |
-| 评价机构统一社会信用代码 | cmnt_org_uni_social_crd_cd | string   |          |
-| 评价名称                 | cmnt_nm                    | string   |          |
-| 有效期限                 | valid_dt                   | datetime |          |
-| 评价分值                 | cmnt_score                 | int      |          |
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 地区名称 | `regn_nm` | string |  |
+| 主体名称 | `main_nm` | string |  |
+| 统一社会信用代码 | `uni_social_crd_cd` | string |  |
+| 评价等级 | `cmnt_lvel` | string |  |
+| 发布时间 | `pub_tm` | string |  |
+| 主键 | `key` | string |  |
+| 评价批次 | `cmnt_batch` | string |  |
+| 评价机构 | `cmnt_org` | string |  |
+| 评价机构统一社会信用代码 | `cmnt_org_uni_social_crd_cd` | string |  |
+| 评价名称 | `cmnt_nm` | string |  |
+| 有效期限 | `valid_dt` | datetime |  |
+| 评价分值 | `cmnt_score` | int |  |
+
+## dw_nb_xflybcdfbxx - 宁波市信访领域补充答复表信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键 | `zj` | string |  |
+| 操作时间 | `czsj` | TIMESTAMP |  |
+| 信访件ID | `xfjid` | string |  |
+| 直接回复表主键ID | `zjhfid` | string |  |
+| 补充答复内容 | `bcdfnr` | string |  |
+| 标记 | `bj` | string |  |
+| 补充答复附件名 | `bcdffjm` | string |  |
+| 补充答复人 | `bcdfr` | string |  |
+| 对应表名 | `dybm` | string |  |
+| 补充答复人ID | `bcdfrid` | string |  |
+| 补充答复单位 | `bcdfdw` | string |  |
+| 补充答复单位ID | `bcdfdwid` | string |  |
+| 补充答复单位代码 | `bcdfdwdm` | string |  |
+| 排序号 | `pxh` | int |  |
+| 告知复查复核权力 | `gzfcfhql` | int |  |
+| 答复意见书编号 | `dfyjsbh` | string |  |
+| 答复告知回复记录主键 | `dfgzid` | string |  |
+| 隐藏行ID | `ychid` | string |  |
+
+## dw_nb_xflydfgzhfxx - 宁波市信访领域答复告知回复信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键ID | `zjid` | string |  |
+| 信访事项ID | `xfsxid` | string |  |
+| 操作时间 | `czsj` | datetime |  |
+| 类型 | `lx` | string |  |
+| 文种 | `wz` | string |  |
+| 处理单位ID | `cldwid` | string |  |
+| 信访件ID | `xfjid` | string |  |
+| 上传扫描文件附件内容 | `scsmwjfjnr` | string |  |
+| 意见书编号 | `yjsbh` | string |  |
+| 处理日期 | `clrq` | datetime |  |
+| 处理单位 | `cldw` | string |  |
+| 信访人姓名 | `xfrxm` | string |  |
+| 信访人ID | `xfrid` | string |  |
+| 文件内容 | `wjlr` | string |  |
+| 信访人意见 | `xfryj` | string |  |
+| 送达方式 | `sdfs` | string |  |
+| 送达人 | `sdr` | string |  |
+| 送达时间 | `sdsj` | datetime |  |
+| 签收标志 | `qsbz` | string |  |
+| 办理部门 | `blbm` | string |  |
+| 经办人 | `jbr` | string |  |
+| 经办人联系电话 | `jbrlxdh` | string |  |
+| 送达人联系电话 | `sdrlxdh` | string |  |
+| 区别意见书类型 | `qbyjslx` | string |  |
+| 单位落款 | `dwlk` | string |  |
+| 文书编号 | `wsbh` | string |  |
+| 新老数据标志 | `xlsjbz` | string |  |
+| 补充答复的办理情况 | `bcdfblqk` | string |  |
+| 隐藏行ID | `ychid` | string |  |
+| 是否立案 | `sfla` | string |  |
+| 是否检查 | `sfjc` | string |  |
+
+## dw_nb_xflydhydfxx - 宁波市信访领域电话已答复信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键ID | `zjid` | string |  |
+| 来电编号 | `ldbh` | string |  |
+| 呼入类型 | `hrlx` | string |  |
+| 来电形式 | `xfxs` | string |  |
+| 登记人ID | `djrid` | string |  |
+| 工号 | `gh` | string |  |
+| 登记人姓名 | `djr` | string |  |
+| 登记单位ID | `djdwid` | string |  |
+| 登记单位 | `djdw` | string |  |
+| 登记部门ID | `djbmid` | string |  |
+| 登记部门 | `djbm` | string |  |
+| 呼入时间 | `djsj` | datetime |  |
+| 信访件ID | `xfjid` | string |  |
+| 姓名 | `xm` | string |  |
+| 问题属地代码 | `wtsd` | string |  |
+| 性别 | `xb` | string |  |
+| 常住地址代码 | `czdzdm` | string |  |
+| 常住地址 | `czdz` | string |  |
+| 户口所在地代码 | `hkszddm` | string |  |
+| 户口所在地 | `hkszd` | string |  |
+| 来电目的 | `xfmd` | string |  |
+| 内容分类 | `nrfl` | string |  |
+| 信访日期 | `xfrq` | string |  |
+| 优先级 | `yxj` | string |  |
+| 限办时间 | `xbsj` | datetime |  |
+| 是否特殊人员 | `tsrybz` | string |  |
+| 全国初次信访标志 | `qgccxfbz` | string |  |
+| 是否信访件 | `sfxfj` | string |  |
+| 是否公开 | `sfgk` | string |  |
+| 是否关联电话录音 | `sfgldhly` | string |  |
+| 反映内容 | `fynr` | string |  |
+| 相关附件名 | `xgfj` | string |  |
+| 处理结果 | `clqk` | string |  |
+| 处理状态 | `xfjclzt` | string |  |
+| 受理单位 | `sldw` | string |  |
+| 重件关连 | `cjgl` | string |  |
+| 操作时间 | `czsj` | datetime |  |
+| 工作单位 | `gzdw` | string |  |
+| 职业 | `zy` | string |  |
+| 证件类型 | `zjlx` | string |  |
+| 证件号码 | `zjhm` | string |  |
+| 标题 | `bt` | string |  |
+| 来电状态 | `ldzt` | string |  |
+| 经办人ID | `jbrid` | string |  |
+| 新老数据标志 | `xlsjbz` | string |  |
+| 联系电话 | `lxdh` | string |  |
+| 是否匿名 | `nmbz` | string |  |
+| 查询码 | `cxm` | string |  |
+| 行政区划 | `xzqh` | string |  |
+| 简易程序 | `jjcd` | string |  |
+| 来电号码 | `ldhm` | string |  |
+| 是否保密 | `sfbm` | string |  |
+| 回访标志 | `hfbz` | string |  |
+| 被呼叫号码 | `bhjhm` | string |  |
+| 厅局代码 | `tjdm` | string |  |
+| 保密人ID | `bmrid` | string |  |
+| 转送受理单位 | `zssldw` | string |  |
+| 转送受理人 | `zsslr` | string |  |
+| 当前办理人ID | `dqblr` | string |  |
+| 解锁时间 | `jssj` | datetime |  |
+| 答复人姓名 | `dfrxm` | string |  |
+| 答复人ID | `dfrid` | string |  |
+| 答复时间 | `dfsj` | datetime |  |
+| 所属网站 | `sswz` | string |  |
+| 录音文件路径 | `lywjlj` | string |  |
+| 录音文件归档目录 | `lywjgdml` | string |  |
+| 录音文件名 | `lywjm` | string |  |
+| 锁定人姓名 | `sdrxm` | string |  |
+| 行业内容分类 | `hynrfl` | string |  |
+| 答复单位代码 | `dfdwdm` | string |  |
+| 热点问题 | `rdwt` | string |  |
+| 附件名 | `fjm` | string |  |
+| 隐藏行ID | `ychid` | string |  |
+
+## dw_nb_xflyhsdhxx - 宁波市信访领域核实电话信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键编号 | `zjbh` | string |  |
+| 登记人编号 | `djrbh` | string |  |
+| 登记人 | `djr` | string |  |
+| 登记部门编号 | `djbmbh` | string |  |
+| 登记部门 | `djbm` | string |  |
+| 登记单位编号 | `djdwbh` | string |  |
+| 登记单位 | `djdw` | string |  |
+| 通话内容 | `thlr` | string |  |
+| 信访件编号 | `xfjbh` | string |  |
+| 附件名 | `fjm` | string |  |
+| 对应评价表编号 | `dypjbbh` | string |  |
+| 核实时间 | `hssj` | string |  |
+| 是否通过 | `sftg` | string |  |
+| 是否理解件 | `sfljj` | string |  |
+| 是否属实 | `sfss` | string |  |
+| 诉求是否合理 | `sqsfhl` | string |  |
+| 信访原因 | `xfyy` | string |  |
+| 理解件说明 | `ljjsm` | string |  |
+
+## dw_nb_xflyhssdxx - 宁波市信访领域核实实地信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键ID | `zjid` | string |  |
+| 登记人ID | `djrid` | string |  |
+| 登记人 | `djr` | string |  |
+| 登记部门ID | `djbmid` | string |  |
+| 登记部门 | `djbm` | string |  |
+| 登记单位ID | `djdwid` | string |  |
+| 登记单位 | `djdw` | string |  |
+| 督办内容 | `dblr` | string |  |
+| 信访件ID | `xfjid` | string |  |
+| 实地督办的属实情况 | `ssqk` | string |  |
+| 实地督办的审核意见 | `shyj` | string |  |
+| 实地督办的落实情况 | `lsqk` | string |  |
+| 实地督办的督办意见 | `dbyj` | string |  |
+| 实地核实情况 | `sdhsqk` | string |  |
+| 附件名 | `fjm` | string |  |
+| 对应307评价表ID | `dypjbid` | string |  |
+| 是否理解件 | `sfljj` | string |  |
+| 是否属实 | `sfss` | string |  |
+| 诉求是否合理 | `sqsfhl` | string |  |
+| 信访原因 | `xfyy` | string |  |
+| 理解件说明 | `ljjsm` | string |  |
+
+## dw_nb_xflyhswlxx - 宁波市信访领域核实网络信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键ID | `zjid` | string |  |
+| 登记人ID | `djrid` | string |  |
+| 登记人 | `djr` | string |  |
+| 登记部门ID | `djbmid` | string |  |
+| 登记部门 | `djbm` | string |  |
+| 登记单位ID | `djdwid` | string |  |
+| 登记单位 | `djdw` | string |  |
+| 督办内容 | `dblr` | string |  |
+| 信访件ID | `xfjid` | string |  |
+| 实地核实情况 | `sftg` | string |  |
+| 附件名 | `fjm` | string |  |
+| 对应307评价表ID | `dypjbid` | string |  |
+| 办理时间 | `blsj` | string |  |
+| 是否理解件 | `sfljj` | string |  |
+| 是否属实 | `sfss` | string |  |
+| 诉求是否合理 | `sqsfhl` | string |  |
+| 信访原因 | `xfyy` | string |  |
+| 理解件说明 | `ljjsm` | string |  |
+
+## dw_nb_xflyhfxx - 宁波市信访领域回访信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键 | `zj` | string |  |
+| 操作时间 | `czsj` | datetime |  |
+| 信访件ID | `xfjid` | string |  |
+| 扬言内容 | `yynr` | string |  |
+| 回访备注内容 | `hfbznr` | string |  |
+| 新老数据标志 | `xlsjbz` | string |  |
+| 标志 | `bz` | string |  |
+| 回访人员 | `hfry` | string |  |
+| 回访单位 | `hfdw` | string |  |
+| 回访录音文件名 | `hflywj` | string |  |
+| 回访人员名字 | `hfrymz` | string |  |
+| 回访附件名 | `hffj` | string |  |
+| 回访方式 | `hffs` | string |  |
+| 307主键ID | `zjid` | string |  |
+| 最近回访 | `zjhf` | string |  |
+| 回访情况 | `hfqk` | string |  |
+| 数据来源 | `sjly` | string |  |
+| 无法回访标志 | `wfhfbz` | string |  |
+
+## dw_nb_xflywdfdhxx - 宁波市信访领域未答复电话信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键ID | `zjid` | string |  |
+| 来电编号 | `ldbh` | string |  |
+| 来电形式 | `ldxs` | string |  |
+| 登记人ID | `djrid` | string |  |
+| 工号 | `gh` | string |  |
+| 登记人姓名 | `djr` | string |  |
+| 登记单位ID | `djdwid` | string |  |
+| 登记单位 | `djdw` | string |  |
+| 登记部门ID | `djbmid` | string |  |
+| 登记部门 | `djbm` | string |  |
+| 呼入时间 | `hrsj` | string |  |
+| 信访件ID | `xfjid` | string |  |
+| 姓名 | `xm` | string |  |
+| 问题属地代码 | `wtsd` | string |  |
+| 性别 | `xb` | string |  |
+| 常住地址代码 | `czdzdm` | string |  |
+| 常住地址 | `czdz` | string |  |
+| 户口所在地代码 | `hkszddm` | string |  |
+| 户口所在地 | `hkszd` | string |  |
+| 来电目的 | `xfmd` | string |  |
+| 内容分类 | `nrfl` | string |  |
+| 信访日期 | `xfrq` | string |  |
+| 反映内容 | `fynr` | string |  |
+| 相关附件名 | `xgfj` | string |  |
+| 处理结果 | `clqk` | string |  |
+| 处理状态 | `xfjclzt` | string |  |
+| 工作单位 | `gzdw` | string |  |
+| 职业 | `zy` | string |  |
+| 证件类型 | `zjlx` | string |  |
+| 证件号码 | `zjhm` | string |  |
+| 标题 | `bt` | string |  |
+| 来电状态 | `ldzt` | string |  |
+| 经办人ID | `jbrid` | string |  |
+| 联系电话 | `lxdh` | string |  |
+| 是否匿名 | `nmbz` | string |  |
+| 行政区划 | `xzqh` | string |  |
+| 紧急程度 | `jjcd` | string |  |
+| 来电号码 | `ldhm` | string |  |
+| 是否保密 | `sfbm` | string |  |
+| 答复人姓名 | `dfrxm` | string |  |
+| 答复人ID | `dfrid` | string |  |
+| 答复时间 | `dfsj` | string |  |
+| 行业内容分类 | `hynrfl` | string |  |
+| 答复单位代码 | `dfdwdm` | string |  |
+| 热点问题 | `rdwt` | string |  |
+| 附件名 | `fjm` | string |  |
+
+## dw_nb_xflyxfjxx - 宁波市信访领域信访件信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键编号 | `zjbh` | string |  |
+| 关联信访事项编号 | `glxfsxbh` | string |  |
+| 操作时间 | `czsj` | datetime |  |
+| 标题 | `bt` | string |  |
+| 信访件编号 | `xfjbh` | string |  |
+| 信访形式 | `xfxs` | string |  |
+| 本次主信访人编号 | `xfrid` | string |  |
+| 主信访人地址代码 | `xfrdzdm` | string |  |
+| 受信人 | `sxr` | string |  |
+| 受信人初次信访标志 | `sxrccxfbz` | string |  |
+| 查询码状态 | `cxmzt` | string |  |
+| 查询码告知日期 | `cxmgzrq` | datetime |  |
+| 查询码告知机构 | `cxmgzjg` | string |  |
+| 登记部门编号 | `djbmid` | string |  |
+| 登记单位编号 | `djdwid` | string |  |
+| 相关附件名 | `xgfj` | string |  |
+| 登记机构初次信访标志 | `djjgccxfbz` | string |  |
+| 全国初次信访标志 | `qgccxfbz` | string |  |
+| 全国信访形式初次信访标志 | `qgxfxsccxfbz` | string |  |
+| 登记机构信访形式初次信访标志 | `djjgxfxsccxfbz` | string |  |
+| 评价情况 | `pjqk` | string |  |
+| 概况 | `gk` | string |  |
+| 人数 | `rs` | string |  |
+| 查询码 | `cxm` | string |  |
+| 信访件状态 | `xfjzt` | string |  |
+| 涉及人数 | `sjrs` | string |  |
+| 信访日期 | `xfrq` | datetime |  |
+| 群体意愿标志 | `qtyybz` | string |  |
+| 初次来源 | `ccly` | string |  |
+| 登记时间 | `djsj` | datetime |  |
+| 登记人编号 | `djrid` | string |  |
+| 越级标志 | `yjbz` | string |  |
+| 联名信或集体访 | `jtxfbz` | string |  |
+| 接谈人编号 | `jtrxmid` | string |  |
+| 接谈人部门编号 | `jtrbmid` | string |  |
+| 接谈人单位编号 | `jtrdwid` | string |  |
+| 来信形式 | `lxxs` | string |  |
+| 紧急标志 | `jjbz` | string |  |
+| 匿名标志 | `nmbz` | string |  |
+| 受理机构编号 | `sljgid` | string |  |
+| 是否进行终结备案 | `sfjy` | string |  |
+| 网站地址 | `wzdz` | string |  |
+| 是否公开 | `sfgk` | string |  |
+| 最后一次办理时间 | `blsj` | datetime |  |
+| 最后一次办理方式 | `blfs` | string |  |
+| 最后一次办理去向 | `qxmc` | string |  |
+| 最后一次去向 | `qx` | string |  |
+| 信访事项被反映人级别 | `xfsxbfyrjb` | string |  |
+| 信访事项信访目的 | `xfsxxfmd` | string |  |
+| 问题属地代码编号 | `wtsddm` | string |  |
+| 信访事项密级 | `mj` | string |  |
+| 信访人诉求 | `xfrsq` | string |  |
+| 扬言标志 | `yybz` | string |  |
+| 批示记录 | `psjl` | string |  |
+| 催办记录 | `cbjl` | string |  |
+| 办结标志 | `bjbz` | string |  |
+| 办结时间 | `bjsj` | datetime |  |
+| 网上来源 | `wsly` | string |  |
+| 限办时间 | `xbsj` | datetime |  |
+| 处理情况 | `clqk` | string |  |
+| 复查情况 | `fcqk` | string |  |
+| 复核情况 | `fhqk` | string |  |
+| 问题属地行政区划 | `wtsdxzqhdm` | string |  |
+| 问题属地直属级别 | `wtsdzsjb` | string |  |
+| 问题属地直属单位 | `wtsdzsdwdm` | string |  |
+| 是否移交转督办 | `sfyj` | string |  |
+| 督查登记标志 | `dcdjbz` | string |  |
+| 是否法院已受理 | `sffyysl` | string |  |
+| 是否已经行政复议 | `sfyjxzfy` | string |  |
+| 是否仲裁机构已受理 | `sfzcjgysl` | string |  |
+| 是否有复查复核意见书 | `sfyyfcfhyjs` | string |  |
+| 是否有进京访风险 | `jjffxbz` | string |  |
+| 是否其他行为 | `zsrlxwbz` | string |  |
+| 是否有不良影响 | `qfbjsbz` | string |  |
+| 登记部门 | `djbm` | string |  |
+| 登记单位 | `djdw` | string |  |
+| 登记人姓名 | `djr` | string |  |
+| 接谈人姓名 | `jtrxm` | string |  |
+| 接谈人部门 | `jtrbm` | string |  |
+| 接谈人单位 | `jtrdw` | string |  |
+| 问题属地名称 | `wtsd` | string |  |
+| 是否公开互联网 | `isgkhlw` | string |  |
+| 登记单位代码 | `djdwdm` | string |  |
+| 作出受理意见日期 | `zcslyjrq` | datetime |  |
+| 作出处理意见日期 | `zcclyjrq` | datetime |  |
+| 督办状态 | `dbzt` | string |  |
+| 转交责任单位日期 | `zjzrdwrq` | datetime |  |
+| 实体受理标志 | `stslbz` | string |  |
+| 回访标志 | `hfbz` | string |  |
+| 涉法涉诉标志 | `sfssbz` | string |  |
+| 首次信访标志 | `scxfbz` | string |  |
+| 存在问题 | `czwt` | string |  |
+| 数据来源 | `sjly` | string |  |
+| 报送标志 | `bsbz` | string |  |
+| 是否信访件 | `sfxfj` | string |  |
+| 是否超期 | `sfcq` | string |  |
+| 新老数据标志 | `isold` | string |  |
+| 抽查标志 | `ccbz` | string |  |
+| 国家数据交换标记 | `gjbj` | string |  |
+| 备注 | `bz` | string |  |
+| 新增积案标志 | `jabz` | string |  |
+| 积案结案标志 | `jajabz` | string |  |
+| 办理程序 | `jjcd` | string |  |
+| 是否保密 | `issecret` | string |  |
+| 国家登记时间 | `gjdjsj` | datetime |  |
+| 合并件编号 | `hbjbh` | string |  |
+| 催办状态 | `cbzt` | string |  |
+| 办公系统内导厅局代码 | `tjdm` | string |  |
+| 涉及地区标志 | `sjdqbz` | string |  |
+| 信访部门评价状态 | `xfbmpjzt` | string |  |
+| 责任单位评价状态 | `zrdwpjzt` | string |  |
+| 保密人编号2 | `bmrid2` | string |  |
+| 保密人编号 | `bmrid` | string |  |
+| 是否可再评价 | `sfkzpj` | string |  |
+| 核查状态 | `hczt` | string |  |
+| 核实标志 | `hsbz` | string |  |
+| 流转单位 | `lzdw` | string |  |
+| 信访人姓名 | `xm` | string |  |
+| 性别 | `xb` | string |  |
+| 民族 | `mz` | string |  |
+| 地址 | `dz` | string |  |
+| 地址代码 | `dzdm` | string |  |
+| 证件号码 | `zjhm` | string |  |
+| 证件类型 | `zjlx` | string |  |
+| 手机号码 | `sjhm` | string |  |
+| 内容分类 | `nrfl` | string |  |
+| 产生信访原因 | `csxfyy` | string |  |
+| 三跨三分离标志 | `sksflbz` | string |  |
+| 热点问题 | `rdwt` | string |  |
+| 时间戳 | `sjc` | datetime |  |
+| 证件类型1 | `zjlx1` | string |  |
+| 证件号码1 | `zjhm1` | string |  |
+| 手机号码1 | `sjhm1` | string |  |
+| 是否有过抄送记录 | `sfcs` | string |  |
+| 行业内容分类 | `hynrfl` | string |  |
+| 是否归档 | `sfgd` | string |  |
+| 是否依法分类处理 | `sfyfflcl` | string |  |
+| 办理方式节点 | `blfsjd` | string |  |
+| 隐藏行编号 | `ychbh` | string |  |
+| 限期答复时间 | `xqdfsj` | datetime |  |
+
+## dw_nb_xflyxfrxxx - 宁波市信访领域信访人信息（新）
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| ID主键 | `idzj` | string |  |
+| 信访人编号 | `xfrbm` | string |  |
+| 出生日期 | `csrq` | datetime |  |
+| 手机号码 | `sjhm` | string |  |
+| 联系电话 | `lxdh` | string |  |
+| 性别 | `xb` | string |  |
+| 户口所在地 | `hkszd` | string |  |
+| 工作单位 | `gzdw` | string |  |
+| 电子邮件 | `dzyj` | string |  |
+| 职业 | `zy` | string |  |
+| 地址 | `dz` | string |  |
+| 常住地址代码 | `czdzdm` | string |  |
+| 姓名 | `xm` | string |  |
+| 通讯地址 | `txdz` | string |  |
+| 证件类型 | `zjlx` | string |  |
+| 民族 | `mz` | string |  |
+| 证件号码 | `zjhm` | string |  |
+| 户口所在地代码 | `hkszddm` | string |  |
+| 地址代码 | `dzdm` | string |  |
+| 邮政编码 | `yzbm` | string |  |
+| 常住地址 | `czdz` | string |  |
+| 政治身份 | `zzsf` | string |  |
+| 通讯地址代码 | `txdzdm` | string |  |
+| 国籍或港澳台居民身份 | `gjhgatjmsf` | string |  |
+| 重点人员标志 | `zdrybz` | string |  |
+
+## dw_nb_xflyxjdbxx - 宁波市信访领域信件督办信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 主键ID | `zjid` | string |  |
+| 信访件ID | `xfjid` | string |  |
+| 核实编号 | `hcbh` | string |  |
+| 核实单状态 | `hcdzt` | string |  |
+| 核实人 | `hcr` | string |  |
+| 核实日期 | `hcrq` | datetime |  |
+| 核实部门ID | `hcbmid` | string |  |
+| 核实部门 | `hcbm` | string |  |
+| 核实主题 | `hcbt` | string |  |
+| 核实人ID | `hcrid` | string |  |
+| 是否立项 | `sfhc` | string |  |
+| 核实单位 | `hcdw` | string |  |
+| 核实单位ID | `hcdwid` | string |  |
+| 最后一次办理方式 | `blfs` | string |  |
+| 最后一次办理时间 | `blsj` | datetime |  |
+| 核实单位代码 | `hcdwdm` | string |  |
+| 核实内容 | `hsnr` | string |  |
+
+## dw_shl_xfjxx - 省回流-宁波市信访件信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 信访件ID | `xfjid` | string |  |
+| 关联信访事项ID | `glxfsxid` | string |  |
+| 标题 | `bt` | string |  |
+| 信访件编号 | `xfjbh` | string |  |
+| 信访形式 | `xfxs` | string |  |
+| 本次主信访人ID | `bczxfrid` | string |  |
+| 主信访人地址代码 | `zxfrdzdm` | string |  |
+| 受信人 | `sxr` | string |  |
+| 登记部门ID | `djbmid` | string |  |
+| 登记单位ID | `djdwid` | string |  |
+| 相关附件 | `xgfj` | string |  |
+| 概况 | `gk` | string |  |
+| 人数 | `rs` | string |  |
+| 信访件状态 | `xfjzt` | string |  |
+| 涉及人数 | `sjrs` | string |  |
+| 信访日期 | `xfrq` | string |  |
+| 登记时间 | `djsj` | string |  |
+| 登记人ID | `djrid` | string |  |
+| 越级标志 | `yjbz` | string |  |
+| 联名信或集体访 | `lmxhjtf` | string |  |
+| 匿名标志 | `nmbz` | string |  |
+| 受理机构ID | `sljgid` | string |  |
+| 是否公开 | `sfgk` | string |  |
+| 信访事项信访目的 | `xfsxxfmd` | string |  |
+| 信访事项问题属地代码ID | `xfsxwtsddmid` | string |  |
+| 信访人诉求 | `xfrsq` | string |  |
+| 扬言标志 | `yybz` | string |  |
+| 办结标志 | `bjbz` | string |  |
+| 办结时间 | `bjsj` | string |  |
+| 限办时间 | `xbsj` | string |  |
+| 登记部门 | `djbm` | string |  |
+| 登记单位 | `djdw` | string |  |
+| 登记人姓名 | `djrxm` | string |  |
+| 问题属地名称 | `wtsdmc` | string |  |
+| 登记单位代码 | `djdwdm` | string |  |
+| 涉法涉诉标志 | `sfssbz` | string |  |
+| 首次信访标志 | `scxfbz` | string |  |
+| 备注 | `bz` | string |  |
+| 积案标志 | `jabz` | string |  |
+| 办理程序 | `jjcd` | string |  |
+| 是否保密 | `sfbm` | string |  |
+| 涉及地区标志 | `sjdqbz` | string |  |
+| 信访部门评价状态 | `xfbmpjzt` | string |  |
+| 责任单位评价状态 | `zrdwpjzt` | string |  |
+| 行业内容分类 | `hynrfl` | string |  |
+| 是否依法分类处理 | `sfyfflcl` | string |  |
+
+## dw_nb_xsxx - 省回流_学生信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 学生ID | `xsid` | VARCHAR/字符串型C |  |
+| 学生姓名 | `xsxm` | VARCHAR/字符串型C |  |
+| 身份证件类型 教育部标准代码 | `sfzjlx` | VARCHAR/字符串型C |  |
+| 身份证件号 | `sfzjh` | VARCHAR/字符串型C |  |
+| 学号 | `grbsm` | VARCHAR/字符串型C |  |
+| 地区编码 | `dqbm` | VARCHAR/字符串型C |  |
+| 地区名称 | `dqmc` | VARCHAR/字符串型C |  |
+| 学校标识码 | `xxbsm` | VARCHAR/字符串型C |  |
+| 学校名称 | `xxmc` | VARCHAR/字符串型C |  |
+| 年级码 | `njm` | VARCHAR/字符串型C |  |
+| 年级名称 | `njmc` | VARCHAR/字符串型C |  |
+| 班级名称 | `bjmc` | VARCHAR/字符串型C |  |
+| 专业 | `zy` | VARCHAR/字符串型C |  |
+| 学制 | `xz` | FLOAT/浮点型F |  |
+| 状态 | `xszt` | VARCHAR/字符串型C |  |
+| 入学年月 | `rxny` | VARCHAR/字符串型C |  |
+| 政治面貌 | `zzmm` | VARCHAR/字符串型C |  |
+| 学段/层次 | `xd` | VARCHAR/字符串型C |  |
+| 业务系统更新时间 | `biztime` | DATETIME/日期时间型T |  |
+| 数据同步更新时间 | `loadtime` | DATETIME/日期时间型T |  |
+| 时间戳 | `tnsvalue` | VARCHAR/字符串型C |  |
+| 民族 | `mz` | VARCHAR/字符串型C |  |
+
+## dw_nb_zzxsxx - 省回流_中职学生信息
+
+（Excel 未提供字段清单）
+
+## dw_nb_xqxsxx - 省回流_学前学生信息
+
+（Excel 未提供字段清单）
+
+## dw_nb_gxxsxx - 省回流_高校学生信息
+
+（Excel 未提供字段清单）
+
+## dw_nb_zxxxsxx - 省回流_中小学学生信息
+
+（Excel 未提供字段清单）
+
+## dw_nb_xxxx - 省回流_学校信息
+
+（Excel 未提供字段清单）
+
+## dw_nb_yeyyqxx - 省回流_幼儿园园区信息
+
+（Excel 未提供字段清单）
+
+## dw_nb_yeyzyyershzxx - 省回流_数字政府-幼儿园在园幼儿人数汇总信息
+
+（Excel 未提供字段清单）
+
+## dw_nb_jsxx - 省回流_教师信息
+
+（Excel 未提供字段清单）
+
+## dw_nb_zrzygh_bdcqzxx - 宁波市不动产权证
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| 登记机构 | `djjg` |  |  |
+| 编号 | `zsgbh` |  |  |
+| 不动产权证号 | `bdcqzh` |  |  |
+| 权利人 | `qlr` |  |  |
+| 权利人身份证件号码 | `zjh` |  |  |
+| 共有情况 | `gyqk` |  |  |
+| 坐落 | `zl` |  |  |
+| 不动产单元号 | `bdcdyh` |  |  |
+| 权利类型 | `qllx` |  |  |
+| 权利性质 | `qlxz` |  |  |
+| 用途 | `yt` |  |  |
+| 面积 | `mj` |  |  |
+| 使用期限 | `syqx` |  |  |
+| 权利其他状况 | `qlqtzk` |  |  |
+| 状态 | `op` |  |  |
+| 记录时间 | `tong_time` |  |  |
+| tongid | `tongid` |  |  |
+| 发送时间 | `sendtime` |  |  |
+| 登薄时间 | `szsj` |  |  |
+| 附记 | `fj` |  |  |
+| 不动产权证号 | `bdcqzh` |  |  |
+| 权利人 | `qlr` |  |  |
+| 权利人身份证件号码 | `qlrzjh` |  |  |
+| 证书工本号 | `zsgbh` |  |  |
+| 登记机构 | `djjg` |  |  |
+| 共有情况 | `gyqk` |  |  |
+| 坐落 | `zl` |  |  |
+| 不动产单元号 | `bdcdyh` |  |  |
+| 权利类型 | `qllx` |  |  |
+| 权利性质 | `qlxz` |  |  |
+| 用途 | `yt` |  |  |
+| 面积 | `mj` |  |  |
+| 使用期限 | `syqx` |  |  |
+| 权力其他状况 | `qlqtzk` |  |  |
+| 附记 | `fj` |  |  |
+| 登记时间 | `djsj` |  |  |
+| 更新时间 | `update_time` |  |  |
+| 标准表主键 | `no_id` |  |  |
+
+## dw_shl_xfrxx - 省回流-宁波市信访人信息
+
+| 中文字段名 | 标准化字段名 | 数据类型 | 样例数据 |
+| --- | --- | --- | --- |
+| ID主键 | `idzj` | string |  |
+| 民族 | `mz` | string |  |
+| 证件号码 | `zjhm` | string |  |
+| 户口所在地代码 | `hkszddm` | string |  |
+| 地址代码 | `dzdm` | string |  |
+| 邮政编码 | `yzbm` | string |  |
+| 常住地址 | `czdz` | string |  |
+| 政治身份 | `zzsf` | string |  |
+| 通讯地址代码 | `txdzdm` | string |  |
+| 信访人国籍或港澳台居民身份 | `xfrgjhgatjmsf` | string |  |
+| 证件类型 | `zjlx` | string |  |
+| 通讯地址 | `txdz` | string |  |
+| 信访人编号 | `xfrbm` | string |  |
+| 出生日期 | `csrq` | string |  |
+| 手机号码 | `sjhm` | string |  |
+| 联系电话 | `lxdh` | string |  |
+| 性别 | `xb` | string |  |
+| 户口所在地 | `hkszd` | string |  |
+| 工作单位 | `gzdw` | string |  |
+| 电子邮件 | `dzyj` | string |  |
+| 职业 | `zy` | string |  |
+| 地址 | `dz` | string |  |
+| 常住地址代码 | `czdzdm` | string |  |
+| 姓名 | `xm` | string |  |
+
+## dw_shl_xzcfxxgjxf - 省回流-宁波市证监领域行政处罚信息（国家下发数据）
+
+（Excel 未提供字段清单）
