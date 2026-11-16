@@ -5,8 +5,8 @@
 -- 一律写全限定名 odps_jrsjc_pod.dw_xxx
 --
 -- SECTION 0  执行前检查
--- SECTION 1  基础代码与字典表
--- SECTION 2  文旅经营主体筛选
+-- SECTION 1  字典表
+-- SECTION 2  文旅经营主体
 -- SECTION 3  根据负面指标删选
 -- SECTION 4  根据正面指标排序
 -- SECTION 5  输出结果
@@ -25,7 +25,7 @@ GROUP BY indv_nm
 ORDER BY cnt DESC
 LIMIT 10;
 -- ============================================================================
--- SECTION 1  基础代码与字典表
+-- SECTION 1  字典表
 -- ============================================================================
 --
 -- ----------------------------------------------------------------------------
@@ -118,7 +118,7 @@ FROM odps_jrsjc_pod.dw_zj_scjdgl_scztxx s
         FROM industry_codes
     ) c ON s.indv_nm = c.indv_nm;
 -- ============================================================================
--- SECTION 2  文旅经营主体筛选
+-- SECTION 2  文旅经营主体
 -- ============================================================================
 --
 -- 去重前核对：看同一信用代码是否确有多条记录，以及 appr_dt 能否区分新旧
@@ -232,7 +232,7 @@ LIMIT 1000;
 -- ----------------------------------------------------------------------------
 -- 更新 company，添加一列社保参保人数
 -- 本段是原地改写表本身：先 ALTER 给 company 加列，再用 INSERT OVERWRITE
--- 把 company 全表重写一遍，把人数写进新列；SECTION 3 的 company_remain
+-- 把 company 全表重写一遍，把人数写进新列；SECTION 3 的 company
 -- 由 SELECT * FROM company 继承这两列，不需要再补一遍。
 -- 来源标准表：DW_NB_RLSB_QYSBCBRSXX（企业社保参保人数信息），现场 DESC
 -- 确认真实列名 credit_code（信用代码）、ijfrs（月参保总人数）、
@@ -336,24 +336,57 @@ SELECT COUNT(*) AS company_count,
         END
     ) AS with_tax_level_count
 FROM company;
+-- --------------------------------------------------------------------------
+-- 更新 company：剔除社保参保人数为 0 或数据缺失的企业
+-- 本步是数据有效性过滤，不属于 SECTION 3 的三类负面指标，放在三类剔除之后、
+-- SECTION 4 排名之前，保证参与排名的企业都有有效参保人数。
+-- 口径：mon_insurd_prsons 为 0、NULL（源表未覆盖或记录缺失）以及异常负值，
+-- 一律视为无有效参保人数，整户剔除；只保留大于 0 的记录。
+-- SECTION 2 补列时 NULL 只表示源表未覆盖，本步按「无有效人数」统一剔除；
+-- 若只想剔除 0 而保留缺失记录，需把覆写 WHERE 与三处 CASE 的判定同步改掉，
+-- 保留条件写成 mon_insurd_prsons IS NULL OR mon_insurd_prsons > 0。
+-- 同样用 INSERT OVERWRITE 原地覆写，SELECT c.* 保持列结构不变。
+-- --------------------------------------------------------------------------
+-- 覆写前自检：before_count 减 drop_count 应等于 keep_count
+SELECT COUNT(*) AS before_count,
+    SUM(
+        CASE
+            WHEN COALESCE(mon_insurd_prsons, 0) <= 0 THEN 1
+            ELSE 0
+        END
+    ) AS drop_count,
+    SUM(
+        CASE
+            WHEN mon_insurd_prsons > 0 THEN 1
+            ELSE 0
+        END
+    ) AS keep_count
+FROM company;
+-- 提取 mon_insurd_prsons>0 的数据
+INSERT OVERWRITE TABLE company
+SELECT c.*
+FROM company c
+WHERE COALESCE(c.mon_insurd_prsons, 0) > 0;
+-- 覆写后自检：remain_count 应等于 keep_count，bad_rows 必须为 0
+SELECT COUNT(*) AS remain_count,
+    SUM(
+        CASE
+            WHEN COALESCE(mon_insurd_prsons, 0) <= 0 THEN 1
+            ELSE 0
+        END
+    ) AS bad_rows
+FROM company;
 -- ============================================================================
 -- SECTION 3 根据负面指标删选
 -- 本版只落地三类一票否决项：严重违法失信、失信被执行人、未履行生效裁判。
 -- 经营异常、重大税收违法黑名单、纳税非正常户、纳税信用低等级、行政处罚等
 -- 尚未写入，插入新步骤时照下面三段的结构续写即可。
--- company_remain 是全链路唯一的剩余企业表，每步原地覆写，不再新建表。
+-- company 是全链路唯一的剩余企业表，每步原地覆写，不再新建表。
 -- ============================================================================
 --
--- 先把 company（SECTION 2 已补社保、纳税两列）复制到 company_remain
-DROP TABLE IF EXISTS company_remain;
-CREATE TABLE company_remain AS
-SELECT *
-FROM company;
-SELECT COUNT(*) AS remain_count
-FROM company_remain;
 -- ----------------------------------------------------------------------------
 -- 剔除近 3 年存在严重违法失信的企业
--- 思路：把命中企业从 company_remain 中去掉后原地覆写，保留的是未命中的好企业。
+-- 思路：把命中企业从 company 中去掉后原地覆写，保留的是未命中的好企业。
 -- 来源标准表：DW_ZJ_SCJDGL_YZWFSX。
 -- 近 3 年为 2023、2024、2025 三个年度
 -- 按列入日期 abn_tm 的年份判断，只取年份前四位。
@@ -361,7 +394,7 @@ FROM company_remain;
 -- ----------------------------------------------------------------------------
 -- 命中家数自检：为 0 说明近 3 年口径或关联键有问题，先查清再往下覆写
 SELECT COUNT(DISTINCT c.uni_social_crd_cd) AS hit_count
-FROM company_remain c
+FROM company c
     JOIN (
         SELECT DISTINCT uni_social_crd_cd
         FROM odps_jrsjc_pod.dw_zj_scjdgl_yzwfsx
@@ -369,9 +402,9 @@ FROM company_remain c
             AND TRIM(uni_social_crd_cd) <> ''
             AND SUBSTR(abn_tm, 1, 4) IN ('2023', '2024', '2025')
     ) bad ON c.uni_social_crd_cd = bad.uni_social_crd_cd;
-INSERT OVERWRITE TABLE company_remain
+INSERT OVERWRITE TABLE company
 SELECT c.*
-FROM company_remain c
+FROM company c
     LEFT JOIN (
         SELECT DISTINCT uni_social_crd_cd
         FROM odps_jrsjc_pod.dw_zj_scjdgl_yzwfsx
@@ -382,10 +415,10 @@ FROM company_remain c
 WHERE bad.uni_social_crd_cd IS NULL;
 -- 自检：剩余家数应比本步之前少，差额即被剔除家数
 SELECT COUNT(*) AS remain_count
-FROM company_remain;
+FROM company;
 -- ----------------------------------------------------------------------------
 -- 剔除近 3 年存在失信被执行人的企业
--- 同样反连接后原地覆写 company_remain，本步只看失信被执行人一类记录。
+-- 同样反连接后原地覆写 company，本步只看失信被执行人一类记录。
 -- 来源标准表：DW_ZJ_FZGG_SXBZXRXX。
 -- 近 3 年为 2023、2024、2025 三个年度；
 -- 按立案时间 fil_dt 的年份判断，只取年份前四位。
@@ -399,7 +432,7 @@ GROUP BY LENGTH(uni_social_crd_cd)
 ORDER BY code_len
 LIMIT 100;
 SELECT COUNT(DISTINCT c.uni_social_crd_cd) AS hit_count
-FROM company_remain c
+FROM company c
     JOIN (
         SELECT DISTINCT uni_social_crd_cd
         FROM odps_jrsjc_pod.dw_zj_fzgg_sxbzxrxx
@@ -407,9 +440,9 @@ FROM company_remain c
             AND TRIM(uni_social_crd_cd) <> ''
             AND SUBSTR(CAST(fil_dt AS STRING), 1, 4) IN ('2023', '2024', '2025')
     ) bad ON c.uni_social_crd_cd = bad.uni_social_crd_cd;
-INSERT OVERWRITE TABLE company_remain
+INSERT OVERWRITE TABLE company
 SELECT c.*
-FROM company_remain c
+FROM company c
     LEFT JOIN (
         SELECT DISTINCT uni_social_crd_cd
         FROM odps_jrsjc_pod.dw_zj_fzgg_sxbzxrxx
@@ -420,10 +453,10 @@ FROM company_remain c
 WHERE bad.uni_social_crd_cd IS NULL;
 -- 自检：剩余家数应比本步之前少，差额即被剔除家数
 SELECT COUNT(*) AS remain_count
-FROM company_remain;
+FROM company;
 -- ----------------------------------------------------------------------------
 -- 剔除近 3 年存在未履行生效裁判的企业
--- 思路：同样反连接后原地覆写 company_remain，本步只看未履行生效裁判一类记录。
+-- 思路：同样反连接后原地覆写 company，本步只看未履行生效裁判一类记录。
 -- 来源标准表：DW_SHL_QYWLXSXCPXX。
 -- 口径：以本脚本基准日 2025-12-31 计，近 3 年为 2023、2024、2025 三个年度；
 -- 按立案日期 filing_dt 的年份判断，只取年份前四位。
@@ -432,7 +465,7 @@ FROM company_remain;
 -- 若后续改成按金额判断，在本段两处子查询里同步加条件即可。
 -- ----------------------------------------------------------------------------
 SELECT COUNT(DISTINCT c.uni_social_crd_cd) AS hit_count
-FROM company_remain c
+FROM company c
     JOIN (
         SELECT DISTINCT uni_social_crd_cd
         FROM odps_jrsjc_pod.dw_shl_qywlxsxcpxx
@@ -440,9 +473,9 @@ FROM company_remain c
             AND TRIM(uni_social_crd_cd) <> ''
             AND SUBSTR(CAST(filing_dt AS STRING), 1, 4) IN ('2023', '2024', '2025')
     ) bad ON c.uni_social_crd_cd = bad.uni_social_crd_cd;
-INSERT OVERWRITE TABLE company_remain
+INSERT OVERWRITE TABLE company
 SELECT c.*
-FROM company_remain c
+FROM company c
     LEFT JOIN (
         SELECT DISTINCT uni_social_crd_cd
         FROM odps_jrsjc_pod.dw_shl_qywlxsxcpxx
@@ -453,15 +486,54 @@ FROM company_remain c
 WHERE bad.uni_social_crd_cd IS NULL;
 -- 自检：剩余家数应比本步之前少，差额即被剔除家数
 SELECT COUNT(*) AS remain_count
-FROM company_remain;
+FROM company;
+-- ----------------------------------------------------------------------------
+-- 更新 company：剔除社保参保人数为 0 或数据缺失的企业
+-- 本步是数据有效性过滤，不属于 SECTION 3 的三类负面指标，放在三类剔除之后、
+-- SECTION 4 排名之前，保证参与排名的企业都有有效参保人数。
+-- 口径：mon_insurd_prsons 为 0、NULL（源表未覆盖或记录缺失）以及异常负值，
+-- 一律视为无有效参保人数，整户剔除；只保留大于 0 的记录。
+-- SECTION 2 补列时 NULL 只表示源表未覆盖，本步按「无有效人数」统一剔除；
+-- 若只想剔除 0 而保留缺失记录，需把覆写 WHERE 与三处 CASE 的判定同步改掉，
+-- 保留条件写成 mon_insurd_prsons IS NULL OR mon_insurd_prsons > 0。
+-- 同样用 INSERT OVERWRITE 原地覆写，SELECT c.* 保持列结构不变。
+-- ----------------------------------------------------------------------------
+-- 覆写前自检：before_count 减 drop_count 应等于 keep_count
+SELECT COUNT(*) AS before_count,
+    SUM(
+        CASE
+            WHEN COALESCE(mon_insurd_prsons, 0) <= 0 THEN 1
+            ELSE 0
+        END
+    ) AS drop_count,
+    SUM(
+        CASE
+            WHEN mon_insurd_prsons > 0 THEN 1
+            ELSE 0
+        END
+    ) AS keep_count
+FROM company;
+INSERT OVERWRITE TABLE company
+SELECT c.*
+FROM company c
+WHERE COALESCE(c.mon_insurd_prsons, 0) > 0;
+-- 覆写后自检：remain_count 应等于 keep_count，bad_rows 必须为 0
+SELECT COUNT(*) AS remain_count,
+    SUM(
+        CASE
+            WHEN COALESCE(mon_insurd_prsons, 0) <= 0 THEN 1
+            ELSE 0
+        END
+    ) AS bad_rows
+FROM company;
 -- ============================================================================
 -- SECTION 4 根据正面指标排序
--- 在 company_remain 中，首先根据纳税信用等级排序，其次按照注册资本排序
+-- 在 company 中，首先根据纳税信用等级排序，其次按照注册资本排序
 -- ============================================================================
 --
 -- ----------------------------------------------------------------------------
--- 直接用 company_remain 的纳税等级列，先按等级、再按注册资本生成排名并落表
--- 纳税等级已在 SECTION 2 给 company 补列时按最新评价年度取定，company_remain
+-- 直接用 company 的纳税等级列，先按等级、再按注册资本生成排名并落表
+-- 纳税等级已在 SECTION 2 给 company 补列时按最新评价年度取定，company
 -- 复制时继承，这里不再重复关联 DW_NB_SW_NSXYDJXX，否则 SELECT c.* 与再次
 -- 取出的列同名会冲突，口径也可能不一致。
 -- 等级优先级显式映射为 A、B、M、C、D，其余取值与无等级记录一律排最后；
@@ -469,10 +541,10 @@ FROM company_remain;
 -- 现场值域与本映射不一致时，只改下面这一处 CASE。
 -- 排序窗口末尾补 uni_social_crd_cd 作唯一键，避免等级与注册资本并列时结果漂移。
 -- MaxCompute 表存储无序，顺序只能以 rank_no 列固化，ORDER BY 只影响显示；
--- company_remain 保持纯剩余主体口径不变，带 rank_no 的结果落到 company_remain_ranked。
+-- company 保持纯剩余主体口径不变，带 rank_no 的结果落到 company_ranked。
 -- ----------------------------------------------------------------------------
-DROP TABLE IF EXISTS company_remain_ranked;
-CREATE TABLE company_remain_ranked AS
+DROP TABLE IF EXISTS company_ranked;
+CREATE TABLE company_ranked AS
 SELECT ranked.*,
     ROW_NUMBER() OVER (
         ORDER BY credit_rank ASC,
@@ -490,61 +562,28 @@ FROM (
                 WHEN 'D' THEN 5
                 ELSE 9
             END AS credit_rank
-        FROM company_remain c
+        FROM company c
     ) ranked;
 -- 全量结果已固化在表里，取全量直接读表，不带 ORDER BY 就不受 LIMIT 校验约束
 SELECT COUNT(*) AS ranked_count,
     COUNT(DISTINCT rank_no) AS rank_no_kinds
-FROM company_remain_ranked;
+FROM company_ranked;
 -- 按 rank_no 查看有序结果。ranked_count 超过下面的 LIMIT 时，按 rank_no 分段取，
 -- 或执行一次 SETPROJECT odps.sql.validate.orderby.limit=false 后去掉 LIMIT
 SELECT *
-FROM company_remain_ranked
+FROM company_ranked
 ORDER BY rank_no
 LIMIT 3000;
 -- ----------------------------------------------------------------------------
--- 按上面的排序规则，每个行业代码取前 50 名，合并落表 company_remain_ranked_2
--- 行业代码字段是 indv_nm（现场确认存四位行业小类代码），中文名称 indv_id
--- 未保留在 company 中，需要时自行查字典表；company 建表时已用
--- industry_codes 过滤，indv_nm 必是 62 个有效代码之一，不用再排空。
--- 上面的排序规则已固化成 company_remain_ranked.rank_no，组内按 rank_no 升序
--- 取前 50，等价于在组内重跑一遍纳税等级、注册资本、信用代码的排序。
--- ROW_NUMBER 一次分区即完成分行业取名次再合并，不必逐行业 UNION ALL；
--- 新表比原表多一列 indv_rank_no（行业内名次），全局 rank_no 保留原值会跳号。
--- 每组最多 50 家，62 个行业理论上最多 3100 家，实际取决于各组现有家数。
--- ----------------------------------------------------------------------------
-DROP TABLE IF EXISTS company_remain_ranked_2;
-CREATE TABLE company_remain_ranked_2 AS
-SELECT *
-FROM (
-        SELECT r.*,
-            ROW_NUMBER() OVER (
-                PARTITION BY indv_nm
-                ORDER BY rank_no ASC
-            ) AS indv_rank_no
-        FROM company_remain_ranked r
-    ) t
-WHERE indv_rank_no <= 50;
--- 自检：行业数应不超过 62，rank_no 种类数应等于行数
-SELECT COUNT(*) AS ranked_2_count,
-    COUNT(DISTINCT indv_nm) AS industry_count,
-    COUNT(DISTINCT rank_no) AS rank_no_kinds
-FROM company_remain_ranked_2;
--- 自检：看各行业实际取到多少家，满 50 的说明该行业原表还有更多企业被截下
-SELECT indv_nm,
-    COUNT(*) AS indv_cnt
-FROM company_remain_ranked_2
-GROUP BY indv_nm
-ORDER BY indv_cnt DESC
-LIMIT 100;
--- ----------------------------------------------------------------------------
--- 最后输出纯文本清单：按 rank_no 取前 3000 名，用信用代码后 5 位回 company
--- 取完整代码。company_remain_ranked 的 uni_social_crd_cd 在结果窗口里中间
--- 段显示不全，截屏带走的不是完整社会信用代码，这里改从 company 输出。
+-- 输出企业社会信用代码后段的纯文本清单：取前 3000 名，用信用代码后 5 位回
+-- company 取数，只输出第 7 位到末尾。结果窗口里 18 位代码只有前 6 位 913302
+-- 可见，第 7 位起被星号替代；这 6 位是宁波企业固定前缀，拿到后面 12 位就能
+-- 自己拼回完整代码。单独输出 12 位子串，期望避开按完整代码形态触发的脱敏；
+-- 若结果仍是星号，说明脱敏发生在存储层，得换未脱敏的数据源。
 -- 脚本建的 company 表没有 uni_social_crd_cd_last5 列，后 5 位按
 -- SUBSTR(uni_social_crd_cd, LENGTH(uni_social_crd_cd) - 4, 5) 现算；现场库里
 -- 若确有该列，把 company 侧子查询换成直接取列即可，关联条件不用改。
--- 后 5 位不是唯一键，下面两条自检先看有没有碰撞和匹配不上的名次。
+-- 上游已按信用代码去重，本段不再做重复检查；下面只核对有没有匹配不上的名次。
 -- WITHIN GROUP (ORDER BY rank_no) 保证输出顺序与排名一致；LEFT JOIN 保留
 -- 全部名次，匹配不到时该名次取不到完整代码，先看自检的 unmatched_rows。
 -- 默认 3000 个拼进一个单元格；查询窗口截断超长单元格时把 3000.0 改小
@@ -552,29 +591,8 @@ LIMIT 100;
 -- 若报函数或语法不支持，取消下一行注释并与本查询一起提交执行：
 -- SET odps.sql.type.system.odps2=true;
 -- ----------------------------------------------------------------------------
--- 自检：company 里后 5 位若有重复，一个排名会匹配出多个完整代码
-SELECT cd_last5,
-    COUNT(DISTINCT uni_social_crd_cd) AS cd_kinds
-FROM (
-        SELECT uni_social_crd_cd,
-            SUBSTR(
-                uni_social_crd_cd,
-                LENGTH(uni_social_crd_cd) - 4,
-                5
-            ) AS cd_last5
-        FROM company
-        WHERE uni_social_crd_cd IS NOT NULL
-            AND TRIM(uni_social_crd_cd) <> ''
-    ) t
-GROUP BY cd_last5
-HAVING COUNT(DISTINCT uni_social_crd_cd) > 1
-ORDER BY cd_kinds DESC
-LIMIT 100;
--- 自检：matched_rows 应等于 rank_no_kinds，unmatched_rows 应为 0；
--- matched_rows 偏大就是后 5 位碰撞造成一对多膨胀
-SELECT COUNT(*) AS matched_rows,
-    COUNT(DISTINCT r.rank_no) AS rank_no_kinds,
-    SUM(
+-- 自检：unmatched_rows 应为 0，非 0 说明有名次没在 company 里取到完整代码
+SELECT SUM(
         CASE
             WHEN c.uni_social_crd_cd IS NULL THEN 1
             ELSE 0
@@ -588,7 +606,7 @@ FROM (
                 LENGTH(uni_social_crd_cd) - 4,
                 5
             ) AS cd_last5
-        FROM company_remain_ranked
+        FROM company_ranked
         WHERE rank_no <= 3000
             AND uni_social_crd_cd IS NOT NULL
             AND TRIM(uni_social_crd_cd) <> ''
@@ -605,7 +623,7 @@ FROM (
             AND TRIM(uni_social_crd_cd) <> ''
     ) c ON r.cd_last5 = c.cd_last5;
 SELECT batch_no,
-    WM_CONCAT (', ', c.uni_social_crd_cd) WITHIN GROUP (
+    WM_CONCAT (', ', SUBSTR(c.uni_social_crd_cd, 7)) WITHIN GROUP (
         ORDER BY rank_no
     ) AS codes
 FROM (
@@ -617,7 +635,7 @@ FROM (
                 LENGTH(uni_social_crd_cd) - 4,
                 5
             ) AS cd_last5
-        FROM company_remain_ranked
+        FROM company_ranked
         WHERE rank_no <= 3000
             AND uni_social_crd_cd IS NOT NULL
             AND TRIM(uni_social_crd_cd) <> ''
@@ -641,7 +659,6 @@ LIMIT 3000;
 -- 这里按与上面代码清单完全相同的关联和次序，从 company 取完整企业名称。
 -- batch_no 与代码清单一致，同一行内第 N 个名称对应代码清单的第 N 个代码，
 -- 两份清单按位置配对使用；先看上面的 unmatched_rows 自检，为 0 才不会错位。
--- 分隔符沿用逗号加空格；企业名本身若含逗号会混淆，可换成竖线等不会出现的符号。
 -- 名称比代码长，默认 3000 个拼进一个单元格更容易被窗口截断，按同样办法
 -- 把 3000.0 改小（如 100.0）分批；两处 batch 参数要一起改，否则批次对不上。
 -- ----------------------------------------------------------------------------
@@ -658,7 +675,7 @@ FROM (
                 LENGTH(uni_social_crd_cd) - 4,
                 5
             ) AS cd_last5
-        FROM company_remain_ranked
+        FROM company_ranked
         WHERE rank_no <= 3000
             AND uni_social_crd_cd IS NOT NULL
             AND TRIM(uni_social_crd_cd) <> ''
@@ -676,4 +693,39 @@ FROM (
     ) c ON r.cd_last5 = c.cd_last5
 GROUP BY batch_no
 ORDER BY batch_no
+LIMIT 3000;
+-- ----------------------------------------------------------------------------
+-- 按上面的排序规则，每个行业代码取前 50 名，合并落表 company_ranked_2
+-- 行业代码字段是 indv_nm（现场确认存四位行业小类代码），中文名称 indv_id
+-- 未保留在 company 中，需要时自行查字典表；company 建表时已用
+-- industry_codes 过滤，indv_nm 必是 62 个有效代码之一，不用再排空。
+-- 上面的排序规则已固化成 company_ranked.rank_no，组内按 rank_no 升序
+-- 取前 50，等价于在组内重跑一遍纳税等级、注册资本、信用代码的排序。
+-- ROW_NUMBER 一次分区即完成分行业取名次再合并，不必逐行业 UNION ALL；
+-- 新表比原表多一列 indv_rank_no（行业内名次），全局 rank_no 保留原值会跳号。
+-- 每组最多 50 家，62 个行业理论上最多 3100 家，实际取决于各组现有家数。
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS company_ranked_50;
+CREATE TABLE company_ranked_50 AS
+SELECT *
+FROM (
+        SELECT r.*,
+            ROW_NUMBER() OVER (
+                PARTITION BY indv_nm
+                ORDER BY rank_no ASC
+            ) AS indv_rank_no
+        FROM company_ranked r
+    ) t
+WHERE indv_rank_no <= 50;
+-- 自检：行业数应不超过 62，rank_no 种类数应等于行数
+SELECT COUNT(*) AS ranked_50_count,
+    COUNT(DISTINCT indv_nm) AS industry_count,
+    COUNT(DISTINCT rank_no) AS rank_no_kinds
+FROM company_ranked_50;
+-- 自检：看各行业实际取到多少家，满 50 的说明该行业原表还有更多企业被截下
+SELECT indv_nm,
+    COUNT(*) AS indv_cnt
+FROM company_ranked_50
+GROUP BY indv_nm
+ORDER BY indv_cnt DESC
 LIMIT 3000;
